@@ -1,0 +1,119 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Changed from max-height */
+  align-items: center;
+  justify-content: center; /* Add vertical centering */
+  padding: 1rem;
+  background: url('/src/IMG_7799.JPG'); /*background-repeat: repeat*/
+  background-size: 2000px;
+  overflow: hidden;
+  backface-visibility: visible;
+}
+
+.container-home {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  width: 700px;
+  height: 200px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.container-home h1{
+  font-size: 2rem;
+}
+
+.container-home::after {
+  content: ''; /* Required to make ::after appear */
+  position: absolute;
+  background: linear-gradient(180deg, #3b82f6 0%, #10b981 100%);
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+}
+
+.container-home:hover {
+cursor: pointer;
+width: 800px;
+box-shadow: 10px 10px 100px rgba(0, 0, 0, 0.1);
+transition: all 1s ease;
+}
+
+.h2 {
+  font-size: 2rem;
+}
+
+.button{
+  background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+  color: white;
+  padding: 5px;
+  border: none;
+  border-radius: 8px;
+  font-size: .8rem;
+  margin:10px;
+  font-weight: 500;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 200px;
+  margin-top: 2px;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  transition: all 0.5s ease;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+}
+
+
+/* Media query for smaller screens (e.g., tablets and phones) */
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 20px; /* Add some padding around the content */
+  }
+
+  .container-home {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    height: 250px;
+    width: 300px;
+    margin-bottom: 15px; /* Adjust margin */
+  }
+
+  .container-home h1 {
+    font-size: 0.8rem;
+  }
+
+  .container-home:hover {
+    box-shadow: 3px 3px 30px rgba(0, 0, 0, 0.1); /* Adjust shadow */
+    transition: none; /* Remove transition on hover for smoother touch */
+  }
+}
+
+/* Further adjustments for even smaller screens (phones) */
+@media (max-width: 480px) {
+  .container-home h1 {
+    font-size: 1.3rem;
+  }
+
+  .h2 {
+    font-size: 1.3rem;
+  }
+
+  .button {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}

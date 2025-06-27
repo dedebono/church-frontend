@@ -1,0 +1,494 @@
+:root {
+  --primary-color: #00204a; /* dark blue */
+  --secondary-color: #005792; /* blue */
+  --accent-color: #00bbf0; /* light blue */
+  --background-color: #f5f5f5; /* white */
+  --text-color: #fdb44b; /* yellow */
+}
+
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8fafc;
+  color: #2d3748;
+  line-height: 1.6;
+}
+
+/* Main container */
+.p-4 {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Header section */
+.h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 24px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.h2::before {
+  content: "📊";
+  font-size: 2rem;
+}
+
+/* Filter container */
+.filter-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-input {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 0.875rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    flex-grow: 1;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(0, 87, 146, 0.1);
+}
+
+
+/* Table container - modern card design */
+.min-w-full {
+  background: white;
+  border-radius: 12px;
+  overflow:scroll;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  margin: 0 0 24px 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+/* Table styling */
+table.min-w-full {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background-color: white;
+  border-color: transparent;
+}
+
+/* Table header */
+.bg-gray-200 {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  color: #4a5568;
+}
+
+thead tr {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.85rem;
+  max-width: none;
+  position: relative;
+  background-color:var(--background-color);
+}
+
+/* Table header cells */
+th.px-4.py-2 {
+  padding: 20px 24px;
+  text-align: left;
+  font-weight: 600;
+  color:var(--primary-color);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  position: relative;
+  cursor: pointer;
+}
+
+th.px-4.py-2 .sort-indicator {
+    margin-left: 8px;
+    color: var(--accent-color);
+    font-size: 1.2em;
+}
+
+
+th.px-4.py-2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+th.px-4.py-2:last-child::after {
+  display: none;
+}
+
+/* Table body */
+tbody {
+  background: white;
+}
+
+/* Table rows */
+tbody tr {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tbody tr:hover {
+  background-color: #ebf8ff;
+  transform: translateX(4px);
+  box-shadow: 4px 0 0 #667eea;
+}
+
+/* Table data cells */
+td.px-4.py-2 {
+  padding: 16px 24px;
+  vertical-align: middle;
+  font-size: 0.875rem;
+  color: #2d3748;
+  border: none;
+}
+
+/* Member name styling */
+tbody tr td:first-child {
+  font-weight: 600;
+  color: #1a202c;
+}
+
+/* Date styling */
+tbody tr td:nth-child(2) {
+  color: #4a5568;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+}
+
+/* Status styling */
+tbody tr td:nth-child(3) {
+  font-weight: 500;
+}
+
+/* Status badges */
+tbody tr td:nth-child(3)::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: #48bb78; /* Default green for present */
+}
+
+
+tbody tr:has(td:nth-child(3):contains("Late"))::before,
+tbody tr td:nth-child(3)[data-status="late"]::before {
+  background-color: #ed8936; /* Orange for late */
+}
+
+/* Notes styling */
+tbody tr td:nth-child(4) {
+  color: #718096;
+  font-style: italic;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Empty state styling */
+.text-center.py-4.text-gray-500 {
+  padding: 48px 24px;
+  text-align: center;
+  color: #a0aec0;
+  font-style: italic;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin: 24px;
+  border: 2px dashed #e2e8f0;
+}
+
+.text-center.py-4.text-gray-500::before {
+  content: "📋";
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* Border styling */
+.border-b {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .p-4 {
+    padding: 16px;
+  }
+  
+  .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .h2 {
+    font-size: 1.5rem;
+    padding: 20px;
+    text-align: center;
+  }
+
+  /* Stack table on mobile */
+  .min-w-full {
+    border-radius: 12px;
+  }
+
+  table.min-w-full,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tbody tr {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  tbody tr:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  td.px-4.py-2 {
+    border: none;
+    padding: 8px 0;
+    text-align: left;
+    position: relative;
+    padding-left: 120px;
+  }
+
+  td.px-4.py-2::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    width: 110px;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Mobile labels */
+  td.px-4.py-2:nth-child(1)::before {
+    content: "Member:";
+  }
+
+  td.px-4.py-2:nth-child(2)::before {
+    content: "Date:";
+  }
+
+  td.px-4.py-2:nth-child(3)::before {
+    content: "Status:";
+  }
+
+  td.px-4.py-2:nth-child(4)::before {
+    content: "Notes:";
+  }
+
+  /* Mobile notes styling */
+  tbody tr td:nth-child(4) {
+    max-width: none;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .h2 {
+    font-size: 1.25rem;
+    padding: 16px;
+  }
+
+  tbody tr {
+    padding: 12px;
+  }
+
+  td.px-4.py-2 {
+    padding-left: 100px;
+    font-size: 0.8rem;
+  }
+
+  td.px-4.py-2::before {
+    width: 90px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Loading state */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading tbody tr {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Custom scrollbar for table container */
+.min-w-full::-webkit-scrollbar {
+  height: 8px;
+}
+
+.min-w-full::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.min-w-full::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.min-w-full::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Focus states for accessibility */
+tbody tr:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Animation for new rows */
+tbody tr {
+  animation: rowFadeIn 0.5s ease-out;
+}
+
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Status-specific styling classes you can add to your JSX */
+.status-present {
+  color: #276749;
+  background-color: #c6f6d5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-absent {
+  color: #c53030;
+  background-color: #fed7d7;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-late {
+  color: #c05621;
+  background-color: #feebc8;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* Print styles */
+@media print {
+  .p-4 {
+    padding: 0;
+    background: white;
+  }
+
+  .h2 {
+    background: none;
+    box-shadow: none;
+    border: none;
+    color: black;
+  }
+
+  .min-w-full {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  thead tr {
+    background: #f0f0f0 !important;
+    color: black !important;
+  }
+
+  tbody tr:hover {
+    background: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .filter-container{
+    display: none;
+  }
+}

@@ -1,0 +1,311 @@
+.page-outer{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Changed from max-height */
+  align-items: center;
+  justify-content: center; /* Add vertical centering */
+  padding: 1rem;
+  background: url('../IMG_8425.JPG'); /*background-repeat: repeat*/
+  background-size: 2000px;
+  backface-visibility: visible;
+}
+
+.h2-up{
+background-color: #ffffff;
+box-shadow: 0 4px 8px rgba(60, 59, 59, 0.3); /* inner shadow */
+padding: 10px;
+border-radius: 20px;
+}
+
+.family-registration {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  border-radius: 16px;
+  font-family: 'Inter', system-ui, sans-serif;
+  width: 100%;
+}
+.info{
+  margin-left: 20px;
+  margin-bottom: 0px;
+  font-size: 0.9rem;
+  font-style: italic;
+  font-weight: 600;
+}
+  .cont-family{
+    color: #000000;
+    background-color: #e2e8f0;
+    box-shadow: 0 4px 8px rgba(60, 59, 59, 0.3); /* inner shadow */
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .cont-member {
+    position: relative; /* Required to anchor ::after */
+    background-color: #e2e8f0;
+    border-radius: 20px;
+    height: 500px;
+    padding: 20px;
+    box-shadow: inset 0 4px 8px rgba(60, 59, 59, 0.3); /* inner shadow */
+    overflow: hidden;
+  }
+  
+  .cont-member::after {
+    content: ''; /* Required to make ::after appear */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 10px;
+    background: linear-gradient(180deg, #3b82f6 0%, #10b981 100%);
+    z-index: 1; /* Adjust layering if necessary */
+  }
+  
+
+  .family-registration h2 {
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    font-weight: 700;
+    position: relative;
+  }
+  
+  .family-registration h2::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+    border-radius: 4px;
+  }
+  
+  form {
+    padding: 10px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  h2{
+    margin-top: 0px;
+  }
+
+  h3 {
+    color: #1e293b;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  h3::before {
+    content: '👨‍👩‍👧‍👦';
+    font-size: 1.2em;
+  }
+
+  h5 {
+    color: #1e293b;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  h5::before {
+    content: '🤵👰';
+    font-size: 1.2em;
+  }
+
+  h4 {
+    color: #1e293b;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  h4::before {
+    content: '👤';
+    font-size: 1.2em;
+  }
+  
+  /* Form Grid Layout */
+  .form-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, fr));
+  }
+  
+  /* Input Styles */
+  .form-date { 
+    display: block;
+    width: 200px;
+    height: 16px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 10px;
+    padding: 0.875rem 1.25rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+  }
+  
+  .form-input:focus,
+  .form-date,
+  .form-select:focus {
+    outline: none;
+    border-color: #3bf686;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .form-input {
+    height: auto;
+    margin: 10px;
+    font-size: 100%;
+    resize: vertical;
+    width: 200px;
+    padding: 0.875rem 1.25rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: white;
+  }
+  
+  .form-select {
+    height: 45px;
+    width: 240px;
+    margin: 10px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+  }
+  
+  /* Button Styles */
+  .button-add {
+    background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 200px;
+    margin-top: 2px;
+  }
+  
+  .button-add:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+  }
+  
+  .button-submit {
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+    color: white;
+    padding: 10px;
+    border: none;
+    margin-top: 0;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 200px;
+    height: 40px;
+    margin-bottom: 0;
+  }
+  
+  .button-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+  }
+  
+  /* Remove Member Button */
+  .button-remove {
+    background: #b50000;
+    height: 40px;
+    color: #ffe30c;
+    padding: 0.5rem 1rem;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-top: 1rem !important;
+    transition: all 0.2s ease;
+  }
+  
+  .button-remove:hover {
+    background: #fbfab8;
+    color: #ff0c0c;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .family-registration {
+      display: flex;
+      padding: 10px;
+      width: 350px;
+    }
+
+    .cont-family{
+      box-shadow: inset 0 4px 8px rgba(60, 59, 59, 0.3); /* inner shadow */
+    }
+
+    .cont-member {
+      background-color: #e2e8f0;
+      max-height: fit-content;
+    }
+    
+    .cont-member::after {
+    display: none;
+    }
+
+    .form-input{
+      height: fit-content;
+      resize: vertical;
+      line-height: 1;
+    }
+
+    .form-date {
+      width: 200px;
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 10px;
+      padding: 0.875rem 1.25rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    form > div:not(:first-child) {
+      padding: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .family-registration h2 {
+      font-size: 1rem;
+    }
+    
+    .form-input,
+    .form-select,
+    .form-date {
+      padding: 0.75rem 1rem;
+    }
+  }
