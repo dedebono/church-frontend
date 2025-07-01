@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -12,6 +13,7 @@
     "date-fns": "^4.1.0",
     "firebase": "^11.9.1",
     "ics": "^3.8.1",
+    "lucide-react": "^0.525.0",
     "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.10.1",
     "papaparse": "^5.5.2",

@@ -15,7 +15,7 @@ let activeBackendIndex = 0;
 // Create Axios instance
 const api = axios.create({
   baseURL: backends[activeBackendIndex],
-  timeout: 5000, // 5 seconds timeout to trigger faster failover
+  timeout: 65000, // 5 seconds timeout to trigger faster failover
 });
 
 // Interceptor for automatic failover
