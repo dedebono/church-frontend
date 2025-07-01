@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Navigate } from "react-router-dom"
 import "./AdminPage.css"
+
 import ViewFamily from "./admin/viewFamily"
 import ViewMember from "./admin/viewMember"
 import UploadCSV from "./admin/csvUpload"
@@ -15,30 +16,25 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const navigate = useNavigate()
-
   const handleLogout = () => {
     localStorage.removeItem("adminToken")
+    localStorage.removeItem("isAdmin")
     navigate("/")
   }
 
+  const isAdmin = localStorage.getItem('isAdmin') === 'true'
+  if (!isAdmin) return <Navigate to="/admin-login" />
+
   const renderContent = () => {
     switch (activeTab) {
-      case "viewFamily":
-        return <ViewFamily />
-      case "viewMember":
-        return <ViewMember />
-      case "uploadCSV":
-        return <UploadCSV />
-      case "adminAttendance":
-        return <AdminAttendance />
-      case "adminMembers":
-        return <AdminMembers />
-      case "adminDevotions":
-        return <AdminDevotions />
-      case "manageGroups":
-        return <ManageGroups />
-      default:
-        return <div>Select a tab</div>
+      case "viewFamily": return <ViewFamily />
+      case "viewMember": return <ViewMember />
+      case "uploadCSV": return <UploadCSV />
+      case "adminAttendance": return <AdminAttendance />
+      case "adminMembers": return <AdminMembers />
+      case "adminDevotions": return <AdminDevotions />
+      case "manageGroups": return <ManageGroups />
+      default: return <div>Select a tab</div>
     }
   }
 
@@ -54,25 +50,20 @@ const AdminPage = () => {
 
   return (
     <div className="admin-layout">
+
       {/* Sidebar overlay for mobile */}
       <div className={`admin-sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)}>
         <div className="admin-sidebar" onClick={(e) => e.stopPropagation()}>
-          {/* Close button for mobile */}
-          <button className="close-btn" onClick={() => setSidebarOpen(false)}>
-            ✖
-          </button>
+          <button className="close-btn" onClick={() => setSidebarOpen(false)}>✖</button>
 
-          {/* Logo Section */}
           <div className="sidebar-logo">
             <div className="logo-icon">A</div>
             <span className="logo-text">ADMIN</span>
           </div>
 
-          {/* Navigation Section */}
           <nav className="sidebar-nav">
             <div className="nav-section">
               <div className="nav-header">MENU ADMIN</div>
-
               <div className="nav-items">
                 {menuItems.map(([tab, label]) => (
                   <button
@@ -91,30 +82,24 @@ const AdminPage = () => {
             </div>
           </nav>
 
-          {/* Bottom Section */}
           <div className="sidebar-bottom">
             <div className="bottom-header">SISTEM ADMIN</div>
             <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
-            <button className="logout-btn" onClick={handleLogout}>
-              KELUAR
-            </button>
+            <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
           </div>
         </div>
       </div>
 
       {/* Desktop Sidebar */}
       <div className="admin-sidebar-desktop">
-        {/* Logo Section */}
         <div className="sidebar-logo">
           <div className="logo-icon">A</div>
           <span className="logo-text">ADMIN</span>
         </div>
 
-        {/* Navigation Section */}
         <nav className="sidebar-nav">
           <div className="nav-section">
             <div className="nav-header">MENU ADMIN</div>
-
             <div className="nav-items">
               {menuItems.map(([tab, label]) => (
                 <button
@@ -126,25 +111,20 @@ const AdminPage = () => {
                   <span>{label}</span>
                 </button>
               ))}
-           <div className="sidebar-bottom">
-          <div className="bottom-header">SISTEM ADMIN</div>
-          <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
-          <button className="logout-btn" onClick={handleLogout}>
-            KELUAR
-          </button>
-        </div>
-
             </div>
           </div>
         </nav>
 
-        {/* Bottom Section */}
+        <div className="sidebar-bottom">
+          <div className="bottom-header">SISTEM ADMIN</div>
+          <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
+          <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
+        </div>
       </div>
 
+      {/* Main Content */}
       <div className="admin-content">
-        <button className="toggle-button" onClick={() => setSidebarOpen(true)}>
-          📋 Open Menu
-        </button>
+        <button className="toggle-button" onClick={() => setSidebarOpen(true)}>📋 Open Menu</button>
         <div className="admin-main">{renderContent()}</div>
       </div>
     </div>
