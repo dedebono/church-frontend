@@ -7,6 +7,11 @@ import { Phone, Mail, MapPin, Star, Menu, Quote, Play, X , Calendar} from "lucid
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
 import { useEvents } from "./hooks/useEvents"
 import { useGalleryPhotos } from "./hooks/useGallery";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const HomePage = () => {
   // Use a single state for the YouTube modal
@@ -340,12 +345,12 @@ const HomePage = () => {
               We believe in the transformative power of faith and strive to create an environment where individuals can
               grow spiritually, connect with others, and make a positive impact on the world.
             </p>
-            <a href="#" className="btn btn-secondary">
+            <a href="#home" className="btn btn-secondary">
               Our Mission
             </a>
           </div>
           <div className="about-image">
-            <img src="https://via.placeholder.com/600x400?text=Church+Interior" alt="Church Interior" />
+            <img src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751443846854_IMG_8506.JPG?alt=media&token=7523de63-8af1-479f-9df2-6068c1e32585" alt="Church Interior" />
           </div>
         </div>
       </section>
@@ -374,22 +379,39 @@ const HomePage = () => {
 
     {/* Gallery Grid - Real Data */}
     {!galleryLoading && !galleryError && GalleryPhotos.length > 0 ? (
-      <div className="gallery-grid">
-        {GalleryPhotos.map((photo) => (
-          <div key={photo._id} className="gallery-item">
-            <img
-              src={photo.imageUrl || "https://via.placeholder.com/400x250?text=Gallery+Image"}
-              alt={photo.title || "Gallery Image"}
-              onError={(e) => {
-                e.target.src = "https://via.placeholder.com/400x250?text=Image+Not+Found";
-              }}
-            />
-            <div className="gallery-overlay">
-              <span>{photo.title || "Church Photo"}</span> {/* Display title if available, else generic */}
-            </div>
-          </div>
-        ))}
+ <Swiper
+  modules={[Navigation, Pagination]}
+  spaceBetween={20}
+  slidesPerView={1}
+  navigation
+  pagination={{ clickable: true }}
+  breakpoints={{
+    768: {
+      slidesPerView: 2,
+    },
+    1024: {
+      slidesPerView: 3,
+    },
+  }}
+>
+  {GalleryPhotos.map((photo) => (
+    <SwiperSlide key={photo._id}>
+      <div className="gallery-item">
+        <img
+          src={photo.imageUrl || "https://via.placeholder.com/400x250?text=Gallery+Image"}
+          alt={photo.title || "Gallery Image"}
+          onError={(e) => {
+            e.target.src = "https://via.placeholder.com/400x250?text=Image+Not+Found";
+          }}
+        />
+        <div className="gallery-overlay">
+          <span>{photo.title || "Church Photo"}</span>
+        </div>
       </div>
+    </SwiperSlide>
+  ))}
+</Swiper>
+
     ) : (
       // Empty State
       !galleryLoading && !galleryError && (

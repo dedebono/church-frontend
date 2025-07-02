@@ -4,7 +4,7 @@ import axios from 'axios';
 // List of backends to failover between
 const backends =
   process.env.NODE_ENV === 'development'
-    ? ['https://server.dedebono.uk']
+    ? ['https://church-backend-no8q.onrender.com']
     : [
         'https://church-backend-no8q.onrender.com', // primary
         'https://server.dedebono.uk',               // fallback

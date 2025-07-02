@@ -1266,6 +1266,30 @@ p { font-size: var(--text-base); margin-bottom: var(--spacing-sm); }
     gap: 20px;
   }
 
+  .gallery-item {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.gallery-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+}
+
+
   .sermons-grid,
   .events-grid,
   .gallery-grid {
