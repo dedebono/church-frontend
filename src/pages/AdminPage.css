@@ -26,6 +26,7 @@
   top: 0;
   z-index: 10;
   overflow-y: auto;
+  overflow-x:scroll;
 }
 
 /* Logo Section */

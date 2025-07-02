@@ -33,22 +33,11 @@
 }
 
 /* Reset and Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: var(--font-body);
-  line-height: 1.6;
-  color: var(--color-dark);
-  background-color: var(--color-background-light);
-}
 
 a {
   color: var(--color-primary);
@@ -62,7 +51,7 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  color: var(--color-dark);
+  color: var(--color-light-text);
   line-height: 1.2;
   margin-bottom: var(--spacing-sm);
 }
@@ -434,74 +423,375 @@ p { font-size: var(--text-base); margin-bottom: var(--spacing-sm); }
   margin-bottom: var(--spacing-md);
 }
 
-/* ===================================== */
-/* EVENTS SECTION              */
-/* ===================================== */
-.events-section {
-  background-color: var(--color-background-light);
+/* Additional styles for dynamic sermons section */
+
+/* Loading State */
+.sermons-loading {
   text-align: center;
+  padding: 3rem 0;
+  color: #6b7280;
 }
 
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-md);
+.loading-spinner {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.sermons-error {
+  text-align: center;
+  padding: 3rem 0;
+  color: #dc2626;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+}
+
+.error-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.sermons-error small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* Empty State */
+.sermons-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: #6b7280;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.sermons-empty h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+/* View All Sermons Link */
+.sermons-view-all {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Enhanced Sermon Card Styles */
+.sermon-card {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sermon-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.sermon-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.sermon-card:hover img {
+  transform: scale(1.05);
+}
+
+.sermon-content {
+  padding: 1.5rem;
+}
+
+.sermon-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.sermon-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.sermon-content p:not(.sermon-meta) {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.sermon-content .btn {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sermons-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .sermons-loading,
+  .sermons-error,
+  .sermons-empty {
+    padding: 2rem 1rem;
+  }
+
+  .loading-spinner,
+  .error-icon,
+  .empty-icon {
+    font-size: 1.5rem;
+  }
+}
+
+/* Integration with existing styles */
+.sermons-section .confession-title {
+  margin-bottom: 2rem;
+}
+
+/* Ensure proper spacing */
+.sermons-section .container > * + * {
+  margin-top: 1rem;
+}
+
+.sermons-section .sermons-grid {
+  margin-top: 2rem;
+}
+
+
+/* Additional styles for dynamic events section */
+
+/* Events Loading State */
+.events-loading {
+  text-align: center;
+  padding: 3rem 0;
+  color: #6b7280;
+}
+
+.events-loading .loading-spinner {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+/* Events Error State */
+.events-error {
+  text-align: center;
+  padding: 3rem 0;
+  color: #dc2626;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+}
+
+.events-error .error-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.events-error small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* Events Empty State */
+.events-empty {
+  text-align: center;
+  padding: 3rem 0;
+  color: #6b7280;
+}
+
+.events-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.events-empty h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+/* View All Events Link */
+.events-view-all {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Enhanced Event Card Styles */
 .event-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 0.75rem;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column; /* Stack image and content */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .event-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .event-card img {
   width: 100%;
-  height: 180px; /* Consistent image height */
+  height: 180px;
   object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.event-card:hover img {
+  transform: scale(1.05);
 }
 
 .event-content {
-  padding: var(--spacing-md);
-  flex-grow: 1; /* Allow content to fill space */
-  text-align: left;
-  display: flex;
-  flex-direction: column;
+  padding: 1.5rem;
 }
 
 .event-content h3 {
-  font-size: var(--text-xl);
-  margin-bottom: var(--spacing-xs);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+  line-height: 1.4;
 }
 
 .event-meta {
-  font-size: var(--text-base);
-  color: #777;
-  margin-bottom: var(--spacing-sm);
   display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
 }
 
 .event-meta svg {
-  width: 16px;
-  height: 16px;
-  color: var(--color-primary);
+  display: inline;
+  margin-right: 0.25rem;
+  vertical-align: text-top;
 }
 
-.event-card p {
-  font-size: var(--text-base);
-  color: #555;
-  margin-bottom: var(--spacing-md);
-  flex-grow: 1; /* Allow description to take space */
+.event-content p:not(.event-meta) {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.event-content .btn {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Events Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments for events */
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .events-loading,
+  .events-error,
+  .events-empty {
+    padding: 2rem 1rem;
+  }
+
+  .events-loading .loading-spinner,
+  .events-error .error-icon,
+  .events-empty .empty-icon {
+    font-size: 1.5rem;
+  }
+
+  .event-meta {
+    font-size: 0.8rem;
+  }
+}
+
+/* Integration with existing styles */
+.events-section .confession-title {
+  margin-bottom: 2rem;
+}
+
+/* Ensure proper spacing */
+.events-section .container > * + * {
+  margin-top: 1rem;
+}
+
+.events-section .events-grid {
+  margin-top: 2rem;
+}
+
+/* Event status indicators (if your events have status) */
+.event-status {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #1e40af;
+}
+
+/* Shared loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===================================== */

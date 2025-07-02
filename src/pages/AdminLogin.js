@@ -18,8 +18,8 @@ const AdminLogin = () => {
       await api.post('/api/admin/request-login', { email });
       Swal.fire({
         icon: 'success',
-        title: 'Kode Terkirim',
-        text: 'Kode login telah dikirim ke email Anda.',
+        title: 'OTP Terkirim',
+        text: 'Kode OTP telah dikirim ke email Anda.',
         timer: 2500,
         showConfirmButton: false,
       });
@@ -54,8 +54,8 @@ const AdminLogin = () => {
     } catch (err) {
       Swal.fire({
         icon: 'error',
-        title: 'Kode Salah',
-        text: 'Kode tidak valid atau sudah kedaluwarsa.',
+        title: 'Kode OTP Salah',
+        text: 'Kode OTP tidak valid atau sudah kedaluwarsa.',
       });
     } finally {
       setLoading(false);
@@ -89,7 +89,7 @@ const AdminLogin = () => {
             <input
               className="form-login"
               type="text"
-              placeholder="Masukkan kode dari email"
+              placeholder="Masukkan OTP dari email"
               value={code}
               onChange={(e) => setCode(e.target.value)}
               disabled={loading}

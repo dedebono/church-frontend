@@ -4,7 +4,7 @@ import axios from 'axios';
 // List of backends to failover between
 const backends =
   process.env.NODE_ENV === 'development'
-    ? ['https://server.dedebono.uk']
+    ? ['http://localhost:10000']
     : [
         'https://church-backend-no8q.onrender.com', // primary
         'https://server.dedebono.uk',               // fallback
@@ -15,7 +15,7 @@ let activeBackendIndex = 0;
 // Create Axios instance
 const api = axios.create({
   baseURL: backends[activeBackendIndex],
-  timeout: 65000, // 5 seconds timeout to trigger faster failover
+  timeout: 5000, // 5 seconds timeout to trigger faster failover
 });
 
 // Interceptor for automatic failover
@@ -39,6 +39,123 @@ api.interceptors.response.use(
   }
 );
 
+//API SERMONS
+
+export const getSermons = async () => {
+  try {
+    const response = await api.get("/api/sermons")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching sermons:", error)
+    throw error
+  }
+}
+
+export const createSermon = async (sermonData) => {
+  try {
+    const response = await api.post("/api/sermons", sermonData)
+    return response.data
+  } catch (error) {
+    console.error("Error creating sermon:", error)
+    throw error
+  }
+}
+
+export const updateSermon = async (id, sermonData) => {
+  try {
+    const response = await api.put(`/api/sermons/${id}`, sermonData)
+    return response.data
+  } catch (error) {
+    console.error("Error updating sermon:", error)
+    throw error
+  }
+}
+
+export const deleteSermon = async (id) => {
+  try {
+    const response = await api.delete(`/api/sermons/${id}`)
+    return response.data
+  } catch (error) {
+    console.error("Error deleting sermon:", error)
+    throw error
+  }
+}
+
+//events API
+export const getEvents = async () => {
+  try {
+    const response = await api.get("/api/events/")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching events:", error)
+    throw error
+  }
+}
+
+export const createEvent = async (eventData) => {
+  try {
+    const response = await api.post("/api/events/", eventData)
+    return response.data
+  } catch (error) {
+    console.error("Error creating events:", error)
+    throw error
+  }
+}
+
+export const updateEvent = async (id, eventData) => {
+  try {
+    const response = await api.put(`/api/events/${id}`, eventData)
+    return response.data
+  } catch (error) {
+    console.error("Error updating events:", error)
+    throw error
+  }
+}
+
+export const deleteEvent = async (id) => {
+  try {
+    const response = await api.delete(`/api/events/${id}`)
+    return response.data
+  } catch (error) {
+    console.error("Error deleting events:", error)
+    throw error
+  }
+}
+
+//PHOTO API
+// 📸 Gallery API
+
+export const getGalleryPhotos = async () => {
+  try {
+    const response = await api.get("/api/gallery");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching gallery photos:", error);
+    throw error;
+  }
+};
+
+export const createGalleryPhoto = async (photoData) => {
+  try {
+    const response = await api.post("/api/gallery", photoData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating gallery photo:", error);
+    throw error;
+  }
+};
+
+export const deleteGalleryPhoto = async (id) => {
+  try {
+    const response = await api.delete(`/api/gallery/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting gallery photo:", error);
+    throw error;
+  }
+};
+
+
 // ⬇️ API functions
 export const importMembers = (membersData) =>
   api.post('/api/members/import', membersData);
@@ -48,6 +165,9 @@ export const getAllGroups = () =>
 
 export const AdminAttendance = () =>
   api.get('/api/attendance');
+
+export const SermonCMS = () =>
+  api.get('/api/sermons');
 
 export const searchMembersByName = (name) =>
   api.get(`/api/members/search/${name}`);
@@ -73,5 +193,27 @@ export const getFamilies = async () => {
     throw error;
   }
 };
+
+// Health check function
+export const healthCheck = async () => {
+  try {
+    const response = await api.get("/api/sermons", { timeout: 5000 })
+    return {
+      status: response.status,
+      ok: response.status >= 200 && response.status < 300,
+      backend: backends[activeBackendIndex],
+      activeBackendIndex,
+    }
+  } catch (error) {
+    return {
+      status: error.response?.status || 0,
+      ok: false,
+      error: error.message,
+      backend: backends[activeBackendIndex],
+      activeBackendIndex,
+    }
+  }
+}
+
 
 export default api;

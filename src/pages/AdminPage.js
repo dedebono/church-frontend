@@ -11,6 +11,9 @@ import AdminMembers from "./admin/AdminMembers"
 import ManageGroups from "./admin/ManageGroups"
 import AdminAttendance from "./admin/AdminAttendance"
 import AdminDevotions from "./admin/AdminDevotions"
+import SermonCMS from "./admin/SermonCMS"
+import EventsAdmin from "./admin/EventsAdmin"
+import GalleryAdmin from "./admin/GalleryAdmin"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
@@ -32,8 +35,11 @@ const AdminPage = () => {
       case "uploadCSV": return <UploadCSV />
       case "adminAttendance": return <AdminAttendance />
       case "adminMembers": return <AdminMembers />
+      case "adminKonten" : return <SermonCMS />
+      case "eventsAdmin" : return <EventsAdmin/>
       case "adminDevotions": return <AdminDevotions />
       case "manageGroups": return <ManageGroups />
+      case "galleryAdmin" : return <GalleryAdmin/>
       default: return <div>Select a tab</div>
     }
   }
@@ -43,8 +49,11 @@ const AdminPage = () => {
     ["viewMember", "Admin Jemaat"],
     ["uploadCSV", "Unggah CSV"],
     ["adminMembers", "Semua Jemaat"],
+    ["galleryAdmin","Upload Foto"],
     ["adminDevotions", "Konten Renungan"],
     ["adminAttendance", "Kehadiran Jemaat"],
+    ["adminKonten","Atur Ibadah"],
+    ["eventsAdmin","Atur Acara"],
     ["manageGroups", "Admin Komunitas"],
   ]
 
@@ -117,8 +126,8 @@ const AdminPage = () => {
 
         <div className="sidebar-bottom">
           <div className="bottom-header">SISTEM ADMIN</div>
+                    <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
           <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
-          <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
         </div>
       </div>
 
