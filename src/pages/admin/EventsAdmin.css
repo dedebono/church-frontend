@@ -44,6 +44,28 @@
   margin-top: 1.5rem;
 }
 
+/* EventsAdmin.css */
+
+/* ... (existing styles) ... */
+
+.progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: #4caf50; /* Green color for progress */
+  width: 0%; /* Initial width */
+  text-align: center;
+  line-height: 20px; /* Center the text vertically */
+  color: white;
+  transition: width 0.3s ease-in-out; /* Smooth transition for width changes */
+}
+
 .btn-test-api {
   padding: 0.5rem 1rem;
   background-color: #f59e0b;

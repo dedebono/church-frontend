@@ -3,12 +3,12 @@
 import { useState } from "react"
 import "../pages/admin/HomePageNot.css" // Ensure the path is correct
 import { Link } from "react-router-dom"
-import { Phone, Mail, MapPin, Star, Menu, Quote, Play, X , Calendar} from "lucide-react"
+import { Phone, Mail, MapPin, Star, Menu, Quote, Play, X , Calendar, Youtube} from "lucide-react"
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
 import { useEvents } from "./hooks/useEvents"
 import { useGalleryPhotos } from "./hooks/useGallery";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -35,6 +35,11 @@ const HomePage = () => {
     })
   }
 
+    const truncateDescription = (text, maxLength = 150) => {
+    if (!text || text.length <= maxLength) return text
+    return text.substring(0, maxLength) + "..."
+  }
+
     // Helper function to format date and time for events
   const formatEventDateTime = (dateString, timeString) => {
     const date = new Date(dateString)
@@ -50,6 +55,20 @@ const HomePage = () => {
     return dateFormatted
   }
 
+    const formatHeroDateTime = (dateString, timeString) => {
+    const date = new Date(dateString)
+    const dayName = date.toLocaleDateString("id-ID", { weekday: "long" })
+    const dateFormatted = date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+
+    return {
+      dayDate: `${dayName}, ${dateFormatted}`,
+      time: timeString ? `Pkl. ${timeString} WITA` : "Waktu akan diumumkan",
+    }
+  }
     // Function to handle event action
   const handleEventAction = (event) => {
     if (event.registrationUrl) {
@@ -60,6 +79,7 @@ const HomePage = () => {
       alert(`More details about "${event.title}" coming soon!`)
     }
   }
+
 
   // Helper function to truncate text
   const truncateText = (text, maxLength = 100) => {
@@ -81,72 +101,30 @@ const HomePage = () => {
     <div className="home wp-singular page-template-default page page-id-29 wp-theme-popularfx popularfx-body pagelayer-body">
       {/* Header with Contact Info */}
       <header className="pagelayer-header">
-        <div
-          pagelayer-id="8y58592"
-          className="p-8y58592 pagelayer-row pagelayer-row-stretch-auto pagelayer-height-default header-top"
-        >
-          <div className="pagelayer-row-holder pagelayer-row pagelayer-auto pagelayer-width-auto container">
-            <div pagelayer-id="mtv4629" className="p-mtv4629 pagelayer-col">
-              <div className="pagelayer-col-holder">
-                <div pagelayer-id="45w7943" className="p-45w7943 pagelayer-phone contact-item">
-                  <div className="pagelayer-phone-holder">
-                    <span className="pagelayer-phone-icon">
-                      <Phone size={16} />
-                    </span>
-                    {/* Fixed WhatsApp link */}
-                    <a href="https://wa.me/62881254948220" target="_blank" rel="noopener noreferrer">
-                      <span className="pagelayer-phone">wa.me/62881254948220</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div pagelayer-id="khk9818" className="p-khk9818 pagelayer-col">
-              <div className="pagelayer-col-holder">
-                <div pagelayer-id="4bn2254" className="p-4bn2254 pagelayer-email contact-item">
-                  <div className="pagelayer-email-holder">
-                    <span className="pagelayer-email-icon">
-                      <Mail size={16} />
-                    </span>
-                    {/* Fixed mailto link */}
-                    <a href="mailto:wartanewsgo@gmail.com">
-                      <span className="pagelayer-email">wartanewsgo@gmail.com</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div pagelayer-id="iq14062" className="p-iq14062 pagelayer-col">
-              <div className="pagelayer-col-holder">
-                <div className="social-media-icons">{/* Placeholder for social media icons */}</div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Main Navigation Section */}
         <nav className="main-nav">
           <div className="container nav-content">
             <div className="logo">
               <a href="/" className="logo-link">
-                MLB CHURCH
+                MLB Church
               </a>
             </div>
             <ul className="nav-menu">
               <li>
-                <a href="#home">Home</a>
+                <a href="#home">Dashboard</a>
               </li>
               <li>
-                <a href="#about">About</a>
+                <a href="#about">Tentang</a>
               </li>
               <li>
-                <a href="#sermons">Sermons</a>
+                <a href="#sermons">Ibadah</a>
               </li>
               <li>
-                <Link to="/register">Join Member</Link>
+                <Link to="/register">Daftar</Link>
               </li>
               <li>
-                <Link to="/login">Admin Area</Link>
+                <Link to="/login">Admin</Link>
               </li>
             </ul>
             <button className="mobile-menu-toggle">
@@ -156,25 +134,133 @@ const HomePage = () => {
         </nav>
       </header>
 
-      {/* Hero Section */}
+      
+      {/* Dynamic Hero Section with Swiper */}
       <section className="hero-section">
         <div className="hero-overlay"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">Welcome to Our Church</h1>
-          <p className="hero-subtitle">
-            A place of worship, community, and spiritual growth. Join us for our services and events.
-          </p>
-          <div className="hero-buttons">
-            {/* Button to open the YouTube modal */}
-            <button onClick={openModal} className="btn btn-primary">
-              Watch Sermons <Play size={16} /> {/* Added Play icon back */}
-            </button>
-            <a href="#events" className="btn btn-secondary">
-              Upcoming Events <Star size={16} />
-            </a>
+
+        {/* Loading State */}
+        {eventsLoading && (
+          <div className="hero-content">
+            <div className="hero-loading">
+              <div className="loading-spinner">🔄</div>
+              <p>Loading upcoming events...</p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Error State */}
+        {eventsError && !eventsLoading && (
+          <div className="hero-content">
+            <div className="hero-error">
+              <div className="error-icon">⚠️</div>
+              <h2>Unable to load events</h2>
+              <p>{eventsError}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Events Swiper */}
+        {!eventsLoading && !eventsError && events && events.length > 0 && (
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={0}
+            slidesPerView={1}
+            navigation
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 5000, // slide every 5 seconds
+              disableOnInteraction: false,
+            }}
+            loop={events.length > 1}
+            className="hero-swiper"
+          >
+            {events.map((event) => (
+              <SwiperSlide key={event._id}>
+                <div className="hero-slide">
+                  {/* Event Image Background */}
+                  <div className="hero-image-container">
+                    <img
+                      src={event.imageUrl || "https://via.placeholder.com/1200x600?text=Event+Image"}
+                      alt={event.title}
+                      className="hero-background-image"
+                      onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/1200x600?text=Event+Image"
+                      }}
+                    />
+                  </div>
+
+                  {/* Event Content */}
+                  <div className="hero-content">
+                    <div className="hero-event-details">
+                      <div className="hero-event-type">UPCOMING EVENT</div>
+
+                      <h1 className="hero-title">{event.title}</h1>
+
+                      {event.description && (
+                        <p className="hero-description">{truncateDescription(event.description)}</p>
+                      )}
+
+                      <div className="hero-event-info">
+                        <div className="hero-date-time">
+                          <Calendar size={16} />
+                          <span>{formatHeroDateTime(event.date, event.time).dayDate}</span>
+                        </div>
+                        <div className="hero-time">{formatHeroDateTime(event.date, event.time).time}</div>
+
+                        {event.location && (
+                          <div className="hero-location">
+                            <MapPin size={16} />
+                            <span>{event.location}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="hero-church-info">
+                        <p>
+                          <strong>MLBC</strong>
+                        </p>
+                        <p>Making Life Better Church</p>
+                      </div>
+
+                      <div className="hero-buttons">
+                        {event.registrationUrl && (
+                          <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
+                            Register Now
+                          </button>
+                        )}
+                        <button onClick={openModal} className="btn btn-secondary">
+                          <Youtube size={16} />
+                          Watch Live
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+
+        {/* Empty State */}
+        {!eventsLoading && !eventsError && (!events || events.length === 0) && (
+          <div className="hero-content">
+            <h1 className="hero-title">Welcome to MLBC</h1>
+            <p className="hero-subtitle">
+              Making Life Better Community - A place of worship, community, and spiritual growth.
+            </p>
+            <div className="hero-buttons">
+              <button onClick={openModal} className="btn btn-primary">
+                Watch Sermons <Play size={16} />
+              </button>
+              <a href="#events" className="btn btn-secondary">
+                Upcoming Events <Star size={16} />
+              </a>
+            </div>
+          </div>
+        )}
       </section>
+
 
       {/* Quote Section */}
       <section className="quote-section section-padding">
@@ -350,7 +436,7 @@ const HomePage = () => {
             </a>
           </div>
           <div className="about-image">
-            <img src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751443846854_IMG_8506.JPG?alt=media&token=7523de63-8af1-479f-9df2-6068c1e32585" alt="Church Interior" />
+            <img src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=b70cea5f-d93f-4ea0-ac0f-35600c717d04" alt="MLB HALL" />
           </div>
         </div>
       </section>
@@ -380,14 +466,18 @@ const HomePage = () => {
     {/* Gallery Grid - Real Data */}
     {!galleryLoading && !galleryError && GalleryPhotos.length > 0 ? (
  <Swiper
-  modules={[Navigation, Pagination]}
-  spaceBetween={20}
-  slidesPerView={1}
+  modules={[Navigation, Pagination, Autoplay]}
+  spaceBetween={10}
+  slidesPerView={4}
   navigation
   pagination={{ clickable: true }}
+  autoplay={{
+    delay: 2000, // slide every 3 seconds
+    disableOnInteraction: false,
+  }}
   breakpoints={{
     768: {
-      slidesPerView: 2,
+      slidesPerView: 1,
     },
     1024: {
       slidesPerView: 3,
@@ -479,7 +569,7 @@ const HomePage = () => {
           <div className="footer-section">
             <h3>Quick Links</h3>
             <ul>
-              <li>
+              <li className="footer-li">
                 <a href="#home">Home</a>
               </li>
               <li>

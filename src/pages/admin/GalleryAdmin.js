@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import "./EventsAdmin.css";
 import Swal from "sweetalert2";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Changed uploadBytes to uploadBytesResumable
 import { storage } from "../admin/firebase";
 import {
   getGalleryPhotos,
@@ -24,6 +24,9 @@ const GalleryAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0); // New state for upload progress
+
+  const MAX_FILE_SIZE_MB = 2; // Define max file size in MB
 
   const fetchPhotos = async () => {
     try {
@@ -46,6 +49,15 @@ const GalleryAdmin = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Check file size
+    if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+      Swal.fire("Error", `File size exceeds ${MAX_FILE_SIZE_MB}MB`, "error");
+      setSelectedFile(null);
+      setPreview(null);
+      return;
+    }
+
     setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result);
@@ -54,16 +66,42 @@ const GalleryAdmin = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) return;
+
+    setLoading(true);
+    setUploadProgress(0); // Reset progress
+
     try {
       const fileRef = ref(storage, `gallery/${Date.now()}_${selectedFile.name}`);
-      await uploadBytes(fileRef, selectedFile);
-      const url = await getDownloadURL(fileRef);
-      setFormData((prev) => ({ ...prev, imageUrl: url }));
-      setPreview(url);
-      Swal.fire("Success", "Image uploaded!", "success");
+      const uploadTask = uploadBytesResumable(fileRef, selectedFile); // Use uploadBytesResumable
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          // Handle unsuccessful uploads
+          console.error("Upload failed", error);
+          Swal.fire("Error", "Failed to upload image", "error");
+          setLoading(false);
+        },
+        async () => {
+          // Handle successful uploads on complete
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          setFormData((prev) => ({ ...prev, imageUrl: url }));
+          setPreview(url);
+          Swal.fire("Success", "Image uploaded!", "success");
+          setLoading(false);
+          setUploadProgress(0); // Reset progress after success
+        }
+      );
     } catch (err) {
       console.error("Upload failed", err);
       Swal.fire("Error", "Failed to upload image", "error");
+      setLoading(false);
     }
   };
 
@@ -143,11 +181,21 @@ const GalleryAdmin = () => {
           </div>
 
           <div className="form-group">
-            <label>Upload Image</label>
+            <label>Upload Image (Max {MAX_FILE_SIZE_MB}MB)</label> {/* Updated label */}
             <input type="file" accept="image/*" onChange={handleFileChange} />
-            <button type="button" className="btn-upload" onClick={handleUpload}>
+            <button type="button" className="btn-upload" onClick={handleUpload} disabled={!selectedFile || loading}>
               📤 Upload Image
             </button>
+            {loading && uploadProgress > 0 && ( // Show progress bar when loading and progress is active
+              <div className="progress-bar-container">
+                <div
+                  className="progress-bar"
+                  style={{ width: `${uploadProgress}%` }}
+                >
+                  {uploadProgress.toFixed(0)}%
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -162,7 +210,7 @@ const GalleryAdmin = () => {
           )}
 
           <div className="form-actions">
-            <button className="btn-primary" type="submit" disabled={loading}>
+            <button className="btn-primary" type="submit" disabled={loading || !formData.imageUrl}>
               {loading ? "Saving..." : "Save Photo"}
             </button>
           </div>
