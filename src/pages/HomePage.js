@@ -338,80 +338,50 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Events Section - Updated with real data */}
-      <section className="events-section section-padding" id="events">
-        <div className="container">
-          <h2 className="confession-title">Upcoming Events</h2>
+{!eventsLoading && !eventsError && events.length > 0 && (
+  <section className="events-section section-padding" id="events">
+    <div className="container">
+      <h2 className="confession-title">Upcoming Events</h2>
 
-          {/* Loading State */}
-          {eventsLoading && (
-            <div className="events-loading">
-              <div className="loading-spinner">🔄</div>
-              <p>Loading upcoming events...</p>
+      <div className="events-grid">
+        {events.map((event) => (
+          <div key={event._id} className="event-card">
+            <img
+              src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
+              alt={event.title}
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
+              }}
+            />
+            <div className="event-content">
+              <h3>{event.title}</h3>
+              <p className="event-meta">
+                <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
+                {event.location && (
+                  <>
+                    <br />
+                    <MapPin size={16} /> {event.location}
+                  </>
+                )}
+              </p>
+              <p>{truncateText(event.description)}</p>
+              <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
+                {event.registrationUrl ? "Register Now" : "Learn More"}
+              </button>
             </div>
-          )}
+          </div>
+        ))}
+      </div>
 
-          {/* Error State */}
-          {eventsError && !eventsLoading && (
-            <div className="events-error">
-              <div className="error-icon">⚠️</div>
-              <p>Unable to load events at this time. Please try again later.</p>
-              <small>{eventsError}</small>
-            </div>
-          )}
+      <div className="events-view-all">
+        <Link to="#events" className="btn btn-secondary">
+          All Events <Star size={16} />
+        </Link>
+      </div>
+    </div>
+  </section>
+)}
 
-          {/* Events Grid - Real Data */}
-          {!eventsLoading && !eventsError && events.length > 0 && (
-            <div className="events-grid">
-              {events.map((event) => (
-                <div key={event._id} className="event-card">
-                  <img
-                    src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
-                    alt={event.title}
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
-                    }}
-                  />
-                  <div className="event-content">
-                    <h3>{event.title}</h3>
-                    <p className="event-meta">
-                      <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
-                      {event.location && (
-                        <>
-                          <br />
-                          <MapPin size={16} /> {event.location}
-                        </>
-                      )}
-                    </p>
-                    <p>{truncateText(event.description)}</p>
-                    <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
-                      {event.registrationUrl ? "Register Now" : "Learn More"}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!eventsLoading && !eventsError && events.length === 0 && (
-            <div className="events-empty">
-              <div className="empty-icon">📅</div>
-              <h3>No Upcoming Events</h3>
-              <p>Check back soon for our latest events and activities.</p>
-            </div>
-          )}
-
-          {/* View All Events Link */}
-          {!eventsLoading && events.length > 0 && (
-            <div className="events-view-all">
-              <Link to="#events" className="btn btn-secondary">
-                All Events <Star size={16} />
-              </Link>
-            </div>
-          )}
-        </div>
-      </section>
 
       {/* About Section */}
       <section className="about-section section-padding" id="about">
