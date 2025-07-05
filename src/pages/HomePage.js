@@ -3,15 +3,15 @@
 import { useState } from "react"
 import "../pages/admin/HomePageNot.css" // Ensure the path is correct
 import { Link } from "react-router-dom"
-import { Phone, Mail, MapPin, Star, Menu, Quote, Play, X , Calendar, Youtube} from "lucide-react"
+import { Phone, Mail, MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube } from "lucide-react"
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
 import { useEvents } from "./hooks/useEvents"
-import { useGalleryPhotos } from "./hooks/useGallery";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { useGalleryPhotos } from "./hooks/useGallery"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Navigation, Pagination, Autoplay } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/navigation"
+import "swiper/css/pagination"
 
 const HomePage = () => {
   // Use a single state for the YouTube modal
@@ -21,7 +21,7 @@ const HomePage = () => {
   const { sermons, loading, error } = useSermons(3)
   const { events, loading: eventsLoading, error: eventsError } = useEvents(3)
   // Fetch latest gallery photos for homepage display
-  const { GalleryPhotos, loading: galleryLoading, error: galleryError } = useGalleryPhotos(6)
+  const { GalleryPhotos, loading: galleryLoading, error: galleryError } = useGalleryPhotos(10)
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
@@ -35,12 +35,12 @@ const HomePage = () => {
     })
   }
 
-    const truncateDescription = (text, maxLength = 150) => {
+  const truncateDescription = (text, maxLength = 150) => {
     if (!text || text.length <= maxLength) return text
     return text.substring(0, maxLength) + "..."
   }
 
-    // Helper function to format date and time for events
+  // Helper function to format date and time for events
   const formatEventDateTime = (dateString, timeString) => {
     const date = new Date(dateString)
     const dateFormatted = date.toLocaleDateString("en-US", {
@@ -55,7 +55,7 @@ const HomePage = () => {
     return dateFormatted
   }
 
-    const formatHeroDateTime = (dateString, timeString) => {
+  const formatHeroDateTime = (dateString, timeString) => {
     const date = new Date(dateString)
     const dayName = date.toLocaleDateString("id-ID", { weekday: "long" })
     const dateFormatted = date.toLocaleDateString("id-ID", {
@@ -69,7 +69,7 @@ const HomePage = () => {
       time: timeString ? `Pkl. ${timeString} WITA` : "Waktu akan diumumkan",
     }
   }
-    // Function to handle event action
+  // Function to handle event action
   const handleEventAction = (event) => {
     if (event.registrationUrl) {
       window.open(event.registrationUrl, "_blank")
@@ -79,7 +79,6 @@ const HomePage = () => {
       alert(`More details about "${event.title}" coming soon!`)
     }
   }
-
 
   // Helper function to truncate text
   const truncateText = (text, maxLength = 100) => {
@@ -101,7 +100,6 @@ const HomePage = () => {
     <div className="home wp-singular page-template-default page page-id-29 wp-theme-popularfx popularfx-body pagelayer-body">
       {/* Header with Contact Info */}
       <header className="pagelayer-header">
-
         {/* Main Navigation Section */}
         <nav className="main-nav">
           <div className="container nav-content">
@@ -134,7 +132,6 @@ const HomePage = () => {
         </nav>
       </header>
 
-      
       {/* Dynamic Hero Section with Swiper */}
       <section className="hero-section">
         <div className="hero-overlay"></div>
@@ -260,7 +257,6 @@ const HomePage = () => {
           </div>
         )}
       </section>
-
 
       {/* Quote Section */}
       <section className="quote-section section-padding">
@@ -436,95 +432,115 @@ const HomePage = () => {
             </a>
           </div>
           <div className="about-image">
-            <img src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=b70cea5f-d93f-4ea0-ac0f-35600c717d04" alt="MLB HALL" />
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=b70cea5f-d93f-4ea0-ac0f-35600c717d04"
+              alt="MLB HALL"
+            />
           </div>
         </div>
       </section>
 
-{/* Gallery Section - Updated with real data */}
-<section className="gallery-section section-padding" id="gallery">
-  <div className="container">
-    <h2 className="confession-title">Our Photo Gallery</h2>
+      {/* Gallery Section - Updated with real data */}
+      <section className="gallery-section section-padding" id="gallery">
+        <div className="container">
+          <h2 className="confession-title">Our Photo Gallery</h2>
 
-    {/* Loading State */}
-    {galleryLoading && (
-      <div className="gallery-loading">
-        <div className="loading-spinner">🔄</div>
-        <p>Loading gallery photos...</p>
-      </div>
-    )}
+          {/* Loading State */}
+          {galleryLoading && (
+            <div className="gallery-loading">
+              <div className="loading-spinner">🔄</div>
+              <p>Loading gallery photos...</p>
+            </div>
+          )}
 
-    {/* Error State */}
-    {galleryError && !galleryLoading && (
-      <div className="gallery-error">
-        <div className="error-icon">⚠️</div>
-        <p>Unable to load gallery photos at this time. Please try again later.</p>
-        <small>{galleryError}</small>
-      </div>
-    )}
+          {/* Error State */}
+          {galleryError && !galleryLoading && (
+            <div className="gallery-error">
+              <div className="error-icon">⚠️</div>
+              <p>Unable to load gallery photos at this time. Please try again later.</p>
+              <small>{galleryError}</small>
+            </div>
+          )}
 
-    {/* Gallery Grid - Real Data */}
-    {!galleryLoading && !galleryError && GalleryPhotos.length > 0 ? (
- <Swiper
-  modules={[Navigation, Pagination, Autoplay]}
-  spaceBetween={10}
-  slidesPerView={4}
-  navigation
-  pagination={{ clickable: true }}
-  autoplay={{
-    delay: 2000, // slide every 3 seconds
-    disableOnInteraction: false,
-  }}
-  breakpoints={{
-    768: {
-      slidesPerView: 1,
-    },
-    1024: {
-      slidesPerView: 3,
-    },
-  }}
->
-  {GalleryPhotos.map((photo) => (
-    <SwiperSlide key={photo._id}>
-      <div className="gallery-item">
-        <img
-          src={photo.imageUrl || "https://via.placeholder.com/400x250?text=Gallery+Image"}
-          alt={photo.title || "Gallery Image"}
-          onError={(e) => {
-            e.target.src = "https://via.placeholder.com/400x250?text=Image+Not+Found";
-          }}
-        />
-        <div className="gallery-overlay">
-          <span>{photo.title || "Church Photo"}</span>
+          {/* Gallery Grid - Real Data */}
+          {!galleryLoading && !galleryError && GalleryPhotos.length > 0 ? (
+            <div className="gallery-swiper-container">
+              <Swiper
+                modules={[Navigation, Pagination, Autoplay]}
+                spaceBetween={20}
+                slidesPerView={1}
+                navigation
+                pagination={{
+                  clickable: true,
+                  dynamicBullets: true,
+                  dynamicMainBullets: 3,
+                }}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                loop={GalleryPhotos.length > 3}
+                breakpoints={{
+                  480: {
+                    slidesPerView: 1,
+                    spaceBetween: 15,
+                  },
+                  768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 20,
+                  },
+                  1200: {
+                    slidesPerView: 4,
+                    spaceBetween: 25,
+                  },
+                }}
+                className="gallery-swiper"
+              >
+                {GalleryPhotos.map((photo) => (
+                  <SwiperSlide key={photo._id}>
+                    <div className="gallery-item">
+                      <img
+                        src={photo.imageUrl || "https://via.placeholder.com/400x250?text=Gallery+Image"}
+                        alt={photo.title || "Gallery Image"}
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/400x250?text=Image+Not+Found"
+                        }}
+                      />
+                      <div className="gallery-overlay">
+                        <span>{photo.title || "Church Photo"}</span>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          ) : (
+            // Empty State
+            !galleryLoading &&
+            !galleryError && (
+              <div className="gallery-empty">
+                <div className="empty-icon">📸</div>
+                <h3>No Photos Available</h3>
+                <p>Check back soon for more moments from our church.</p>
+              </div>
+            )
+          )}
+
+          {/* View All Photos Link */}
+          {!galleryLoading && GalleryPhotos.length > 0 && (
+            <div className="gallery-view-all">
+              {/* Update this link to your actual gallery page if you have one */}
+              <Link to="#gallery" className="btn btn-secondary">
+                View All Photos <Star size={16} />
+              </Link>
+            </div>
+          )}
         </div>
-      </div>
-    </SwiperSlide>
-  ))}
-</Swiper>
-
-    ) : (
-      // Empty State
-      !galleryLoading && !galleryError && (
-        <div className="gallery-empty">
-          <div className="empty-icon">📸</div>
-          <h3>No Photos Available</h3>
-          <p>Check back soon for more moments from our church.</p>
-        </div>
-      )
-    )}
-
-    {/* View All Photos Link */}
-    {!galleryLoading && GalleryPhotos.length > 0 && (
-      <div className="gallery-view-all">
-        {/* Update this link to your actual gallery page if you have one */}
-        <Link to="#gallery" className="btn btn-secondary">
-          View All Photos <Star size={16} />
-        </Link>
-      </div>
-    )}
-  </div>
-</section>
-
+      </section>
 
       {/* YouTube Modal (Fixed and Consolidated) */}
       <div className={`youtubemodal-overlay ${isModalOpen ? "active" : ""}`}>
