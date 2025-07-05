@@ -1449,6 +1449,14 @@ p {
   transform: rotate(90deg); /* Simple rotation effect on hover */
 }
 
+.churchinfocard{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+
+}
+
 /* ===================================== */
 /* RESPONSIVE DESIGN                     */
 /* ===================================== */

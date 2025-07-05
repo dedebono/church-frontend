@@ -12,6 +12,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
+import ChurchInfoCard from './ChurchInfoCard';
 
 const HomePage = () => {
   // Use a single state for the YouTube modal
@@ -512,6 +513,11 @@ const HomePage = () => {
         </div>
       </section>
 
+    <div className="churchinfocard">
+      <ChurchInfoCard />
+    </div>
+
+
       {/* YouTube Modal (Fixed and Consolidated) */}
       <div className={`youtubemodal-overlay ${isModalOpen ? "active" : ""}`}>
         <div className="youtubemodal">
@@ -532,7 +538,7 @@ const HomePage = () => {
           ></iframe>
         </div>
       </div>
-
+      
       {/* Footer Section */}
       <footer className="footer" id="contact">
         <div className="container footer-content">
