@@ -457,7 +457,7 @@ function RegistrationForm() {
                         <label>Tanggal Lahir *</label>
                         <input
                           type="date"
-                          className="input_1"
+                          className="input_2"
                           value={member.dateOfBirth}
                           onChange={(e) => handleMemberChange(index, "dateOfBirth", e)}
                           required
@@ -483,7 +483,7 @@ function RegistrationForm() {
                         <label>No. Handphone *</label>
                         <input
                           type="tel"
-                          className="input_1"
+                          className="input_2"
                           value={member.phoneNumber}
                           onChange={(e) => handleMemberChange(index, "phoneNumber", e)}
                           placeholder="08xxxxxxxxxx"
@@ -495,7 +495,7 @@ function RegistrationForm() {
                         <label>Alamat *</label>
                         <input
                           type="text"
-                          className="input_1"
+                          className="input_2"
                           value={member.address}
                           onChange={(e) => handleMemberChange(index, "address", e)}
                           placeholder="Alamat lengkap"
