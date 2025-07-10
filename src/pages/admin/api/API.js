@@ -1,16 +1,16 @@
 // API.js
 import axios from 'axios';
 
-// List of backends to failover between
+const devBackends = process.env.REACT_APP_DEV_BACKENDS;
+const prodBackends = process.env.REACT_APP_PROD_BACKENDS;
+
 const backends =
   process.env.NODE_ENV === 'development'
-    ? ['http://localhost:10000']
-    : [
-        'https://server.dedebono.uk', // primary
-        'https://church-backend-no8q.onrender.com/',               // fallback
-      ];
+    ? devBackends?.split(',') || []
+    : prodBackends?.split(',') || [];
 
 let activeBackendIndex = 0;
+
 
 // Create Axios instance
 const api = axios.create({
