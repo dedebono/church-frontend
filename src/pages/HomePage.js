@@ -17,6 +17,7 @@ import ChurchInfoCard from './ChurchInfoCard';
 const HomePage = () => {
   // Use a single state for the YouTube modal
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Fetch latest 3 sermons for homepage display
   const { sermons, loading, error } = useSermons(3)
@@ -26,6 +27,8 @@ const HomePage = () => {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
   // Helper function to format date
   const formatDate = (dateString) => {
     const date = new Date(dateString)
@@ -109,24 +112,25 @@ const HomePage = () => {
                 MLB Church
               </a>
             </div>
-            <ul className="nav-menu">
+            <ul className={`nav-menu ${isMobileMenuOpen ? "active" : ""}`}>
               <li>
-                <a href="#home">Dashboard</a>
+                <a href="#home" onClick={closeMobileMenu}>Dashboard</a>
               </li>
               <li>
-                <a href="#about">Tentang</a>
+                <a href="#about" onClick={closeMobileMenu}>Tentang</a>
               </li>
               <li>
-                <a href="#sermons">Ibadah</a>
+                <a href="#sermons" onClick={closeMobileMenu}>Ibadah</a>
               </li>
               <li>
-                <Link to="/register">Daftar</Link>
+                <Link to="/register" onClick={closeMobileMenu}>Daftar</Link>
               </li>
               <li>
-                <Link to="/login">Admin</Link>
+                <Link to="/login"onClick={closeMobileMenu}>Admin</Link>
               </li>
             </ul>
-            <button className="mobile-menu-toggle">
+            <button className="mobile-menu-toggle"
+            onClick={toggleMobileMenu}>
               <Menu size={24} />
             </button>
           </div>

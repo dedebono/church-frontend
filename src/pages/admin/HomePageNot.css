@@ -212,6 +212,104 @@ p {
   cursor: pointer;
 }
 
+/* Mobile Navigation Improvements */
+@media (max-width: 768px) {
+  .nav-content {
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    display: block !important;
+  }
+
+  .logo .logo-link {
+    display: block !important;
+    font-size: 1.5rem;
+  }
+
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    padding: var(--spacing-md);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 10px 10px;
+    z-index: 1000;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .nav-menu.active {
+    display: flex;
+  }
+
+  .nav-menu li {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+  }
+
+  .nav-menu li:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .nav-menu a {
+    display: block;
+    padding: 10px 15px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-menu a:hover {
+    background: var(--color-secondary);
+    color: white;
+    border: none;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Close mobile menu when clicking outside */
+@media (max-width: 768px) {
+  .main-nav {
+    position: relative;
+  }
+}
+
 /* ===================================== */
 /* HERO SECTION               */
 /* ===================================== */
@@ -268,7 +366,6 @@ p {
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color:--;
   font-weight: 600;
 }
 
@@ -345,7 +442,7 @@ p {
 .hero-swiper .swiper-button-next,
 .hero-swiper .swiper-button-prev {
   color: white;
-  background: --#F5A623;
+  background: #f5a623;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -570,6 +667,7 @@ p {
   width: 100%;
   height: 200px; /* Fixed height for consistency */
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
 .sermon-content {
@@ -1259,6 +1357,483 @@ p {
 }
 
 /* ===================================== */
+/* YOUTUBE MODAL STYLES         */
+/* ===================================== */
+.youtubemodal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  backdrop-filter: blur(10px); /* Blur effect on the content behind the modal */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+
+  /* Initial state: hidden with no opacity */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for appearance/disappearance */
+}
+
+/* Active state for the modal (when it should be visible) */
+.youtubemodal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* YouTube Modal Content (the iframe container) */
+.youtubemodal {
+  position: relative; /* Needed for positioning the close button */
+  background: transparent; /* The modal content itself is transparent */
+  padding: var(--spacing-md); /* Padding around the iframe */
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
+  max-width: 90vw; /* Ensure it's responsive and fits viewport width */
+  max-height: 90vh; /* Ensure it's responsive and fits viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Initial state for the iframe within the modal */
+  transform: scale(0.9); /* Slightly scaled down when modal is hidden */
+  transition: transform 0.3s ease; /* Smooth transition for the scale effect */
+}
+
+/* Active state for the iframe within the modal */
+.youtubemodal-overlay.active .youtubemodal {
+  transform: scale(1); /* Scales up to normal size when modal is active */
+}
+
+/* Styles for the iframe itself */
+.youtubemodal iframe {
+  width: 100%; /* Make iframe fill its container */
+  height: 100%; /* Make iframe fill its container */
+  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+  border-radius: 8px; /* Rounded corners for the iframe */
+  border: none; /* Remove default iframe border */
+}
+
+/* Close Button */
+.youtubemodal-close-btn {
+  position: absolute;
+  top: -15px; /* Position above the modal */
+  right: -15px; /* Position to the right of the modal */
+  background-color: #fff; /* White background for visibility */
+  color: var(--color-dark); /* Dark text color */
+  border: none;
+  border-radius: 50%; /* Circular button */
+  width: 35px;
+  height: 35px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  z-index: 1001; /* Ensure it's above the modal content */
+}
+
+.youtubemodal-close-btn:hover {
+  background-color: #e0e0e0;
+  transform: rotate(90deg); /* Simple rotation effect on hover */
+}
+
+.churchinfocard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+/* ===================================== */
+/* MOBILE SIMPLIFICATION STYLES         */
+/* ===================================== */
+
+/* Mobile-first approach for simplified design */
+@media (max-width: 768px) {
+  /* Reduce overall spacing on mobile */
+  :root {
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+  }
+
+  /* Simplified container padding */
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .section-padding {
+    padding: var(--spacing-lg) 0;
+  }
+
+  /* Simplified Navigation */
+  .nav-content {
+    letter-spacing: 2px; /* Reduce letter spacing */
+    padding: 0 var(--spacing-sm);
+  }
+
+  .nav-menu {
+    gap: var(--spacing-sm); /* Reduce gap between nav items */
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-menu a {
+    font-size: 14px; /* Smaller font size */
+    padding: 2px 6px; /* Smaller padding */
+  }
+
+  .nav-menu a:hover {
+    border-radius: 8px; /* Smaller border radius */
+  }
+
+  /* Simplified Hero Section */
+  .hero-section {
+    height: 60vh; /* Shorter hero on mobile */
+  }
+
+  .hero-title {
+    font-size: 2rem; /* Smaller hero title */
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .hero-subtitle {
+    font-size: 14px; /* Smaller subtitle */
+    margin-bottom: var(--spacing-md);
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 14px;
+  }
+
+  /* Simplified Hero Swiper */
+  .hero-slide .hero-content {
+    padding: 1rem;
+    margin: 0 var(--spacing-sm);
+    max-width: 90%;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .hero-event-info {
+    font-size: 0.8rem;
+  }
+
+  .hero-church-info {
+    font-size: 0.7rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hero-buttons .btn {
+    font-size: 0.8rem;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Hide Swiper navigation on mobile */
+  .hero-swiper .swiper-button-next,
+  .hero-swiper .swiper-button-prev {
+    display: none;
+  }
+
+  /* Simplified Quote Section */
+  .quote-section {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .quote-icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quote-text {
+    font-size: 18px;
+    line-height: 1.3;
+  }
+
+  .quote-author {
+    font-size: 14px;
+  }
+
+  /* Simplified Section Titles */
+  .confession-title {
+    font-size: 24px;
+    margin-bottom: var(--spacing-md);
+  }
+
+  /* Simplified Cards */
+  .sermon-card,
+  .event-card {
+    margin-bottom: var(--spacing-md);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+  }
+
+  .sermon-card:hover,
+  .event-card:hover {
+    transform: none; /* Remove hover transform on mobile */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .sermon-content,
+  .event-content {
+    padding: var(--spacing-md);
+  }
+
+  .sermon-content h3,
+  .event-content h3 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .sermon-meta,
+  .event-meta {
+    font-size: 12px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .sermon-content p,
+  .event-content p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .sermon-content .btn,
+  .event-content .btn {
+    font-size: 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-transform: none; /* Remove uppercase on mobile */
+  }
+
+  /* Simplified About Section */
+  .about-content {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+
+  .about-text h2 {
+    font-size: 22px;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .about-text p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .about-image {
+    order: -1; /* Move image above text */
+  }
+
+  /* Simplified Gallery */
+  .gallery-swiper-container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .gallery-item {
+    border-radius: 6px;
+  }
+
+  .gallery-item img {
+    height: 200px; /* Smaller gallery images */
+  }
+
+  .gallery-overlay span {
+    font-size: 14px;
+    padding: var(--spacing-xs);
+  }
+
+  /* Simplified Footer */
+  .footer {
+    padding: var(--spacing-lg) 0 var(--spacing-sm) 0;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+
+  .footer-section h3 {
+    font-size: 18px;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .footer-section p,
+  .footer-contact-item span,
+  .footer-contact-item a {
+    font-size: 14px;
+  }
+
+  .footer-contact .footer-contact-item {
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .newsletter-form input {
+    font-size: 14px;
+    padding: var(--spacing-xs);
+  }
+
+  .newsletter-form .btn-primary {
+    font-size: 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-transform: none;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-xs);
+  }
+
+  .footer-copyright p,
+  .footer-terms p {
+    font-size: 12px;
+  }
+
+  /* Simplified YouTube Modal */
+  .youtubemodal {
+    padding: var(--spacing-sm);
+    max-width: 95vw;
+  }
+
+  .youtubemodal iframe {
+    height: 250px; /* Smaller video on mobile */
+  }
+
+  .youtubemodal-close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+    top: -10px;
+    right: -10px;
+  }
+
+  /* Hide complex animations on mobile */
+  .sermon-card img,
+  .event-card img,
+  .gallery-item img {
+    transition: none;
+  }
+
+  .sermon-card:hover img,
+  .event-card:hover img,
+  .gallery-item:hover img {
+    transform: none;
+  }
+
+  /* Simplified loading states */
+  .sermons-loading,
+  .events-loading,
+  .gallery-loading {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .loading-spinner,
+  .error-icon,
+  .empty-icon {
+    font-size: 1.5rem;
+  }
+
+  /* Simplified error states */
+  .sermons-error,
+  .events-error,
+  .gallery-error {
+    margin: var(--spacing-md) var(--spacing-sm);
+    padding: var(--spacing-md);
+    font-size: 14px;
+  }
+
+  /* Simplified empty states */
+  .sermons-empty,
+  .events-empty,
+  .gallery-empty {
+    padding: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .sermons-empty h3,
+  .events-empty h3,
+  .gallery-empty h3 {
+    font-size: 18px;
+  }
+
+  .sermons-empty p,
+  .events-empty p,
+  .gallery-empty p {
+    font-size: 14px;
+  }
+
+  /* Simplified view all links */
+  .sermons-view-all,
+  .events-view-all,
+  .gallery-view-all {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+  }
+
+  .sermons-view-all .btn,
+  .events-view-all .btn,
+  .gallery-view-all .btn {
+    font-size: 12px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-transform: none;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .confession-title {
+    font-size: 20px;
+  }
+
+  .nav-menu a {
+    font-size: 12px;
+  }
+
+  .quote-text {
+    font-size: 16px;
+  }
+
+  .youtubemodal iframe {
+    height: 200px;
+  }
+}
+
+/* ===================================== */
 /* RESPONSIVE DESIGN            */
 /* ===================================== */
 
@@ -1366,303 +1941,3 @@ p {
     font-size: var(--text-xl);
   }
 }
-.youtubemodal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
-  backdrop-filter: blur(10px); /* Blur effect on the content behind the modal */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000; /* Ensure it's on top of other content */
-
-  /* Initial state: hidden with no opacity */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition for appearance/disappearance */
-}
-
-/* Active state for the modal (when it should be visible) */
-.youtubemodal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* YouTube Modal Content (the iframe container) */
-.youtubemodal {
-  position: relative; /* Needed for positioning the close button */
-  background: transparent; /* The modal content itself is transparent */
-  padding: var(--spacing-md); /* Padding around the iframe */
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
-  max-width: 90vw; /* Ensure it's responsive and fits viewport width */
-  max-height: 90vh; /* Ensure it's responsive and fits viewport height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Initial state for the iframe within the modal */
-  transform: scale(0.9); /* Slightly scaled down when modal is hidden */
-  transition: transform 0.3s ease; /* Smooth transition for the scale effect */
-}
-
-/* Active state for the iframe within the modal */
-.youtubemodal-overlay.active .youtubemodal {
-  transform: scale(1); /* Scales up to normal size when modal is active */
-}
-
-/* Styles for the iframe itself */
-.youtubemodal iframe {
-  width: 100%; /* Make iframe fill its container */
-  height: 100%; /* Make iframe fill its container */
-  aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
-  border-radius: 8px; /* Rounded corners for the iframe */
-  border: none; /* Remove default iframe border */
-}
-
-/* Close Button */
-.youtubemodal-close-btn {
-  position: absolute;
-  top: -15px; /* Position above the modal */
-  right: -15px; /* Position to the right of the modal */
-  background-color: #fff; /* White background for visibility */
-  color: var(--color-dark); /* Dark text color */
-  border: none;
-  border-radius: 50%; /* Circular button */
-  width: 35px;
-  height: 35px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  z-index: 1001; /* Ensure it's above the modal content */
-}
-
-.youtubemodal-close-btn:hover {
-  background-color: #e0e0e0;
-  transform: rotate(90deg); /* Simple rotation effect on hover */
-}
-
-.churchinfocard{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-
-}
-
-/* ===================================== */
-/* RESPONSIVE DESIGN                     */
-/* ===================================== */
-@media (max-width: 1024px) {
-  .hero-title {
-    font-size: var(--text-4xl);
-  }
-
-  .confession-title,
-  .about-text h2,
-  .confession-title {
-    font-size: var(--text-3xl);
-  }
-
-  .quote-text {
-    font-size: var(--text-2xl);
-  }
-
-  .footer-content {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .header-top .pagelayer-row-holder {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .contact-item {
-    margin-right: 0; /* Remove right margin for stacking */
-  }
-
-  .nav-menu {
-    display: none; /* Hide nav menu on smaller screens by default */
-    flex-direction: column;
-    width: 100%;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: rgba(0, 0, 0, 0.9);
-    padding: var(--spacing-md);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  .nav-menu.active {
-    /* Add this class when mobile menu is open */
-    display: flex;
-  }
-
-  .nav-menu li {
-    width: 100%;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .nav-menu li:last-child {
-    margin-bottom: 0;
-  }
-
-  .mobile-menu-toggle {
-    display: flex; /* Show toggle button */
-  }
-
-  .hero-title {
-    font-size: 38px; /* Slightly smaller for tablets */
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-    margin-bottom: 40px;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-
-  .confession-content {
-    grid-template-columns: 1fr; /* Single column layout */
-    gap: 30px;
-  }
-
-  .quote-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-
-  .gallery-item {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .gallery-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .gallery-overlay {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    text-align: center;
-  }
-
-  .sermons-grid,
-  .events-grid,
-  .gallery-grid {
-    grid-template-columns: 1fr; /* Single column layout */
-  }
-
-  .about-content {
-    flex-direction: column; /* Stack about sections */
-    gap: var(--spacing-lg);
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr; /* Stack footer sections */
-    text-align: center;
-  }
-
-  .footer-contact-item {
-    justify-content: center; /* Center contact items */
-  }
-
-  .newsletter-form {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-
-  .newsletter-form input,
-  .newsletter-form .btn-primary {
-    width: 100%;
-    border-radius: var(--border-radius-md); /* Full rounded corners */
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  /* YouTube Modal Responsive */
-  .youtubemodal {
-    padding: 15px;
-  }
-
-  .youtubemodal-close-btn {
-    top: -10px;
-    right: -10px;
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 32px;
-  }
-
-  .confession-title,
-  .about-text h2,
-  .confession-title {
-    font-size: var(--text-2xl);
-  }
-
-  .quote-text {
-    font-size: var(--text-xl);
-  }
-
-  .youtubemodal {
-    padding: 10px;
-  }
-
-  .youtubemodal-close-btn {
-    top: -8px;
-    right: -8px;
-    width: 28px;
-    height: 28px;
-    font-size: 0.9rem;
-  }
-}
-
-/* Specific overrides/adjustments for the provided HTML structure if needed */
-/* The original HTML uses specific pagelayer-ids, ensure they are compatible or update them */
-
-.p-8y58592.pagelayer-row {
-  /* This ID based styling is generally discouraged in React,
-     prefer class-based styling or component-specific styles */
-  margin: 0; /* Override any default margins if they cause layout issues */
-  width: 100%; /* Ensure it spans full width */
-}
-
-.p-8y58592 .pagelayer-row-holder {
-  /* This ensures the content aligns with the container in the header-top */
-  width: 100%;
-}
-
-/* Ensure font imports are handled globally, e.g., in index.css or public/index.html */
-/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&family=Roboto+Slab:wght@400;500;700&display=swap'); */
