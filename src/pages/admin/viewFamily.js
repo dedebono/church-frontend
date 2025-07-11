@@ -40,17 +40,18 @@ function ViewFamily() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingFor, setUploadingFor] = useState(null) // to track which member is being uploaded for
 
-  useEffect(() => {
-    const fetchFamilies = async () => {
-      try {
-        const data = await getFamilies()
-        // Filter out families with empty names
-        const validFamilies = data.filter((family) => family.familyName && family.familyName.trim() !== "")
-        setFamilies(validFamilies)
-      } catch (err) {
-        console.error("Failed to fetch families:", err)
-      }
+  const fetchFamilies = async () => {
+    try {
+      const data = await getFamilies()
+      // Filter out families with empty names
+      const validFamilies = data.filter((family) => family.familyName && family.familyName.trim() !== "")
+      setFamilies(validFamilies)
+    } catch (err) {
+      console.error("Failed to fetch families:", err)
     }
+  }
+
+  useEffect(() => {
     fetchFamilies()
   }, [])
 
@@ -262,6 +263,36 @@ function ViewFamily() {
     }
   }
 
+  // New function to handle family deletion
+  const handleDeleteFamily = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this family and all its members. This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33", // Red color for delete
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete family!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await api.delete(`/api/families/id/${familyData._id}`)
+          Swal.fire("Deleted!", "The family and all its members have been deleted.", "success")
+          
+          // Clear current family data and reset search state
+          setFamilyData(null)
+          setIsSearched(false)
+          setFamilyName("") // Clear search input
+          setEditFamilyModal(false) // Close the modal
+          fetchFamilies() // Refresh the family list
+        } catch (err) {
+          console.error("Error deleting family:", err)
+          Swal.fire("Failed!", "Failed to delete family.", "error")
+        }
+      }
+    })
+  }
+
   const handleAddMember = async (e) => {
     e.preventDefault()
     try {
@@ -401,7 +432,6 @@ function ViewFamily() {
             <div className="tanggal-pernikahan">👰 Tanggal Pernikahan: {formatDate(familyData.familyDate)}</div>
           )}
 
-          {/* Email - only show if exists */}
           {hasContent(familyData.email) && <div className="tanggal-pernikahan">📧 Email: {familyData.email}</div>}
           
           <div className="divider"></div>
@@ -446,6 +476,9 @@ function ViewFamily() {
                     Batal
                   </button>
                 </form>
+                <button className="delete-family-button" onClick={handleDeleteFamily}> {/* New Delete Button */}
+                    Delete Keluarga
+                </button>
               </div>
             </div>
           )}
@@ -464,6 +497,15 @@ function ViewFamily() {
                 />
                 <p className="edit-member">L/P:</p>
                 <input name="gender" value={formData.gender || ""} onChange={handleChange} placeholder="Gender" />
+                <p className="placofBirth"> Tempat Lahir</p>
+                <input name="placeOfBirth" value={formData.placeOfBirth||""} onChange={handleChange}placeholder="Tempat-lahir"/>
+                <p className="edit-member">Tanggal Lahir:</p>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth || ""}
+                  onChange={handleChange}
+                />
                 <p className="edit-member">Alamat:</p>
                 <input name="address" value={formData.address || ""} onChange={handleChange} placeholder="Alamat" />
                 <p className="edit-member">Telepon:</p>

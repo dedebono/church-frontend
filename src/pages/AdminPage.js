@@ -18,6 +18,11 @@ import GalleryAdmin from "./admin/GalleryAdmin"
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [openGroups, setOpenGroups] = useState({ // New state for managing open groups
+    "Admin Jemaat": true, // You can set initial open/closed state here
+    "Komunitas": true,
+    "Sekretariat": true,
+  });
   const navigate = useNavigate()
   const handleLogout = () => {
     localStorage.removeItem("adminToken")
@@ -44,18 +49,40 @@ const AdminPage = () => {
     }
   }
 
-  const menuItems = [
-    ["viewFamily", "Admin Keluarga"],
-    ["viewMember", "Admin Jemaat"],
-    ["uploadCSV", "Unggah CSV"],
-    ["adminMembers", "Semua Jemaat"],
-    ["galleryAdmin","Upload Foto"],
-    ["adminDevotions", "Konten Renungan"],
-    ["adminAttendance", "Kehadiran Jemaat"],
-    ["adminKonten","Atur Ibadah"],
-    ["eventsAdmin","Atur Acara"],
-    ["manageGroups", "Admin Komunitas"],
+  const menuGroups = [
+    {
+      header: "Admin Jemaat",
+      items: [
+        ["viewFamily", "Admin Keluarga"],
+        ["viewMember", "Admin Jemaat"],
+        ["uploadCSV", "Unggah CSV"],
+        ["adminMembers", "Semua Jemaat"],
+      ],
+    },
+    {
+      header: "Komunitas",
+      items: [
+        ["manageGroups", "Admin Komunitas"],
+      ],
+    },
+    {
+      header: "Sekretariat",
+      items: [
+        ["adminKonten", "Atur Ibadah"],
+        ["eventsAdmin", "Atur Acara"],
+        ["adminAttendance", "Kehadiran Jemaat"],
+        ["adminDevotions", "Konten Renungan"],
+        ["galleryAdmin", "Upload Foto"],
+      ],
+    },
   ]
+
+  const toggleGroup = (groupHeader) => { // New function to toggle group visibility
+    setOpenGroups(prev => ({
+      ...prev,
+      [groupHeader]: !prev[groupHeader]
+    }));
+  };
 
   return (
     <div className="admin-layout">
@@ -71,24 +98,31 @@ const AdminPage = () => {
           </div>
 
           <nav className="sidebar-nav">
-            <div className="nav-section">
-              <div className="nav-header">MENU ADMIN</div>
-              <div className="nav-items">
-                {menuItems.map(([tab, label]) => (
-                  <button
-                    key={tab}
-                    className={`nav-item ${activeTab === tab ? "active" : ""}`}
-                    onClick={() => {
-                      setActiveTab(tab)
-                      setSidebarOpen(false)
-                    }}
-                  >
-                    <div className="nav-bullet"></div>
-                    <span>{label}</span>
-                  </button>
-                ))}
+            {menuGroups.map((group, groupIndex) => (
+              <div className="nav-section" key={groupIndex}>
+                <button className="nav-header-button" onClick={() => toggleGroup(group.header)}> {/* Clickable header */}
+                  <div className="nav-header">{group.header}</div>
+                  <span className="toggle-icon">{openGroups[group.header] ? "▲" : "▼"}</span> {/* Toggle icon */}
+                </button>
+                {openGroups[group.header] && ( // Conditionally render items based on openGroups state
+                  <div className="nav-items">
+                    {group.items.map(([tab, label]) => (
+                      <button
+                        key={tab}
+                        className={`nav-item ${activeTab === tab ? "active" : ""}`}
+                        onClick={() => {
+                          setActiveTab(tab)
+                          setSidebarOpen(false)
+                        }}
+                      >
+                        <div className="nav-bullet"></div>
+                        <span>{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            ))}
           </nav>
 
           <div className="sidebar-bottom">
@@ -102,31 +136,38 @@ const AdminPage = () => {
       {/* Desktop Sidebar */}
       <div className="admin-sidebar-desktop">
         <div className="sidebar-logo">
-          <div className="logo-icon">A</div>
+          <div className="logo-icon">⛪</div>
           <span className="logo-text">ADMIN</span>
         </div>
 
         <nav className="sidebar-nav">
-          <div className="nav-section">
-            <div className="nav-header">MENU ADMIN</div>
-            <div className="nav-items">
-              {menuItems.map(([tab, label]) => (
-                <button
-                  key={tab}
-                  className={`nav-item ${activeTab === tab ? "active" : ""}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  <div className="nav-bullet"></div>
-                  <span>{label}</span>
-                </button>
-              ))}
+          {menuGroups.map((group, groupIndex) => (
+            <div className="nav-section" key={groupIndex}>
+              <button className="nav-header-button" onClick={() => toggleGroup(group.header)}> {/* Clickable header */}
+                <div className="nav-header">{group.header}</div>
+                <span className="toggle-icon">{openGroups[group.header] ? "▲" : "▼"}</span> {/* Toggle icon */}
+              </button>
+              {openGroups[group.header] && ( // Conditionally render items based on openGroups state
+                <div className="nav-items">
+                  {group.items.map(([tab, label]) => (
+                    <button
+                      key={tab}
+                      className={`nav-item ${activeTab === tab ? "active" : ""}`}
+                      onClick={() => setActiveTab(tab)}
+                    >
+                      <div className="nav-bullet"></div>
+                      <span>{label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
+          ))}
         </nav>
 
         <div className="sidebar-bottom">
           <div className="bottom-header">SISTEM ADMIN</div>
-                    <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
+          <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
           <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
         </div>
       </div>

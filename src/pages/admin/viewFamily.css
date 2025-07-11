@@ -21,6 +21,25 @@
   font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
 
+/* Add this to AdminPage.css */
+
+.delete-family-button {
+  background-color: #dc3545; /* A shade of red for delete action */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 15px; /* Add some space above the button */
+  width: 100%;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.delete-family-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
 .divider{
   margin: 30px;
   }

@@ -203,6 +203,16 @@ function ViewMember() {
             <input name="fullName" value={formData.fullName || ""} onChange={handleChange} placeholder="Full Name" />
             <p className="edit-member">L/P:</p>
             <input name="gender" value={formData.gender || ""} onChange={handleChange} placeholder="Gender" />
+            <p className="placofBirth"> Tempat Lahir</p>
+            <input name="placeOfBirth" value={formData.placeOfBirth||""} onChange={handleChange}placeholder="Tempat-lahir"/>
+            <p className="edit-member">Tanggal Lahir:</p>
+            <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth || ""}
+                  onChange={handleChange}
+                />
+
             <p className="edit-member">Alamat:</p>
             <input name="address" value={formData.address || ""} onChange={handleChange} placeholder="alamat" />
             <p className="edit-member">Telepon:</p>
