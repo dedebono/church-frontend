@@ -117,16 +117,20 @@ const HomePage = () => {
                 <a href="#home" onClick={closeMobileMenu}>Dashboard</a>
               </li>
               <li>
-                <a href="#about" onClick={closeMobileMenu}>Tentang</a>
-              </li>
-              <li>
                 <a href="#sermons" onClick={closeMobileMenu}>Ibadah</a>
               </li>
+              <li>
+                <a href="/form" onClick={closeMobileMenu}>Terhubung</a>
+              </li>
+
               <li>
                 <Link to="/register" onClick={closeMobileMenu}>Daftar</Link>
               </li>
               <li>
                 <Link to="/login"onClick={closeMobileMenu}>Admin</Link>
+              </li>
+              <li>
+                <a href="#about" onClick={closeMobileMenu}>Tentang</a>
               </li>
             </ul>
             <button className="mobile-menu-toggle"
