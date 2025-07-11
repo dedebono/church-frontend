@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import RegistrationForm from './pages/RegistrationForm';
 import AdminLogin from './pages/AdminLogin';
 import AdminPage from './pages/AdminPage';
+import FormulirJemaat from './pages/formpage';
 import ResetPasswordPage from './pages/Reset-password'; // Import the ResetPasswordPage
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
         <Route path="/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/form" element={<FormulirJemaat/>}/>
       </Routes>
     </Router>
   );
