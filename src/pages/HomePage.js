@@ -120,9 +120,8 @@ const HomePage = () => {
                 <a href="#sermons" onClick={closeMobileMenu}>Ibadah</a>
               </li>
               <li>
-                <a href="/form" onClick={closeMobileMenu}>Terhubung</a>
+                <Link to="/form" onClick={closeMobileMenu}>Terhubung</Link>
               </li>
-
               <li>
                 <Link to="/register" onClick={closeMobileMenu}>Daftar</Link>
               </li>
