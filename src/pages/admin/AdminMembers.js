@@ -350,6 +350,7 @@ function AdminMembers() {
           <label className="filter-text">Komunitas</label>
           <input
             type="checkbox"
+            className="input-checkbox"
             checked={filterHasGroup}
             onChange={(e) => setFilterHasGroup(e.target.checked)}
             disabled={isLoading}

@@ -15,14 +15,15 @@ import SermonCMS from "./admin/SermonCMS"
 import EventsAdmin from "./admin/EventsAdmin"
 import GalleryAdmin from "./admin/GalleryAdmin"
 import ServiceRequest from "./admin/serviceRequest"
+import Sertificate from "./admin/sertificate"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [openGroups, setOpenGroups] = useState({ // New state for managing open groups
-    "Admin Jemaat": true, // You can set initial open/closed state here
-    "Komunitas": true,
-    "Sekretariat": true,
+    "Admin Jemaat": false, // You can set initial open/closed state here
+    "Komunitas": false,
+    "Sekretariat": false,
   });
   const navigate = useNavigate()
   const handleLogout = () => {
@@ -47,6 +48,7 @@ const AdminPage = () => {
       case "manageGroups": return <ManageGroups />
       case "galleryAdmin" : return <GalleryAdmin/>
       case "serviceRequest" : return <ServiceRequest/>
+      case "Sertificate" : return <Sertificate/>
       default: return <div>Select a tab</div>
     }
   }
@@ -75,7 +77,8 @@ const AdminPage = () => {
         ["adminAttendance", "Kehadiran Jemaat"],
         ["adminDevotions", "Konten Renungan"],
         ["galleryAdmin", "Upload Foto"],
-        ["serviceRequest","Permintaan Pelayanan"]
+        ["serviceRequest","Permintaan Pelayanan"],
+        ["Sertificate","sertifikat"]
       ],
     },
   ]

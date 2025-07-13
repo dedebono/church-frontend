@@ -1,0 +1,22 @@
+.search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: white;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.search-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.search-item:hover {
+  background-color: #f3f4f6;
+}
