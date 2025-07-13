@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom" // Corrected import for React Router
+import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
+import api from "./admin/api/API" // ✅ Import your shared Axios instance
 import "./ServiceRequestForm.css"
 
 const ServiceRequestForm = () => {
-  const navigate = useNavigate() // Initialize useNavigate
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     serviceType: "",
     fullName: "",
@@ -33,8 +34,9 @@ const ServiceRequestForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await api.post("/api/service-requests", form) // ✅ Real backend call
+      console.log("Submitted:", response.data)
+
       setMessage("✅ Permintaan sudah terkirim")
       setForm({
         serviceType: "",
@@ -46,6 +48,7 @@ const ServiceRequestForm = () => {
     } catch (err) {
       console.error(err)
       setMessage("❌ Gagal mengirimkan")
+      Swal.fire("Gagal", "Tidak dapat mengirim permintaan pelayanan.", "error")
     }
   }
 
@@ -62,7 +65,7 @@ const ServiceRequestForm = () => {
     })
 
     if (result.isConfirmed) {
-      navigate('/') // Redirect to homepage using React Router
+      navigate('/')
     }
   }
 
@@ -82,13 +85,7 @@ const ServiceRequestForm = () => {
               <div className="field-group">
                 <label htmlFor="place">Tempat</label>
                 <div className="input-with-icon">
-                  <input
-                    id="place"
-                    name="place"
-                    type="text"
-                    placeholder="Gereja"
-                    onChange={handleDetailsChange}
-                  />
+                  <input id="place" name="place" type="text" placeholder="Gereja" onChange={handleDetailsChange} />
                   <span className="input-icon">📍</span>
                 </div>
               </div>
@@ -101,53 +98,23 @@ const ServiceRequestForm = () => {
             <div className="field-grid">
               <div className="field-group">
                 <label htmlFor="spouseName">Nama Mempelai Wanita</label>
-                <input
-                  id="spouseName"
-                  name="spouseName"
-                  type="text"
-                  placeholder="Nama Mempelai"
-                  onChange={handleDetailsChange}
-                />
+                <input id="spouseName" name="spouseName" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="DadNameMan">Nama Ayah Mempelai Laki-laki</label>
-                <input
-                  id="DadNameMan"
-                  name="DadNameMan"
-                  type="text"
-                  placeholder="Nama Ayah"
-                  onChange={handleDetailsChange}
-                />
+                <input id="DadNameMan" name="DadNameMan" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="MomNameMan">Nama Ibu Mempelai Laki-laki</label>
-                <input
-                  id="MomNameMan"
-                  name="MomNameMan"
-                  type="text"
-                  placeholder="Nama Ibu"
-                  onChange={handleDetailsChange}
-                />
+                <input id="MomNameMan" name="MomNameMan" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="DadNameWoMan">Nama Ayah Mempelai Wanita</label>
-                <input
-                  id="DadNameWoMan"
-                  name="DadNameWoMan"
-                  type="text"
-                  placeholder="Nama Ayah"
-                  onChange={handleDetailsChange}
-                />
+                <input id="DadNameWoMan" name="DadNameWoMan" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="MomNameWoman">Nama Ibu Mempelai Wanita</label>
-                <input
-                  id="MomNameWoman"
-                  name="MomNameWoman"
-                  type="text"
-                  placeholder="Nama Ibu"
-                  onChange={handleDetailsChange}
-                />
+                <input id="MomNameWoman" name="MomNameWoman" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="plannedDate">Rencana Tanggal Pernikahan</label>
@@ -159,13 +126,7 @@ const ServiceRequestForm = () => {
               <div className="field-group full-width">
                 <label htmlFor="marriagePlace">Rencana Tempat Pernikahan</label>
                 <div className="input-with-icon">
-                  <input
-                    id="marriagePlace"
-                    name="place"
-                    type="text"
-                    placeholder="Lokasi Acara"
-                    onChange={handleDetailsChange}
-                  />
+                  <input id="marriagePlace" name="place" type="text" onChange={handleDetailsChange} />
                   <span className="input-icon">📍</span>
                 </div>
               </div>
@@ -178,23 +139,11 @@ const ServiceRequestForm = () => {
             <div className="field-grid">
               <div className="field-group">
                 <label htmlFor="DadName">Nama Ayah</label>
-                <input
-                  id="DadName"
-                  name="DadName"
-                  type="text"
-                  placeholder="Nama Ayah"
-                  onChange={handleDetailsChange}
-                />
+                <input id="DadName" name="DadName" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="MomName">Nama Ibu</label>
-                <input
-                  id="MomName"
-                  name="MomName"
-                  type="text"
-                  placeholder="Nama Ibu"
-                  onChange={handleDetailsChange}
-                />
+                <input id="MomName" name="MomName" type="text" onChange={handleDetailsChange} />
               </div>
               <div className="field-group">
                 <label htmlFor="DateofBirth">Tanggal Lahir</label>
@@ -206,13 +155,7 @@ const ServiceRequestForm = () => {
               <div className="field-group">
                 <label htmlFor="childPlace">Tempat</label>
                 <div className="input-with-icon">
-                  <input
-                    id="childPlace"
-                    name="place"
-                    type="text"
-                    placeholder="Gereja"
-                    onChange={handleDetailsChange}
-                  />
+                  <input id="childPlace" name="place" type="text" onChange={handleDetailsChange} />
                   <span className="input-icon">📍</span>
                 </div>
               </div>
@@ -226,22 +169,16 @@ const ServiceRequestForm = () => {
 
   return (
     <div className="form-container">
-      {/* Decorative circles */}
       <div className="decoration-circle circle-1"></div>
       <div className="decoration-circle circle-2"></div>
       <div className="decoration-circle circle-3"></div>
 
       <div className="form-wrapper">
-        {/* Header */}
-        <div className="form-header">
-        
-        </div>
+        <div className="form-header"></div>
 
         <div className="form-card">
           <div className="card-header">
             <h2 className="form-title">Making Life Better Church</h2>
-
-            {/* Progress Steps */}
             <div className="progress-steps">
               <div className="step active">
                 <div className="step-number">1</div>
@@ -262,8 +199,6 @@ const ServiceRequestForm = () => {
 
           <div className="card-content">
             <form onSubmit={handleSubmit} className="form">
-
-              {/* Service Type Selection */}
               <div className="field-group">
                 <label htmlFor="serviceType">Apa pelayanan yang bisa kami lakukan?</label>
                 <select id="serviceType" name="serviceType" value={form.serviceType} onChange={handleChange} required>
@@ -274,7 +209,6 @@ const ServiceRequestForm = () => {
                 </select>
               </div>
 
-              {/* Basic Information */}
               <div className="field-grid">
                 <div className="field-group">
                   <label htmlFor="fullName">Nama Lengkap</label>
@@ -283,9 +217,9 @@ const ServiceRequestForm = () => {
                       id="fullName"
                       name="fullName"
                       type="text"
-                      placeholder="Nama Lengkap"
                       value={form.fullName}
                       onChange={handleChange}
+                      placeholder="Nama Lengkap"
                       required
                     />
                     <span className="input-icon">👤</span>
@@ -293,15 +227,15 @@ const ServiceRequestForm = () => {
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="phoneNumber">Phone Number</label>
+                  <label htmlFor="phoneNumber">Nomor Telepon</label>
                   <div className="input-with-icon">
                     <input
                       id="phoneNumber"
                       name="phoneNumber"
                       type="text"
-                      placeholder="Nomor telepon"
                       value={form.phoneNumber}
                       onChange={handleChange}
+                      placeholder="08xxxx"
                       required
                     />
                     <span className="input-icon">📞</span>
@@ -315,24 +249,19 @@ const ServiceRequestForm = () => {
                   <textarea
                     id="address"
                     name="address"
-                    placeholder="Alamat lengkap"
                     value={form.address}
                     onChange={handleChange}
+                    placeholder="Alamat lengkap"
                     rows="3"
+                    required
                   />
                   <span className="input-icon textarea-icon">📍</span>
                 </div>
               </div>
 
-              {/* Service-specific fields */}
               {form.serviceType && (
                 <div className="service-section">
                   <div className="service-header">
-                    <span className="service-icon">
-                      {form.serviceType === "Baptism" && ""}
-                      {form.serviceType === "Marriage" && ""}
-                      {form.serviceType === "Child" && ""}
-                    </span>
                     <h3 className="service-title">
                       {form.serviceType === "Baptism" && "Detail Baptisan"}
                       {form.serviceType === "Marriage" && "Detail Pemberkatan Nikah"}
@@ -343,18 +272,12 @@ const ServiceRequestForm = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div className="form-actions">
-                <button type="button" className="btn btn-cancel" onClick={handleCancel}>
-                  Batal
-                </button>
-                <button type="submit" className="btn btn-submit">
-                  Kirim
-                </button>
+                <button type="button" className="btn btn-cancel" onClick={handleCancel}>Batal</button>
+                <button type="submit" className="btn btn-submit">Kirim</button>
               </div>
             </form>
 
-            {/* Message Display */}
             {message && <div className={`message ${message.includes("✅") ? "success" : "error"}`}>{message}</div>}
           </div>
         </div>

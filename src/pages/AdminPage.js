@@ -14,6 +14,7 @@ import AdminDevotions from "./admin/AdminDevotions"
 import SermonCMS from "./admin/SermonCMS"
 import EventsAdmin from "./admin/EventsAdmin"
 import GalleryAdmin from "./admin/GalleryAdmin"
+import ServiceRequest from "./admin/serviceRequest"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
@@ -45,6 +46,7 @@ const AdminPage = () => {
       case "adminDevotions": return <AdminDevotions />
       case "manageGroups": return <ManageGroups />
       case "galleryAdmin" : return <GalleryAdmin/>
+      case "serviceRequest" : return <ServiceRequest/>
       default: return <div>Select a tab</div>
     }
   }
@@ -73,6 +75,7 @@ const AdminPage = () => {
         ["adminAttendance", "Kehadiran Jemaat"],
         ["adminDevotions", "Konten Renungan"],
         ["galleryAdmin", "Upload Foto"],
+        ["serviceRequest","Permintaan Pelayanan"]
       ],
     },
   ]
