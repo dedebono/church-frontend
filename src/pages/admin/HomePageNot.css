@@ -139,7 +139,7 @@
   /* Main Navigation Styles */
   .main-nav {
     background: var(--color-background-dark); /* Slightly darker, more opaque */
-    padding: 10px 0px 0px 0px;
+    padding: 1px 0px 0px 0px;
     height: min-content;
     position: sticky;
     top: 0;
@@ -147,11 +147,16 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   }
 
+  .main-nav li{
+    font-size: 1rem;
+    list-style:none;
+  }
+
   .nav-content {
     display: flex;
     justify-content: center;
-    letter-spacing: 6px;
-    list-style: square;
+    color: var(--color-background-light);
+    letter-spacing: 2px;
   }
 
   .logo .logo-link {
@@ -180,11 +185,8 @@
   }
 
   .nav-menu a:hover {
-    padding: 3px;
-    border-style: outset;
-    border-radius: 13px;
-    border-color: var(--color-secondary);
-    color: var(--color-secondary);
+    padding: 3px;   
+    color: var(--color-secondary); 
   }
 
   /* Underline effect on hover */
