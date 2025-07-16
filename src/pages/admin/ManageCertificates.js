@@ -11,11 +11,11 @@ const ManageCertificates = () => {
     <div>
     <div className="certificate-admin-container">
       <h2>📜 Manajemen Sertifikat</h2>
-      </div>
+    </div>
       <div 
       className="select-icon">
       <select 
-      value={type} onChange={(e) => setType(e.target.value)} className="form-dropdown width40px">
+      value={type} onChange={(e) => setType(e.target.value)} className="form-dropdown">
         <option value="baptism">🕊️ Baptis</option>
         <option value="marriage">💍 Pernikahan</option>
         <option value="child">👶 Penyerahan Anak</option>

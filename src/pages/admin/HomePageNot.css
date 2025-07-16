@@ -1389,7 +1389,7 @@
   /* FOOTER STYLES              */
   /* ===================================== */
   .footer {
-    background: var(--color-dark);
+    background: var(--color-background-dark);
     color: var(--color-light-text);
     padding: var(--spacing-xl) 0 var(--spacing-md) 0; /* Adjusted padding */
   }
