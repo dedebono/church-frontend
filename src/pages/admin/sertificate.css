@@ -20,3 +20,13 @@
 .search-item:hover {
   background-color: #f3f4f6;
 }
+
+.event-meta{
+display: flex;
+flex-direction: column;
+}
+
+.event-meta p {
+  margin: 0 0 0 0px;
+  padding: 0px;
+}

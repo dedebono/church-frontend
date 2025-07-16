@@ -15,7 +15,7 @@ import SermonCMS from "./admin/SermonCMS"
 import EventsAdmin from "./admin/EventsAdmin"
 import GalleryAdmin from "./admin/GalleryAdmin"
 import ServiceRequest from "./admin/serviceRequest"
-import Sertificate from "./admin/sertificate"
+import ManageCertificates from "./admin/ManageCertificates"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("viewFamily")
@@ -48,7 +48,7 @@ const AdminPage = () => {
       case "manageGroups": return <ManageGroups />
       case "galleryAdmin" : return <GalleryAdmin/>
       case "serviceRequest" : return <ServiceRequest/>
-      case "Sertificate" : return <Sertificate/>
+      case "ManageCertificates" : return <ManageCertificates/>
       default: return <div>Select a tab</div>
     }
   }
@@ -78,7 +78,7 @@ const AdminPage = () => {
         ["adminDevotions", "Konten Renungan"],
         ["galleryAdmin", "Upload Foto"],
         ["serviceRequest","Permintaan Pelayanan"],
-        ["Sertificate","sertifikat"]
+        ["ManageCertificates","Sertifikat"]
       ],
     },
   ]

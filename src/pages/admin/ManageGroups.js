@@ -392,9 +392,9 @@ const ManageGroups = () => {
 
       {/* Add Members Modal */}
       {showAddMembersModal && (
-        <div className="modal-backdrop-groups">
-          <div className="modal-container-groups">
-            <h3 className="text-xl font-semibold mb-4">Add Members to {editingGroup?.name}</h3>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Add Members to {editingGroup?.name}</h3>
               <input
               type="text"
               placeholder="Search member by name"
@@ -404,9 +404,8 @@ const ManageGroups = () => {
                 setSelectedMember(null); // Clear selected when typing
                 handleSearchChange(e);  
               }}
-              className="input-search"
             />
-            <div className="search-results">
+            <div className="search-results-group">
               {searchResults.map((member, index) => {
                 // Skip if member is null or doesn't have _id
                 if (!member || !member._id) return null;
@@ -414,7 +413,7 @@ const ManageGroups = () => {
                 return (
                   <div
                     key={member._id || index}
-                    className={`search-result-item ${
+                    className={`search-result-group-item ${
                       selectedMember && selectedMember._id === member._id ? 'selected-member' : ''
                     }`}
                     onClick={() => {
@@ -446,6 +445,7 @@ const ManageGroups = () => {
           </div>
         </div>
       )}
+
         {showBroadcastModal && (
           <div className="modal-backdrop-groups">
             <div className="modal-container-groups">

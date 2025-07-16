@@ -15,6 +15,13 @@ function BaptismSertificate() {
     date: "",
     certificateNumber: "",
     phoneNumber: "",
+    gender:"",
+    placeofbirth:"",
+    dateofbirth:"",
+    dadName:"",
+    momName:"",
+    placeofbaptism:"",
+    pastorname:""
   })
   const [loading, setLoading] = useState(false)
 
@@ -46,11 +53,28 @@ function BaptismSertificate() {
     }
   }
 
-  const handleSelectMember = (memberId) => {
-    setFormData((prev) => ({ ...prev, member: memberId }))
-    setSearchResults([]) // hide results
-    setSearchQuery("")   // clear search bar
+  const handleSelectMember = async (memberId) => {
+  try {
+    const res = await api.get(`/api/members/${memberId}`)
+    const member = res.data
+
+    setFormData((prev) => ({
+      ...prev,
+      member: memberId,
+      gender: member.gender || "",
+      dateofbirth: member.dateOfBirth || "",
+      placeofbirth: member.placeOfBirth || "",
+      phoneNumber: member.phoneNumber || "",
+
+    }))
+
+    setSearchResults([])
+    setSearchQuery("")
+  } catch (err) {
+    console.error("Failed to fetch member details", err)
+    Swal.fire("Gagal", "Gagal mengambil detail jemaat.", "error")
   }
+}
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -67,7 +91,19 @@ function BaptismSertificate() {
     try {
       await api.post("/api/baptism-services", formData)
       Swal.fire("Berhasil", "Sertifikat berhasil dibuat.", "success")
-      setFormData({ member: "", date: "", certificateNumber: "", phoneNumber: "" })
+      setFormData({ 
+    member: "",
+    date: "",
+    certificateNumber: "",
+    phoneNumber: "",
+    gender:"",
+    placeofbirth:"",
+    dateofbirth:"",
+    dadName:"",
+    momName:"",
+    placeofbaptism:"",
+    pastorname:""
+      })
       fetchServices()
     } catch (err) {
       console.error(err)
@@ -171,7 +207,6 @@ function BaptismSertificate() {
               ✅ Jemaat terpilih: <code>{formData.member}</code>
             </p>
           )}
-
           <div className="form-row">
             <div className="form-group">
               <label>No. Sertifikat</label>
@@ -181,6 +216,51 @@ function BaptismSertificate() {
                 value={formData.certificateNumber}
                 onChange={handleChange}
                 required
+              />
+            </div>
+              <div className="form-group">
+              <label>Jenis Kelamin</label>
+              <input
+                type="text"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Nama Ayah</label>
+              <input
+                type="text"
+                name="dadName"
+                value={formData.dadName}
+                onChange={handleChange}
+              />
+            </div>
+              <div className="form-group">
+              <label>Nama Ibu</label>
+              <input
+                type="text"
+                name="momName"
+                value={formData.momName}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Tempat Baptis</label>
+              <input
+                type="text"
+                name="placeofbaptism"
+                value={formData.placeofbaptism}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label>Dibaptis oleh</label>
+              <input
+                type="text"
+                name="pastorname"
+                value={formData.pastorname}
+                onChange={handleChange}
               />
             </div>
             <div className="form-group">
@@ -228,6 +308,13 @@ function BaptismSertificate() {
                     <p><strong>Tanggal:</strong> {new Date(svc.date).toLocaleDateString("id-ID")}</p>
                     <p><strong>No. Sertifikat:</strong> {svc.certificateNumber}</p>
                     <p><strong>No. HP:</strong> {svc.phoneNumber || "-"}</p>
+                    <p><strong>Jenis Kelamin:</strong> {svc.gender || "-"}</p>
+                    <p><strong>Tempat, Tanggal Lahir:</strong> {svc.placeofbirth || "-"}, {svc.dateofbirth ? new Date(svc.dateofbirth).toLocaleDateString("id-ID", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    }) : "-"}</p>
+                    <p><strong>Dibaptis oleh:</strong> {svc.pastorname || "-"}</p>
                   </div>
                   <div className="event-actions">
                     <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>

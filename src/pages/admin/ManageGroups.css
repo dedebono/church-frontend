@@ -281,13 +281,13 @@ h2 {
 }
 
 /* Search results */
-.search-results {
-  max-height: 200px;
+.search-results-group {
+  height: fit-content;
   overflow-y: auto;
-  margin-bottom: 16px;
 }
 
-.search-result-item {
+.search-result-group-item {
+  font-size: 10px;
   padding: 12px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -297,18 +297,18 @@ h2 {
   background: white;
 }
 
-.search-result-item:hover {
+.search-result-group-item:hover {
   background: #f7fafc;
   border-color: #667eea;
 }
 
-.search-result-item.selected-member {
+.search-result-group-item.selected-member {
   background: #ebf8ff;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-.search-result-item p {
+.search-result-group-item p {
   margin: 0;
   font-weight: 500;
   color: #2d3748;

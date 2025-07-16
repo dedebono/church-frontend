@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import api from "./admin/api/API" // ✅ Import your shared Axios instance
-import "./ServiceRequestForm.css"
+import "./formpage.css"
 
 const ServiceRequestForm = () => {
   const navigate = useNavigate()
@@ -202,7 +202,7 @@ const ServiceRequestForm = () => {
               <div className="field-group">
                 <label htmlFor="serviceType">Apa pelayanan yang bisa kami lakukan?</label>
                 <select id="serviceType" name="serviceType" value={form.serviceType} onChange={handleChange} required>
-                  <option value="">-- Select Service --</option>
+                  <option value="">-- Silakan pilih --</option>
                   <option value="Baptism">🕊️ Baptisan</option>
                   <option value="Marriage">👰🤵 Pemberkatan Nikah</option>
                   <option value="Child">👶 Penyerahan Anak</option>
