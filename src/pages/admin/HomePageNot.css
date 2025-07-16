@@ -750,6 +750,13 @@
     gap: 0.5rem;
   }
 
+  .sermons-view-all{
+    display: flex;
+    flex-direction: column;
+    align-items:center ;
+    margin: 20px 0 0 0;
+  }
+
 
   /* Additional styles for dynamic events section */
 
