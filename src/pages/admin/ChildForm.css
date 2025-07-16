@@ -1,0 +1,339 @@
+/* General body styling for background effect */
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* A modern, clean sans-serif font */
+}
+
+/* Main container for the form, mimicking the card-like appearance */
+.form-child {
+  display: flex;
+  flex-direction: column;
+  padding: 30px; /* Increased padding */
+  max-width: 450px; /* Slightly adjusted max-width to match image better */
+  width: 100%; /* Ensure it takes full width up to max-width */
+  background-color: #ffffff;
+  border-radius: 20px; /* More rounded corners */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Softer, more pronounced shadow */
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  position: relative; /* For positioning the top-right icons */
+}
+
+/* Header styling */
+.form-child h2 {
+  text-align: left; /* Align title to left */
+  color: #333;
+  margin-bottom: 25px; /* More space below title */
+  font-size: 1.8rem; /* Larger font size */
+  font-weight: 600; /* Semi-bold */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Form row styling */
+.form-row-child {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Increased gap between form elements */
+}
+
+.form-row-child label {
+  font-weight: 500; /* Medium font weight */
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 0.95rem; /* Slightly smaller label font */
+}
+
+/* Input field styling */
+.form-row-child input[type="text"],
+.form-row-child input[type="date"],
+.form-row-child input[type="number"],
+.form-row-child input[type="email"],
+.form-row-child select,
+.form-row-child textarea {
+  padding: 12px 15px; /* Adjusted padding */
+  border: 1px solid #e0e0e0; /* Lighter border color */
+  border-radius: 10px; /* More rounded input fields */
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fcfcfc; /* Slightly off-white background for inputs */
+}
+
+.form-row-child input::placeholder {
+  color: #b0b0b0; /* Lighter placeholder text */
+}
+
+.form-row-child input[type="text"]:focus,
+.form-row-child input[type="date"]:focus,
+.form-row-child input[type="number"]:focus,
+.form-row-child input[type="email"]:focus,
+.form-row-child select:focus,
+.form-row-child textarea:focus {
+  border-color: #8c71ff; /* Purple border on focus */
+  box-shadow: 0 0 0 3px rgba(140, 113, 255, 0.2); /* Soft purple glow */
+  outline: none;
+}
+
+/* Specific styling for the 'Cari Anak' input and its container if needed */
+.form-row-child > div:has(input[type="text"][placeholder="Ketik nama lalu tekan Enter"]) {
+    margin-bottom: 15px; /* Space before search results or next input */
+}
+
+/* Search results styling */
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0; /* Adjusted margin */
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  max-height: 180px; /* Slightly taller search results */
+  overflow-y: auto;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-results li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0; /* Lighter separator */
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.search-results li:last-child {
+  border-bottom: none;
+}
+
+.search-results li:hover {
+  background-color: #f7f7f7; /* Subtle hover effect */
+}
+
+/* Submit button styling */
+.btn-primary {
+  background-color: #725bff; /* Purple color as in the image */
+  color: white;
+  padding: 15px 25px; /* Larger padding */
+  border: none;
+  border-radius: 12px; /* More rounded button */
+  cursor: pointer;
+  font-size: 1.1rem; /* Larger font size */
+  font-weight: 600; /* Semi-bold */
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 25px; /* More space above the button */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* Space for potential icon */
+}
+
+.btn-primary:hover {
+  background-color: #624bd8; /* Slightly darker purple on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(114, 91, 255, 0.3); /* Soft shadow on hover */
+}
+
+.btn-primary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Separator styling */
+hr {
+  border: none;
+  border-top: 1px solid #f0f0f0; /* Lighter and softer line */
+  margin: 30px 0;
+}
+
+/* List of records styling (event-card) */
+.form-child > div:last-of-type { /* Target the div containing the records */
+    margin-top: 20px;
+}
+
+.form-child > div:last-of-type h2 { /* Style for the second h2 (Daftar Sertifikat) */
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+.event-card {
+  background-color: #fcfcfc; /* Consistent light background */
+  border: 1px solid #e5e5e5; /* Lighter border */
+  border-radius: 12px; /* More rounded corners */
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between text lines */
+}
+
+.event-card h4 {
+  color: #725bff; /* Purple for names */
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.event-card p {
+  margin: 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.event-card strong {
+  color: #333;
+  font-weight: 500;
+}
+
+.event-card .btn-view,
+.event-card .btn-delete {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px; /* More rounded buttons */
+  cursor: pointer;
+  font-size: 0.85rem; /* Slightly smaller font for action buttons */
+  margin-right: 10px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  display: inline-flex; /* Allow icon and text to sit together */
+  align-items: center;
+  gap: 5px;
+}
+
+.event-card .btn-view {
+  background-color: #007bff;
+  color: white;
+}
+
+.event-card .btn-view:hover {
+  background-color: #0069d9;
+  transform: translateY(-1px);
+}
+
+.event-card .btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.event-card .btn-delete:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Top right icons (dots and expand icon) - requires HTML modification */
+/* For the three colored dots */
+.top-dots {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dot.red { background-color: #fc605a; }
+.dot.yellow { background-color: #fdbc40; }
+.dot.green { background-color: #34c749; }
+
+/* For the expand icon */
+.expand-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #f0f2f5; /* Light background for the icon */
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.expand-icon:hover {
+  background-color: #e0e2e5;
+}
+
+/* Adding a placeholder for an icon next to the Submit button */
+.btn-primary::after {
+    content: '→'; /* Unicode arrow character */
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+/* Add the "Add another" button style - requires HTML modification */
+.add-another-button {
+    background-color: #f0f2f5;
+    color: #555;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content; /* Adjust width to content */
+    margin-top: 5px; /* Space after Email input */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.add-another-button:hover {
+    background-color: #e5e7eb;
+    border-color: #d0d2d5;
+}
+
+.add-another-button::before {
+    content: '+';
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Styling for the copy button next to the website input */
+.input-with-copy {
+    display: flex;
+    gap: 5px; /* Space between input and button */
+}
+
+.input-with-copy input {
+    flex-grow: 1; /* Allow input to take available space */
+    border-top-right-radius: 0; /* Blend input with button */
+    border-bottom-right-radius: 0;
+}
+
+.copy-button {
+    background-color: #f0f2f5;
+    color: #555;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-left: none; /* Remove left border to blend with input */
+    border-radius: 10px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.copy-button:hover {
+    background-color: #e5e7eb;
+}
+
+/* Add an icon for the copy button */
+.copy-button::before {
+    content: '📋'; /* Clipboard emoji or use an SVG icon */
+}

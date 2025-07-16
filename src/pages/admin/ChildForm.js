@@ -149,9 +149,17 @@ function ChildForm() {
   }
 
   return (
-    <div>
-      <h2>👶 Formulir Penyerahan Anak</h2>
-      <form onSubmit={handleSubmit} className="form-row">
+    <div
+    className="event-cms-container">
+    <div
+    className="cms-header">
+    <h2>👶 Formulir Penyerahan Anak</h2>
+    </div>
+    <div className="form-card">
+      <form onSubmit={handleSubmit} 
+
+      /*search member */
+      className="form-group">
         <label>Cari Anak</label>
         <input
           type="text"
@@ -169,7 +177,7 @@ function ChildForm() {
             ))}
           </ul>
         )}
-
+        <div className="form-row">
         <input name="certificateNumber" placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
         <input name="fatherName" placeholder="Nama Ayah" value={formData.fatherName} onChange={handleChange} />
         <input name="motherName" placeholder="Nama Ibu" value={formData.motherName} onChange={handleChange} />
@@ -178,11 +186,13 @@ function ChildForm() {
         <input name="place" placeholder="Tempat Penyerahan" value={formData.place} onChange={handleChange} />
         <input type="date" name="date" value={formData.date} onChange={handleChange} required />
         <input name="status" placeholder="Status (mis. Diberkati)" value={formData.status} onChange={handleChange} />
+        </div>
 
         <button type="submit" className="btn-primary" disabled={loading}>
           {loading ? "Menyimpan..." : "Buat Sertifikat"}
         </button>
       </form>
+      </div>
 
       <hr/>
       <h2>📄 Daftar Sertifikat Penyerahan Anak</h2>
