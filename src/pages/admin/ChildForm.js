@@ -9,10 +9,12 @@ function ChildForm() {
     date: "",
     certificateNumber: "",
     fatherName: "", // Serves as both search input and display for father's name
+    dateofbirth:"",
     motherName: "", // Serves as both search input and display for mother's name
     placeofbirth: "", // Populated from the selected child's data, remains read-only
     pastorName: "",
     place: "",
+    gender:"",
     status: "",
   })
 
@@ -171,24 +173,39 @@ function ChildForm() {
   const handlePrint = (svc) => {
     const memberName = svc.member?.fullName || "Anak"
     const date = new Date(svc.date).toLocaleDateString("id-ID", {
+      weekday:"long",
       year: "numeric",
       month: "long",
       day: "numeric",
     })
 
+    const dateonly = new Date(svc.date).toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+
+    const dateofbirth = new Date(svc.dateofbirth).toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+
+
     const content = `
       <html><head><title>Sertifikat Penyerahan Anak</title></head>
-      <body style="font-family: sans-serif; text-align: center;">
-        <h1>👶 Sertifikat Penyerahan Anak</h1>
-        <p>Menyatakan bahwa:</p>
-        <h2>${memberName}</h2>
-        <p>Telah diserahkan kepada Tuhan pada tanggal</p>
-        <h3>${date}</h3>
-        <p>No. Sertifikat: ${svc.certificateNumber}</p>
-        <p>Ditempat: ${svc.place}</p>
-        <p>Oleh: ${svc.pastorName || "-"}</p>
-        <p>Ayah: ${svc.fatherName || "-"}</p>
-        <p>Ibu: ${svc.motherName || "-"}</p>
+
+        <p>${svc.certificateNumber}</p>
+        <p>${memberName}</p>
+        <p>${svc.gender}</p>
+        <p>${svc.placeofbirth},${dateofbirth}</p>
+        <p>${svc.fatherName || "-"}</p>
+        <p>${svc.motherName || "-"}</p>
+        <p>${date}</p>
+        <p>${svc.place}</p>
+        <p>${svc.pastorName}</p>
+        <p>Balikpapan, ${dateonly}</p>
+        <p>Pdt. Ronny Runtukahu S.E., M.Th.</p>
         <script>
           window.onload = function() {
             window.print();
@@ -235,6 +252,22 @@ function ChildForm() {
                 </p>
               )}
             </div>
+                      {/*select gender*/}
+            <div className="form-group">
+                <label>Jenis Kelamin *</label>
+                <select
+                  id="gender-select"
+                  name="gender" 
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Pilih jenis kelamin</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+
           </div>
 
           {/* Combined Search/Input for Father's Name */}
@@ -258,7 +291,6 @@ function ChildForm() {
                 </ul>
               )}
             </div>
-
             {/* Combined Search/Input for Mother's Name */}
             <div className="form-group">
               <label>Nama Ibu</label>
@@ -285,9 +317,16 @@ function ChildForm() {
           <div className="form-row">
             <input name="certificateNumber" className="form-group" placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
             <input name="placeofbirth" className="form-group" placeholder="Tempat Lahir Anak" value={formData.placeofbirth} onChange={handleChange} readOnly />
+          <div className="form-group">
+            <label>Tanggal lahir anak</label>
+            <input name="dateofbirth" type="date" className="form-group" value={formData.dateofbirth} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label> Tanggal Penyerahan anak</label>
+            <input type="date" name="date" className="form-group" value={formData.date} onChange={handleChange} required />
+        </div>
             <input name="pastorName" className="form-group" placeholder="Nama Pendeta" value={formData.pastorName} onChange={handleChange} />
             <input name="place" className="form-group" placeholder="Tempat Penyerahan" value={formData.place} onChange={handleChange} />
-            <input type="date" name="date" className="form-group" value={formData.date} onChange={handleChange} required />
             <input name="status" className="form-group" placeholder="Status (mis. Diberkati)" value={formData.status} onChange={handleChange} />
           </div>
 
@@ -307,7 +346,9 @@ function ChildForm() {
             <p><strong>No. Sertifikat:</strong> {svc.certificateNumber}</p>
             <p><strong>Tempat:</strong> {svc.place}</p>
             <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>
-            <button className="btn-delete" onClick={() => handleDelete(svc._id)}>🗑️ Hapus</button>
+            <button className="btn-delete" 
+            onClick={() => 
+            handleDelete(svc._id)}>🗑️ Hapus</button>
           </div>
         ))}
       </div>

@@ -185,17 +185,37 @@ function BaptismSertificate() {
       day: "numeric",
     })
 
-    const content = `
-      <html><head><title>Sertifikat Baptisan</title></head><body style="font-family: sans-serif; text-align: center;">
-        <h1>Sertifikat Baptisan</h1>
-        <p>Menyatakan bahwa:</p>
-        <h2>${memberName}</h2>
-        <p>Telah dibaptis pada tanggal</p>
-        <h3>${date}</h3>
-        <p>No. Sertifikat: <strong>${svc.certificateNumber}</strong></p>
-        <p>No. HP: ${svc.phoneNumber || "-"}</p>
-        <p style="margin-top: 40px;">"Pergilah, jadikanlah semua bangsa murid-Ku dan baptislah mereka..."</p>
-        <p><em>- Matius 28:19</em></p>
+const content = `
+      <html>
+      <head>
+        <title>Sertifikat Baptisan</title>
+        <style>
+        body {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        }
+
+        .nosertificate {
+        font-weight:700;
+        margin-top:345px
+        }
+
+        .membername {
+        margin-top:113px;
+        color:blue;
+        }
+
+        p{
+        margin:0;
+        }
+
+        </style>
+      </head>
+      <body>
+        <p class="nosertificate">${svc.certificateNumber}</p>
+        <p class="membername">${memberName}</p>
+        <p>${date}</p>
         <script>
           window.onload = function() {
             window.print();
@@ -347,7 +367,6 @@ function BaptismSertificate() {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                readOnly // Assuming this is auto-filled from member selection
               />
             </div>
             <div className="form-group">
@@ -357,7 +376,6 @@ function BaptismSertificate() {
                 name="placeofbirth"
                 value={formData.placeofbirth}
                 onChange={handleChange}
-                readOnly // Auto-filled from member selection
               />
             </div>
             <div className="form-group">
@@ -367,7 +385,6 @@ function BaptismSertificate() {
                 name="dateofbirth"
                 value={formData.dateofbirth}
                 onChange={handleChange}
-                readOnly // Auto-filled from member selection
               />
             </div>
           </div>
