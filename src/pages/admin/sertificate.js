@@ -8,18 +8,23 @@ import "./sertificate.css"
 
 function BaptismSertificate() {
   const [services, setServices] = useState([])
+  // For main member search (baptism recipient)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState([])
+  // For father and mother autocomplete results
+  const [resultsDad, setResultsDad] = useState([])
+  const [resultsMom, setResultsMom] = useState([])
+
   const [formData, setFormData] = useState({
-    member: "",
+    member: "", // Stores the ID of the selected baptism member
     date: "",
     certificateNumber: "",
     phoneNumber: "",
     gender:"",
     placeofbirth:"",
     dateofbirth:"",
-    dadName:"",
-    momName:"",
+    dadName:"", // Now functions as autocomplete input
+    momName:"", // Now functions as autocomplete input
     placeofbaptism:"",
     pastorname:""
   })
@@ -29,7 +34,7 @@ function BaptismSertificate() {
     fetchServices()
   }, [])
 
-  const fetchServices = async () => { 
+  const fetchServices = async () => {
     setLoading(true)
     try {
       const res = await api.get("/api/baptism-services")
@@ -42,44 +47,77 @@ function BaptismSertificate() {
     }
   }
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return
+  // Generalized search function for members
+  const searchMember = async (query, setResult) => {
+    if (!query.trim()) {
+      setResult([]) // Clear results if query is empty
+      return
+    }
     try {
-      const res = await api.get(`/api/members/search/${searchQuery}`)
-      setSearchResults(res.data)
+      const res = await api.get(`/api/members/search/${query}`)
+      setResult(res.data)
     } catch (err) {
       console.error(err)
       Swal.fire("Gagal", "Pencarian jemaat gagal.", "error")
     }
   }
 
-  const handleSelectMember = async (memberId) => {
-  try {
-    const res = await api.get(`/api/members/${memberId}`)
-    const member = res.data
+  // Generalized handler for selecting a member (baptism recipient, father, or mother)
+  const handleSelectMember = async (memberId, role = "baptismMember") => {
+    try {
+      const res = await api.get(`/api/members/${memberId}`)
+      const member = res.data
 
-    setFormData((prev) => ({
-      ...prev,
-      member: memberId,
-      gender: member.gender || "",
-      dateofbirth: member.dateOfBirth || "",
-      placeofbirth: member.placeOfBirth || "",
-      phoneNumber: member.phoneNumber || "",
-
-    }))
-
-    setSearchResults([])
-    setSearchQuery("")
-  } catch (err) {
-    console.error("Failed to fetch member details", err)
-    Swal.fire("Gagal", "Gagal mengambil detail jemaat.", "error")
+      if (role === "baptismMember") {
+        setFormData((prev) => ({
+          ...prev,
+          member: memberId,
+          gender: member.gender || "",
+          dateofbirth: member.dateOfBirth || "",
+          placeofbirth: member.placeOfBirth || "",
+          phoneNumber: member.phoneNumber || "",
+        }))
+        setSearchResults([]) // Clear search results for main member
+        setSearchQuery("") // Clear the search input for main member
+      } else if (role === "father") {
+        setFormData((prev) => ({
+          ...prev,
+          dadName: member.fullName || member.name || "", // Update dadName with selected member's full name
+        }))
+        setResultsDad([]) // Clear search results for father
+      } else if (role === "mother") {
+        setFormData((prev) => ({
+          ...prev,
+          momName: member.fullName || member.name || "", // Update momName with selected member's full name
+        }))
+        setResultsMom([]) // Clear search results for mother
+      }
+    } catch (err) {
+      console.error("Failed to fetch member details", err)
+      Swal.fire("Gagal", "Gagal mengambil detail jemaat.", "error")
+    }
   }
-}
 
+  // Handles changes for regular form inputs (non-autocomplete)
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
+
+  // Handles input and search for the Father's Name field
+  const handleDadNameChange = (e) => {
+    const value = e.target.value
+    setFormData((prev) => ({ ...prev, dadName: value })) // Update formData for dad's name
+    searchMember(value, setResultsDad) // Trigger search for father
+  }
+
+  // Handles input and search for the Mother's Name field
+  const handleMomNameChange = (e) => {
+    const value = e.target.value
+    setFormData((prev) => ({ ...prev, momName: value })) // Update formData for mom's name
+    searchMember(value, setResultsMom) // Trigger search for mother
+  }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -91,19 +129,25 @@ function BaptismSertificate() {
     try {
       await api.post("/api/baptism-services", formData)
       Swal.fire("Berhasil", "Sertifikat berhasil dibuat.", "success")
-      setFormData({ 
-    member: "",
-    date: "",
-    certificateNumber: "",
-    phoneNumber: "",
-    gender:"",
-    placeofbirth:"",
-    dateofbirth:"",
-    dadName:"",
-    momName:"",
-    placeofbaptism:"",
-    pastorname:""
+      // Reset form and all search-related states after successful submission
+      setFormData({
+        member: "",
+        date: "",
+        certificateNumber: "",
+        phoneNumber: "",
+        gender:"",
+        placeofbirth:"",
+        dateofbirth:"",
+        dadName:"",
+        momName:"",
+        placeofbaptism:"",
+        pastorname:""
       })
+      setSearchQuery("")
+      setSearchResults([])
+      setResultsDad([])
+      setResultsMom([])
+
       fetchServices()
     } catch (err) {
       console.error(err)
@@ -174,15 +218,15 @@ function BaptismSertificate() {
 
       <div className="form-card">
         <form onSubmit={handleSubmit} className="event-form">
-          {/* Jemaat Search */}
+          {/* Jemaat Search (remains separate search input for ID selection) */}
           <div className="form-row">
             <div className="form-group" style={{ width: "100%" }}>
-              <label>Cari Jemaat</label>
+              <label>Cari Jemaat (Penerima Baptis)</label>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && searchMember(searchQuery, setSearchResults)}
                 placeholder="Ketik nama jemaat lalu tekan Enter"
               />
               {searchResults.length > 0 && (
@@ -191,7 +235,7 @@ function BaptismSertificate() {
                     <li
                       key={member._id}
                       className="search-item"
-                      onClick={() => handleSelectMember(member._id)}
+                      onClick={() => handleSelectMember(member._id, "baptismMember")} // Pass role
                     >
                       {member.fullName || member.name}
                     </li>
@@ -201,12 +245,13 @@ function BaptismSertificate() {
             </div>
           </div>
 
-          {/* Hidden member ID */}
+          {/* Display selected member ID */}
           {formData.member && (
             <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
-              ✅ Jemaat terpilih: <code>{formData.member}</code>
+              ✅ ID Jemaat terpilih: <code>{formData.member}</code>
             </p>
           )}
+
           <div className="form-row">
             <div className="form-group">
               <label>No. Sertifikat</label>
@@ -218,7 +263,7 @@ function BaptismSertificate() {
                 required
               />
             </div>
-              <div className="form-group">
+            <div className="form-group">
               <label>Jenis Kelamin</label>
               <input
                 type="text"
@@ -227,23 +272,45 @@ function BaptismSertificate() {
                 onChange={handleChange}
               />
             </div>
+            {/* Combined Search/Input for Father's Name */}
             <div className="form-group">
               <label>Nama Ayah</label>
               <input
                 type="text"
                 name="dadName"
                 value={formData.dadName}
-                onChange={handleChange}
+                onChange={handleDadNameChange} // Use new handler
+                placeholder="Ketik nama atau cari di database"
               />
+              {resultsDad.length > 0 && (
+                <ul className="search-results">
+                  {resultsDad.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleSelectMember(member._id, "father")}>
+                      {member.fullName || member.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-              <div className="form-group">
+            {/* Combined Search/Input for Mother's Name */}
+            <div className="form-group">
               <label>Nama Ibu</label>
               <input
                 type="text"
                 name="momName"
                 value={formData.momName}
-                onChange={handleChange}
+                onChange={handleMomNameChange} // Use new handler
+                placeholder="Ketik nama atau cari di database"
               />
+              {resultsMom.length > 0 && (
+                <ul className="search-results">
+                  {resultsMom.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleSelectMember(member._id, "mother")}>
+                      {member.fullName || member.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="form-group">
               <label>Tempat Baptis</label>
@@ -280,6 +347,27 @@ function BaptismSertificate() {
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
+                readOnly // Assuming this is auto-filled from member selection
+              />
+            </div>
+            <div className="form-group">
+              <label>Tempat Lahir</label>
+              <input
+                type="text"
+                name="placeofbirth"
+                value={formData.placeofbirth}
+                onChange={handleChange}
+                readOnly // Auto-filled from member selection
+              />
+            </div>
+            <div className="form-group">
+              <label>Tanggal Lahir</label>
+              <input
+                type="date"
+                name="dateofbirth"
+                value={formData.dateofbirth}
+                onChange={handleChange}
+                readOnly // Auto-filled from member selection
               />
             </div>
           </div>
@@ -315,6 +403,8 @@ function BaptismSertificate() {
                       day: "numeric"
                     }) : "-"}</p>
                     <p><strong>Dibaptis oleh:</strong> {svc.pastorname || "-"}</p>
+                    <p><strong>Nama Ayah:</strong> {svc.dadName || "-"}</p>
+                    <p><strong>Nama Ibu:</strong> {svc.momName || "-"}</p>
                   </div>
                   <div className="event-actions">
                     <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>

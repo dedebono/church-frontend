@@ -5,19 +5,25 @@ import "./ChildForm.css"
 
 function ChildForm() {
   const [formData, setFormData] = useState({
-    member: "",
+    member: "", // Stores the ID of the selected child member for backend
     date: "",
     certificateNumber: "",
-    fatherName: "",
-    motherName: "",
-    placeofbirth: "",
+    fatherName: "", // Serves as both search input and display for father's name
+    motherName: "", // Serves as both search input and display for mother's name
+    placeofbirth: "", // Populated from the selected child's data, remains read-only
     pastorName: "",
     place: "",
     status: "",
   })
 
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState([])
+  // State for the value displayed in the "Nama Anak" input field
+  const [childNameInput, setChildNameInput] = useState("")
+
+  // States for search results/suggestions for child, father, and mother
+  const [resultsChild, setResultsChild] = useState([])
+  const [resultsFather, setResultsFather] = useState([])
+  const [resultsMother, setResultsMother] = useState([])
+
   const [records, setRecords] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -34,37 +40,77 @@ function ChildForm() {
     }
   }
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return
+  // Generalized search function for members
+  const searchMember = async (query, setResult) => {
+    if (!query.trim()) {
+      setResult([]) // Clear results if query is empty
+      return
+    }
     try {
-      const res = await api.get(`/api/members/search/${searchQuery}`)
-      setSearchResults(res.data)
+      const res = await api.get(`/api/members/search/${query}`)
+      setResult(res.data)
     } catch (err) {
       Swal.fire("Gagal", "Pencarian gagal.", "error")
     }
   }
 
-  const handleSelectMember = async (memberId) => {
+  // Generalized handler for selecting a member (child, father, or mother)
+  const handleSelectMember = async (memberId, role) => {
     try {
       const res = await api.get(`/api/members/${memberId}`)
       const member = res.data
 
-      setFormData((prev) => ({
-        ...prev,
-        member: memberId,
-        placeofbirth: member.placeOfBirth || "",
-      }))
-
-      setSearchResults([])
-      setSearchQuery("")
+      if (role === "child") {
+        setFormData((prev) => ({
+          ...prev,
+          member: memberId, // Store child's ID for backend
+          placeofbirth: member.placeOfBirth || "", // Auto-fill place of birth
+        }))
+        setChildNameInput(member.fullName) // Display full name in the input
+        setResultsChild([]) // Clear search results for child
+      } else if (role === "father") {
+        setFormData((prev) => ({
+          ...prev,
+          fatherName: member.fullName || "", // Store father's full name directly in the form field
+        }))
+        setResultsFather([]) // Clear search results for father
+      } else if (role === "mother") {
+        setFormData((prev) => ({
+          ...prev,
+          motherName: member.fullName || "", // Store mother's full name directly in the form field
+        }))
+        setResultsMother([]) // Clear search results for mother
+      }
     } catch (err) {
-      Swal.fire("Gagal", "Gagal mengambil data anggota.", "error")
+      Swal.fire("Gagal", "Gagal mengambil detail jemaat.", "error")
     }
   }
 
+  // Handles changes for regular form inputs (non-autocomplete)
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  // Handles input and search for the Child's Name field
+  const handleChildInputChange = (e) => {
+    const value = e.target.value
+    setChildNameInput(value) // Update the input display
+    searchMember(value, setResultsChild) // Trigger search for child
+  }
+
+  // Handles input and search for the Father's Name field
+  const handleFatherInputChange = (e) => {
+    const value = e.target.value
+    setFormData((prev) => ({ ...prev, fatherName: value })) // Update formData for father's name
+    searchMember(value, setResultsFather) // Trigger search for father
+  }
+
+  // Handles input and search for the Mother's Name field
+  const handleMotherInputChange = (e) => {
+    const value = e.target.value
+    setFormData((prev) => ({ ...prev, motherName: value })) // Update formData for mother's name
+    searchMember(value, setResultsMother) // Trigger search for mother
   }
 
   const handleSubmit = async (e) => {
@@ -77,6 +123,7 @@ function ChildForm() {
     try {
       await api.post("/api/child-services", formData)
       Swal.fire("Berhasil", "Sertifikat penyerahan anak dibuat.", "success")
+      // Reset form and all search-related states after successful submission
       setFormData({
         member: "",
         date: "",
@@ -88,6 +135,11 @@ function ChildForm() {
         place: "",
         status: "",
       })
+      setChildNameInput("")
+      setResultsChild([])
+      setResultsFather([])
+      setResultsMother([])
+
       fetchServices()
     } catch (err) {
       Swal.fire("Gagal", "Gagal membuat sertifikat.", "error")
@@ -135,6 +187,8 @@ function ChildForm() {
         <p>No. Sertifikat: ${svc.certificateNumber}</p>
         <p>Ditempat: ${svc.place}</p>
         <p>Oleh: ${svc.pastorName || "-"}</p>
+        <p>Ayah: ${svc.fatherName || "-"}</p>
+        <p>Ibu: ${svc.motherName || "-"}</p>
         <script>
           window.onload = function() {
             window.print();
@@ -149,54 +203,103 @@ function ChildForm() {
   }
 
   return (
-    <div
-    className="event-cms-container">
-    <div
-    className="cms-header">
-    <h2>👶 Formulir Penyerahan Anak</h2>
-    </div>
-    <div className="form-card">
-      <form onSubmit={handleSubmit} 
+    <div className="event-cms-container">
+      <div className="cms-header">
+        <h2>👶 Formulir Penyerahan Anak</h2>
+      </div>
+      <div className="form-card">
+        <form onSubmit={handleSubmit} className="event-form">
+          {/* Combined Search/Input for Child's Name */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>Nama Anak</label>
+              <input
+                type="text"
+                value={childNameInput}
+                onChange={handleChildInputChange}
+                placeholder="Ketik nama atau cari di database"
+              />
+              {resultsChild.length > 0 && (
+                <ul className="search-results">
+                  {resultsChild.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleSelectMember(member._id, "child")}>
+                      {member.fullName}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {/* Optional: Show selected child's ID for confirmation/debugging */}
+              {formData.member && (
+                <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
+                  ✅ ID Anak: <code>{formData.member}</code>
+                </p>
+              )}
+            </div>
+          </div>
 
-      /*search member */
-      className="form-group">
-        <label>Cari Anak</label>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          placeholder="Ketik nama lalu tekan Enter"
-        />
-        {searchResults.length > 0 && (
-          <ul className="search-results">
-            {searchResults.map((m) => (
-              <li key={m._id} onClick={() => handleSelectMember(m._id)}>
-                {m.fullName}
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="form-row">
-        <input name="certificateNumber" placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
-        <input name="fatherName" placeholder="Nama Ayah" value={formData.fatherName} onChange={handleChange} />
-        <input name="motherName" placeholder="Nama Ibu" value={formData.motherName} onChange={handleChange} />
-        <input name="placeofbirth" placeholder="Tempat Lahir" value={formData.placeofbirth} onChange={handleChange} />
-        <input name="pastorName" placeholder="Nama Pendeta" value={formData.pastorName} onChange={handleChange} />
-        <input name="place" placeholder="Tempat Penyerahan" value={formData.place} onChange={handleChange} />
-        <input type="date" name="date" value={formData.date} onChange={handleChange} required />
-        <input name="status" placeholder="Status (mis. Diberkati)" value={formData.status} onChange={handleChange} />
-        </div>
+          {/* Combined Search/Input for Father's Name */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>Nama Ayah</label>
+              <input
+                type="text"
+                name="fatherName"
+                value={formData.fatherName}
+                onChange={handleFatherInputChange} // New handler for father
+                placeholder="Ketik nama atau cari di database"
+              />
+              {resultsFather.length > 0 && (
+                <ul className="search-results">
+                  {resultsFather.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleSelectMember(member._id, "father")}>
+                      {member.fullName}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
 
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? "Menyimpan..." : "Buat Sertifikat"}
-        </button>
-      </form>
+            {/* Combined Search/Input for Mother's Name */}
+            <div className="form-group">
+              <label>Nama Ibu</label>
+              <input
+                type="text"
+                name="motherName"
+                value={formData.motherName}
+                onChange={handleMotherInputChange} // New handler for mother
+                placeholder="Ketik nama atau cari di database"
+              />
+              {resultsMother.length > 0 && (
+                <ul className="search-results">
+                  {resultsMother.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleSelectMember(member._id, "mother")}>
+                      {member.fullName}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {/* Other Form details */}
+          <div className="form-row">
+            <input name="certificateNumber" className="form-group" placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
+            <input name="placeofbirth" className="form-group" placeholder="Tempat Lahir Anak" value={formData.placeofbirth} onChange={handleChange} readOnly />
+            <input name="pastorName" className="form-group" placeholder="Nama Pendeta" value={formData.pastorName} onChange={handleChange} />
+            <input name="place" className="form-group" placeholder="Tempat Penyerahan" value={formData.place} onChange={handleChange} />
+            <input type="date" name="date" className="form-group" value={formData.date} onChange={handleChange} required />
+            <input name="status" className="form-group" placeholder="Status (mis. Diberkati)" value={formData.status} onChange={handleChange} />
+          </div>
+
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? "Menyimpan..." : "Buat Sertifikat"}
+          </button>
+        </form>
       </div>
 
-      <hr/>
+      <hr />
       <h2>📄 Daftar Sertifikat Penyerahan Anak</h2>
-      <div>
+      <div className="events-grid">
         {records.map((svc) => (
           <div key={svc._id} className="event-card">
             <h4>{svc.member?.fullName}</h4>
