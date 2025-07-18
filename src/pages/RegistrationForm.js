@@ -347,7 +347,7 @@ function RegistrationForm() {
               </div>
 
               <form className="form-section" onSubmit={handleFamilySubmit}>
-                <div className="form-group">
+                <div className="form-group-regis">
                   <label htmlFor="familyName">Nama Kepala Keluarga *</label>
                   <input
                   className="input_1"
@@ -360,7 +360,7 @@ function RegistrationForm() {
                   />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group-regis">
                   <label htmlFor="familyDate">Tanggal Pernikahan *</label>
                   <input
                   className="input_1"
@@ -373,7 +373,7 @@ function RegistrationForm() {
                   <small>Isi dengan 01/01/2000 jika belum menikah</small>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group-regis">
                   <label htmlFor="email">Email *</label>
                   <input
                   className="input_1"
@@ -387,7 +387,7 @@ function RegistrationForm() {
                   <small>Password akan dikirim ke email ini</small>
                 </div>
 
-                <button type="submit" className="btn-primary" disabled={isLoading}>
+                <button type="submit" className="btn-primary-regis" disabled={isLoading}>
                   <span className="btn-text">{isLoading ? "Menyimpan..." : "Lanjutkan"}</span>
                   {isLoading && (
                     <div className="btn-loader">
@@ -420,7 +420,7 @@ function RegistrationForm() {
                     </div>
 
                     <div className="mmember-form">
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Nama Lengkap *</label>
                         <input
                           type="text"
@@ -432,7 +432,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Jenis Kelamin *</label>
                         <select value={member.gender} onChange={(e) => handleMemberChange(index, "gender", e)} required>
                           <option value="">Pilih jenis kelamin</option>
@@ -441,7 +441,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Tempat Lahir *</label>
                         <input
                           type="text"
@@ -453,7 +453,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Tanggal Lahir *</label>
                         <input
                           type="date"
@@ -464,7 +464,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Golongan Darah *</label>
                         <select
                           value={member.bloodType}
@@ -479,7 +479,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>No. Handphone *</label>
                         <input
                           type="tel"
@@ -491,7 +491,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group full-width">
+                      <div className="form-group-regis full-width">
                         <label>Alamat *</label>
                         <input
                           type="text"
@@ -503,7 +503,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Hubungan Keluarga *</label>
                         <select
                           value={member.familyStatus}
@@ -519,7 +519,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Status Pernikahan *</label>
                         <select
                           value={member.maritalStatus}
@@ -533,7 +533,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Hobi</label>
                         <input
                           type="text"
@@ -544,7 +544,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Pendidikan Terakhir</label>
                         <select value={member.eduHistory} onChange={(e) => handleMemberChange(index, "eduHistory", e)}>
                           <option value="">Pendidikan terakhir</option>
@@ -556,7 +556,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Pekerjaan</label>
                         <input
                           type="text"
@@ -567,7 +567,7 @@ function RegistrationForm() {
                         />
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Status Baptisan</label>
                         <select
                           value={member.baptismStatus}
@@ -579,7 +579,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Status Anggota</label>
                         <select
                           value={member.congregationStatus}
@@ -592,7 +592,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>BPJS</label>
                         <select value={member.bpjsStatus} onChange={(e) => handleMemberChange(index, "bpjsStatus", e)}>
                           <option value="">BPJS</option>
@@ -601,7 +601,7 @@ function RegistrationForm() {
                         </select>
                       </div>
 
-                      <div className="form-group">
+                      <div className="form-group-regis">
                         <label>Anggota YAKUMKRIS</label>
                         <select
                           value={member.yakumkrisStatus}
@@ -618,10 +618,10 @@ function RegistrationForm() {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-secondary" onClick={addMember}>
+                <button type="button" className="btn-secondary-regis" onClick={addMember}>
                   <i className="fas fa-plus"></i> Tambah Anggota
                 </button>
-                <button type="button" className="btn-primary" onClick={nextStep}>
+                <button type="button" className="btn-primary-regis" onClick={nextStep}>
                   Review Data
                 </button>
               </div>
@@ -673,10 +673,10 @@ function RegistrationForm() {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-secondary" onClick={prevStep}>
+                <button type="button" className="btn-secondary-regis" onClick={prevStep}>
                   Kembali Edit
                 </button>
-                <button type="button" className="btn-primary" onClick={nextStep}>
+                <button type="button" className="btn-primary-regis" onClick={nextStep}>
                   Konfirmasi
                 </button>
               </div>
@@ -703,10 +703,10 @@ function RegistrationForm() {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-secondary" onClick={prevStep}>
+                <button type="button" className="btn-secondary-regis" onClick={prevStep}>
                   Kembali Review
                 </button>
-                <button type="button" className="btn-primary" onClick={handleAllSubmit} disabled={isLoading}>
+                <button type="button" className="btn-primary-regis" onClick={handleAllSubmit} disabled={isLoading}>
                   <span className="btn-text">{isLoading ? "Mendaftar..." : "Daftar Sekarang"}</span>
                   {isLoading && (
                     <div className="btn-loader">
@@ -738,7 +738,7 @@ function RegistrationForm() {
                 </ul>
               </div>
 
-              <button type="button" className="btn-primary" onClick={resetForm}>
+              <button type="button" className="btn-primary-regis" onClick={resetForm}>
                 Daftar Keluarga Baru
               </button>
             </div>
