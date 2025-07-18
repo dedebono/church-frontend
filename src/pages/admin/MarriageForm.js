@@ -178,7 +178,6 @@ function MarriageForm() {
         <div className="cms-header">
       <h2>💍 Formulir Sertifikat Pernikahan</h2>
         </div>
-
         <div className="form-card">
       <form onSubmit={handleSubmit} className="event-form">
         {/* Search husband */}
