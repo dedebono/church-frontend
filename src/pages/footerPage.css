@@ -1,0 +1,88 @@
+/* ===================================== */
+  /* FOOTER STYLES              */
+  /* ===================================== */
+  .footer {
+    background: var(--color-background-dark);
+    color: var(--color-light-text);
+    padding: var(--spacing-xl) 0 var(--spacing-md) 0; /* Adjusted padding */
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+  }
+
+  .footer-section h3 {
+    color: white;
+    font-size: var(--text-xl);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .footer-contact .footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .footer-contact .footer-contact-item a,
+  .footer-contact .footer-contact-item span {
+    color: var(--color-light-text);
+    font-size: var(--text-base);
+  }
+
+  .footer-contact .footer-contact-item a:hover {
+    color: var(--color-primary);
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .newsletter-form input {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    background-color: var(--color-background-light);
+    color: var(--color-dark);
+    font-size: var(--text-base);
+  }
+
+  .newsletter-form input::placeholder {
+    color: #777;
+  }
+
+  .newsletter-form .btn-primary {
+    width: 100%; /* Make button full width */
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Lighter border */
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .footer-copyright a {
+    color: var(--color-background-light);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+  }
+
+  .footer-copyright a:hover {
+    color: var(--color-primary);
+  }
+
+  .footer-terms p {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    color: var(--color-light-text);
+  }

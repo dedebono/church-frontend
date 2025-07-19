@@ -1,10 +1,13 @@
 "use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
+import { Menu } from "lucide-react"
+import { Link } from "react-router-dom"
 import api from "./admin/api/API" // ✅ Import your shared Axios instance
 import "./formpage.css"
+import "./footerPage.css"
+import FooterPage from './footerPage'; // Changed to uppercase 'FooterPage'
 
 const ServiceRequestForm = () => {
   const navigate = useNavigate()
@@ -15,6 +18,11 @@ const ServiceRequestForm = () => {
     phoneNumber: "",
     requestDetails: {},
   })
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+
 
   const [message, setMessage] = useState("")
 
@@ -168,6 +176,33 @@ const ServiceRequestForm = () => {
   }
 
   return (
+
+    <div>
+            <header className="pagelayer-header">
+        {/* Main Navigation Section */}
+        <nav className="main-nav">
+          <div className="container nav-content">
+            <div className="logo">
+              <a href="/" className="logo-link">
+                MLB Church
+              </a>
+            </div>
+            <ul className={`nav-menu ${isMobileMenuOpen ? "active" : ""}`}>
+              <li>
+                <a href="/" onClick={closeMobileMenu}>Dashboard</a>
+              </li>
+             <li>
+                <Link to="/register" onClick={closeMobileMenu}>Daftar</Link>
+              </li>
+            </ul>
+            <button className="mobile-menu-toggle"
+            onClick={toggleMobileMenu}>
+              <Menu size={24} />
+            </button>
+          </div>
+        </nav>
+      </header>
+
     <div className="form-container">
       <div className="decoration-circle circle-1"></div>
       <div className="decoration-circle circle-2"></div>
@@ -282,8 +317,15 @@ const ServiceRequestForm = () => {
           </div>
         </div>
       </div>
+
+    <div className="footer">
+      <FooterPage /> {/* Changed to uppercase 'FooterPage' */}
     </div>
+
+    </div>
+        </div>
   )
 }
+
 
 export default ServiceRequestForm
