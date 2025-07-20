@@ -259,20 +259,17 @@ function ViewFamily() {
     return `${day}/${month}/${year}`
   }
 
-  const handleSearch = async () => {
+const handleSearch = async () => {
     setIsSearched(true) // Mark that search was performed
     try {
       const cleanName = familyName.trim()
       const response = await api.get(`api/families/${cleanName}`)
       setFamilyData(response.data)
-      setError("")
-      setEditedFamily({
-        familyName: response.data.familyName || "",
-        familyDate: response.data.familyDate?.substring(0, 10) || "",
-        email: response.data.email || "",
-      })
+      setError("") // Clear any previous errors on successful search
     } catch (err) {
       setFamilyData(null)
+      const errorMessage = err.response?.data?.message || "Keluarga tidak ditemukan. Silakan coba nama kepala keluarga lain."
+      setError(errorMessage) // Set the error message
       Swal.fire({
         icon: "error",
         title: "Keluarga tidak ditemukan",
@@ -425,6 +422,8 @@ function ViewFamily() {
         <button className="search-button" onClick={handleSearch}>
           Cari
         </button>
+
+         {error && <div className="error-message">{error}</div>}
 
         {/* Toggle button for family list */}
         {families.length > 0 && (
@@ -947,12 +946,14 @@ function ViewFamily() {
                 <option value="Simpatisan">Simpatisan</option>
                 <option value="Tamu">Tamu</option>
               </select>
+              <div className="button-collection">
               <button className="modal-submit" type="submit">
                 Simpan
               </button>
               <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setShowModal)}>
                 Batal
               </button>
+              </div>
             </form>
           </div>
         </div>
