@@ -141,12 +141,6 @@ function RegistrationForm() {
     setMembers(newMembers)
   }
 
-  const handleMemberDateChange = (index, fieldName, date) => {
-    const newMembers = [...members]
-    newMembers[index][fieldName] = date ? date.toISOString().split("T")[0] : ""
-    setMembers(newMembers)
-  }
-
   const addMember = () => {
     setMembers([
       ...members,

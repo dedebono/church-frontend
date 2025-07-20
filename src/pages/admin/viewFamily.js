@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import api, { getFamilies } from "./api/API"
@@ -39,6 +38,8 @@ function ViewFamily() {
   const [isSearched, setIsSearched] = useState(false) // Track if search was performed
   const [selectedFile, setSelectedFile] = useState(null)
   const [uploadingFor, setUploadingFor] = useState(null) // to track which member is being uploaded for
+  const [selectedFamilyFile, setSelectedFamilyFile] = useState(null) // New: For family photo upload
+  const [uploadingForFamily, setUploadingForFamily] = useState(null) // New: For family photo upload status
 
   const fetchFamilies = async () => {
     try {
@@ -64,6 +65,48 @@ function ViewFamily() {
   const handleEdit = (member) => {
     setEditingMember(member._id)
     setFormData({ ...member })
+  }
+
+   const handleFamilyPhotoUpload = async (familyId) => {
+    if (!selectedFamilyFile) {
+      Swal.fire({
+        icon: "warning",
+        title: "No File Selected",
+        text: "Please select a file first for the family photo.",
+      })
+      return
+    }
+
+    try {
+      setUploadingForFamily(familyId) // Set uploading status for the family
+
+      const fileName = `family_profile_photos/${familyId}_${selectedFamilyFile.name}`
+      const fileRef = ref(storage, fileName)
+      await uploadBytes(fileRef, selectedFamilyFile)
+      const downloadURL = await getDownloadURL(fileRef)
+
+      // Use the API endpoint for updating family photo
+      await api.put(`/api/families/${familyId}/photo`, { photoUrl: downloadURL })
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Family photo uploaded successfully!",
+      })
+      setSelectedFamilyFile(null) // Clear selected file
+      setUploadingForFamily(null) // Reset uploading status
+
+      // Refresh the family data to show updated photo
+      await handleSearch()
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Upload Failed",
+        text: "An error occurred while uploading the family photo.",
+      })
+      console.error("Error uploading family photo:", error)
+      setUploadingForFamily(null) // Reset uploading status on error
+    }
   }
 
   const handleChange = (e) => {
@@ -424,17 +467,20 @@ function ViewFamily() {
           {hasContent(familyData.familyName) && (
             <div className="nama-keluarga">👨‍👩‍👧‍👦 Nama Keluarga: {familyData.familyName}</div>
           )}
-
-          <div className="divider"></div>
+          <div className="photo-family-detail">
+          {/* New: Display Family Profile Photo */}
+          {hasContent(familyData.profilePhoto) && (
+            <img src={familyData.profilePhoto} alt="Family Profile" className="family-profile-photo" />
+          )}
 
           {/* Marriage date - only show if exists */}
           {hasContent(familyData.familyDate) && (
             <div className="tanggal-pernikahan">👰 Tanggal Pernikahan: {formatDate(familyData.familyDate)}</div>
           )}
 
-          {hasContent(familyData.email) && <div className="tanggal-pernikahan">📧 Email: {familyData.email}</div>}
-          
-          <div className="divider"></div>
+          {hasContent(familyData.email) && 
+          <div className="tanggal-pernikahan">📧 Email: {familyData.email}</div>}
+          </div>
 
           <div className="button-group">
             <button className="add-member-button" onClick={() => setShowModal(true)}>
@@ -445,7 +491,7 @@ function ViewFamily() {
             </button>
           </div>
 
-          {/* Edit Family Modal */}
+ {/* Edit Family Modal */}
           {editFamilyModal && (
             <div className="modal-overlay">
               <div className="modal-content">
@@ -469,20 +515,66 @@ function ViewFamily() {
                     value={editedFamily.email}
                     onChange={(e) => setEditedFamily({ ...editedFamily, email: e.target.value })}
                   />
+
+                  {/* New: Family Photo Upload Section */}
+                  <div className="upload-section-family">
+                    <strong>Upload Family Photo</strong>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0]
+                        if (!file) return
+
+                        if (!file.type.startsWith("image/")) {
+                          Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Type",
+                            text: "Only image files are allowed.",
+                          })
+                          e.target.value = ""
+                          return
+                        }
+
+                        if (file.size > 1024 * 1024) {
+                          // 1MB limit
+                          Swal.fire({
+                            icon: "error",
+                            title: "File Too Large",
+                            text: "File size must be under 1MB.",
+                          })
+                          e.target.value = ""
+                          return
+                        }
+                        setSelectedFamilyFile(file)
+                      }}
+                    />
+                  </div>
+                  {/* End Family Photo Upload Section */}
+                  <div className="button-collection">
+                    <button
+                      type="button" // Important: set type="button" to prevent form submission
+                      onClick={() => handleFamilyPhotoUpload(familyData._id)}
+                      disabled={uploadingForFamily === familyData._id}
+                      className="modal-submit" // You can create a new class or reuse existing for styling
+                    >
+                      {uploadingForFamily === familyData._id ? "Uploading..." : "Upload Photo"}
+                    </button>
+
                   <button className="modal-submit" type="submit">
                     Simpan
                   </button>
                   <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setEditFamilyModal)}>
                     Batal
                   </button>
+                  </div>
                 </form>
-                <button className="delete-family-button" onClick={handleDeleteFamily}> {/* New Delete Button */}
-                    Delete Keluarga
+                <button className="delete-family-button" onClick={handleDeleteFamily}>
+                    Hapus Keluarga
                 </button>
               </div>
             </div>
-          )}
-
+            )}
           {/* Edit Member Modal */}
           {editingMember && (
             <div className="modal-overlay">
