@@ -155,6 +155,51 @@ export const deleteGalleryPhoto = async (id) => {
   }
 };
 
+// API Finance
+// 💰 FINANCE API
+
+export const getFinanceSummary = async (year, month) => {
+  try {
+    const response = await api.get(`/api/finance/summary?year=${year}&month=${month}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching finance summary:", error);
+    throw error;
+  }
+};
+
+export const getTransactions = async (params) => {
+  try {
+    const query = new URLSearchParams(params).toString();
+    const response = await api.get(`/api/finance/transactions?${query}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    throw error;
+  }
+};
+
+export const createTransaction = async (transactionData) => {
+  try {
+    const response = await api.post('/api/finance/transactions', transactionData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    throw error;
+  }
+};
+
+
+export const deleteTransaction = async (id) => {
+  try {
+    const response = await api.delete(`/api/finance/transactions/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting transaction:", error);
+    throw error;
+  }
+};
+
 
 // ⬇️ API functions
 export const importMembers = (membersData) =>
@@ -194,6 +239,74 @@ export const getFamilies = async () => {
   }
 };
 
+//managegroups
+// Create a new group
+export const createGroup = async (groupData) => {
+  try {
+    const res = await api.post("/api/groups", groupData);
+    return res.data;
+  } catch (err) {
+    console.error("Error creating group:", err);
+    throw err;
+  }
+};
+
+// Update an existing group
+export const updateGroup = async (groupId, groupData) => {
+  try {
+    const res = await api.put(`/api/groups/${groupId}`, groupData);
+    return res.data;
+  } catch (err) {
+    console.error("Error updating group:", err);
+    throw err;
+  }
+};
+
+// Delete a group
+export const deleteGroup = async (groupId) => {
+  try {
+    const res = await api.delete(`/api/groups/${groupId}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error deleting group:", err);
+    throw err;
+  }
+};
+
+// Get members of a group
+export const getGroupMembers = async (groupId) => {
+  try {
+    const res = await api.get(`/api/groups/${groupId}/members`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching group members:", err);
+    throw err;
+  }
+};
+
+// Add member to a group
+export const addMemberToGroup = async (groupId, memberId) => {
+  try {
+    const res = await api.post(`/api/groups/${groupId}/members`, { memberId });
+    return res.data;
+  } catch (err) {
+    console.error("Error adding member to group:", err);
+    throw err;
+  }
+};
+
+// Remove member from a group
+export const removeMemberFromGroup = async (groupId, memberId) => {
+  try {
+    const res = await api.delete(`/api/groups/${groupId}/members/${memberId}`);
+    return res.data;
+  } catch (err) {
+    console.error("Error removing member from group:", err);
+    throw err;
+  }
+};
+
+
 // Health check function
 export const healthCheck = async () => {
   try {
@@ -214,6 +327,17 @@ export const healthCheck = async () => {
     }
   }
 }
+export const fetchTotalMembers = () =>
+  api.get("/api/members/count").then((res) => res.data.count);
+
+export const fetchTotalGroups = () =>
+  api.get("/api/groups/count").then((res) => res.data.count);
+
+export const fetchTotalFamilies = () =>
+  api.get("/api/families/count").then((res) => res.data.count);
+
+export const fetchTotalAttendance = () =>
+  api.get("/api/attendance/count").then((res) => res.data.count);
 
 
 export default api;

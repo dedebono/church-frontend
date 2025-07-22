@@ -11,7 +11,6 @@ function RegistrationForm() {
   const [familyDate, setFamilyDate] = useState("")
   const [email, setEmail] = useState("")
   const [familyId, setFamilyId] = useState(null)
-  const [isFamilySubmitted, setIsFamilySubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -113,7 +112,6 @@ function RegistrationForm() {
       }
 
       setFamilyId(id)
-      setIsFamilySubmitted(true)
       setCurrentStep(2)
 
       Swal.fire({
@@ -226,7 +224,6 @@ function RegistrationForm() {
     setFamilyDate("")
     setEmail("")
     setFamilyId(null)
-    setIsFamilySubmitted(false)
     setCurrentStep(1)
     setMembers([
       {

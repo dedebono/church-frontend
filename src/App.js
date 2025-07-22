@@ -6,6 +6,9 @@ import AdminLogin from './pages/AdminLogin';
 import AdminPage from './pages/AdminPage';
 import FormulirJemaat from './pages/formpage';
 import ResetPasswordPage from './pages/Reset-password'; // Import the ResetPasswordPage
+import FinanceAdmin from './pages/FinanceDashboard';
+import ProtectedRoute from './pages/ProtectedRoute'; // import the wrapper
+
 
 function App() {
   return (
@@ -15,8 +18,19 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
         <Route path="/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin" element={
+        <ProtectedRoute allowedRoles={['regular_admin']}>
+        <AdminPage />
+        </ProtectedRoute>}/>
         <Route path="/form" element={<FormulirJemaat/>}/>
+        <Route
+          path="/finance"
+          element={
+            <ProtectedRoute allowedRoles={['finance_admin']}>
+              <FinanceAdmin />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

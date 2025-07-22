@@ -5,6 +5,7 @@ import { useNavigate, Navigate } from "react-router-dom"
 import "./AdminPage.css"
 
 import ViewFamily from "./admin/viewFamily"
+import Dashboard from "./admin/Dashboard"
 import ViewMember from "./admin/viewMember"
 import UploadCSV from "./admin/csvUpload"
 import AdminMembers from "./admin/AdminMembers"
@@ -18,7 +19,7 @@ import ServiceRequest from "./admin/serviceRequest"
 import ManageCertificates from "./admin/ManageCertificates"
 
 const AdminPage = () => {
-  const [activeTab, setActiveTab] = useState("viewFamily")
+  const [activeTab, setActiveTab] = useState("dashboard")
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [openGroups, setOpenGroups] = useState({ // New state for managing open groups
     "Admin Jemaat": false, // You can set initial open/closed state here
@@ -33,10 +34,11 @@ const AdminPage = () => {
   }
 
   const isAdmin = localStorage.getItem('isAdmin') === 'true'
-  if (!isAdmin) return <Navigate to="/admin-login" />
+  if (!isAdmin) return <Navigate to="/login" />
 
   const renderContent = () => {
     switch (activeTab) {
+      case "dashboard" : return <Dashboard/>
       case "viewFamily": return <ViewFamily />
       case "viewMember": return <ViewMember />
       case "uploadCSV": return <UploadCSV />

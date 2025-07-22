@@ -39,18 +39,27 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       const res = await api.post('/api/admin/verify-login', { email, code });
-      if (res.data.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil Login',
-          text: 'Anda berhasil masuk sebagai admin.',
-          timer: 2000,
-          showConfirmButton: false,
-        }).then(() => {
-          localStorage.setItem('isAdmin', 'true');
-          navigate('/admin');
-        });
-      }
+if (res.data.success) {
+  const role = res.data.role;
+  Swal.fire({
+    icon: 'success',
+    title: 'Berhasil Login',
+    text: `Login sebagai ${role.replace('_', ' ')}`,
+    timer: 2000,
+    showConfirmButton: false,
+  }).then(() => {
+    localStorage.setItem('isAdmin', 'true');
+    localStorage.setItem('adminRole', role);
+
+    if (role === 'regular_admin') {
+      navigate('/admin');
+    } else if (role === 'finance_admin') {
+      navigate('/finance');
+    } else {
+      navigate('/admin'); // Fallback
+    }
+  });
+}
     } catch (err) {
       Swal.fire({
         icon: 'error',

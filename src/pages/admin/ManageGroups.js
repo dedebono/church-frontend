@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+// src/components/ManageGroups.js
+import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import './ManageGroups.css';
-import axios from 'axios'; // make sure you import axios if not already
+import api from './api/API'
 import {
   getAllGroups,
   createGroup,
@@ -10,13 +11,13 @@ import {
   deleteGroup,
   removeMemberFromGroup,
   getGroupMembers,
-  searchMembersByName,  // API call for searching members
-  addMemberToGroup      // API call for adding member to the group
-} from './api/manageGroupsAPI';
+  searchMembersByName,
+  addMemberToGroup,
+} from './api/API'; // Updated import
 
 const ManageGroups = () => {
   const [groups, setGroups] = useState([]);
-  const [groupMembers, setGroupMembers] = useState({}); // ✅ new state
+  const [groupMembers, setGroupMembers] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
   const [formData, setFormData] = useState({
@@ -24,12 +25,14 @@ const ManageGroups = () => {
     description: '',
     rules: '',
   });
-
-  // For add members modal
   const [showAddMembersModal, setShowAddMembersModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [showBroadcastModal_all, setShowBroadcastModal_all] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState('');
+  const [selectedGroupIdForBroadcast, setSelectedGroupIdForBroadcast] = useState(null);
 
   useEffect(() => {
     fetchGroups();
@@ -56,11 +59,25 @@ const ManageGroups = () => {
   }, [groups]);
 
   const fetchGroups = async () => {
-    const res = await getAllGroups();
-    setGroups(res.data);
+    try {
+      const res = await getAllGroups();
+      setGroups(res.data);
+    } catch (err) {
+      console.error('Error fetching groups:', err);
+      toast.error('Failed to fetch groups.');
+    }
   };
 
-  //Remove member of group
+    const handleEdit = (group) => {
+    setFormData({
+      name: group.name,
+      description: group.description,
+      rules: group.rules,
+    });
+    setEditingGroup(group);
+    setShowModal(true);
+  };
+
   const handleRemoveMember = async (groupId, memberId) => {
     try {
       await removeMemberFromGroup(groupId, memberId);
@@ -71,16 +88,15 @@ const ManageGroups = () => {
       toast.error('Failed to remove member.');
     }
   };
-  
-  // Search members by name
+
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    setSelectedMember(null); // 🔄 Clear the selected member on input change
-  
+    setSelectedMember(null);
+
     if (query.length > 2) {
       try {
-        const res = await searchMembersByName(query); // Search members in all members area
+        const res = await searchMembersByName(query);
         if (res.data.length === 0) {
           setSearchResults([]);
           Swal.fire({
@@ -104,23 +120,22 @@ const ManageGroups = () => {
           Swal.fire({
             icon: 'error',
             title: 'Search Error',
-            text: 'An error occurred while searching for members.',
+            text: error.response?.data?.message || 'An error occurred while searching for members.',
           });
         }
       }
     } else {
       setSearchResults([]);
     }
-  };  
+  };
 
-  // Add selected member to the group
   const handleAddMemberToGroup = async () => {
     if (!selectedMember) return;
-  
+
     try {
       await addMemberToGroup(editingGroup._id, selectedMember._id);
       closeAddMembersModal();
-      fetchGroups();  // Refresh to show updated members
+      fetchGroups();
       Swal.fire('Success', 'Member added to group!', 'success');
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -133,13 +148,13 @@ const ManageGroups = () => {
         Swal.fire({
           icon: 'error',
           title: 'Error Adding Member',
-          text: 'Something went wrong while adding the member to the group.',
+          text: error.response?.data?.message || 'Something went wrong while adding the member.',
         });
         console.error('Add member error:', error);
       }
     }
   };
-  
+
   const handleInputChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -156,26 +171,22 @@ const ManageGroups = () => {
       rules: formData.rules,
     };
 
-    if (editingGroup) {
-      await updateGroup(editingGroup._id, payload);
-    } else {
-      await createGroup(payload);
+    try {
+      if (editingGroup) {
+        await updateGroup(editingGroup._id, payload);
+        toast.success('Group updated successfully!');
+      } else {
+        await createGroup(payload);
+        toast.success('Group created successfully!');
+      }
+      setFormData({ name: '', description: '', rules: '' });
+      setEditingGroup(null);
+      setShowModal(false);
+      fetchGroups();
+    } catch (error) {
+      console.error('Error saving group:', error);
+      toast.error(error.response?.data?.message || 'Failed to save group.');
     }
-
-    setFormData({ name: '', description: '', rules: '' });
-    setEditingGroup(null);
-    setShowModal(false);
-    fetchGroups();
-  };
-
-  const handleEdit = (group) => {
-    setFormData({
-      name: group.name,
-      description: group.description,
-      rules: group.rules,
-    });
-    setEditingGroup(group);
-    setShowModal(true);
   };
 
   const handleDelete = async (groupId) => {
@@ -190,69 +201,84 @@ const ManageGroups = () => {
     });
 
     if (result.isConfirmed) {
-      await deleteGroup(groupId);
-      fetchGroups();
-      Swal.fire('Deleted!', 'The group has been removed.', 'success');
+      try {
+        await deleteGroup(groupId);
+        fetchGroups();
+        Swal.fire('Deleted!', 'The group has been removed.', 'success');
+      } catch (error) {
+        console.error('Error deleting group:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.response?.data?.message || 'Failed to delete group.',
+        });
+      }
     }
   };
 
-    const [showBroadcastModal, setShowBroadcastModal] = useState(false);
-    const [showBroadcastModal_all, setShowBroadcastModal_all] = useState(false);
-    const [broadcastMessage, setBroadcastMessage] = useState('');
-    const [selectedGroupIdForBroadcast, setSelectedGroupIdForBroadcast] = useState(null);
-
   const handleSendBroadcast = async () => {
+    if (!broadcastMessage.trim()) {
+      toast.error('Broadcast message cannot be empty.');
+      return;
+    }
+
     try {
       const payload = {
         message: broadcastMessage,
         targetGroups: [selectedGroupIdForBroadcast],
       };
-      await axios.post('https://church-backend-no8q.onrender.com/api/broadcast-messages', payload);
-  
+      await api.post('/api/broadcast-messages', payload);
       toast.success('Broadcast sent successfully!');
       setBroadcastMessage('');
       setShowBroadcastModal(false);
     } catch (error) {
       console.error('Broadcast sending failed:', error);
-      toast.error('Failed to send broadcast.');
+      toast.error(error.response?.data?.message || 'Failed to send broadcast.');
     }
   };
 
   const handleSendBroadcast_all = async () => {
+    if (!broadcastMessage.trim()) {
+      toast.error('Broadcast message cannot be empty.');
+      return;
+    }
+
     try {
       const payload = {
         message: broadcastMessage,
-        targetGroups: [],
+        targetGroups: [], // Empty array for all groups
       };
-      await axios.post('https://church-backend-no8q.onrender.com/api/broadcast-messages', payload);
-  
+      await api.post('/api/broadcast-messages', payload); // Fixed to use POST
       toast.success('Broadcast sent successfully!');
       setBroadcastMessage('');
+      setShowBroadcastModal_all(false);
     } catch (error) {
       console.error('Broadcast sending failed:', error);
-      toast.error('Failed to send broadcast.');
+      toast.error(error.response?.data?.message || 'Failed to send broadcast.');
     }
   };
 
   const fetchBroadcastLogs = async (groupId) => {
     try {
-      const response = await axios.get('https://church-backend-no8q.onrender.com/api/broadcast-messages');
-  
+      const response = await api.get('/api/broadcast-messages');
       if (response.data && response.data.length > 0) {
-        const filteredLogs = response.data.filter(log =>
-          (log.targetGroups.length === 0) || 
-          (Array.isArray(log.targetGroups) && log.targetGroups.includes(groupId))
+        const filteredLogs = response.data.filter(
+          (log) =>
+            log.targetGroups.length === 0 || // Broadcast to all groups
+            (Array.isArray(log.targetGroups) && log.targetGroups.includes(groupId))
         );
-  
+
         if (filteredLogs.length === 0) {
           return Swal.fire({
             icon: 'info',
             title: 'No Logs for Selected Group',
             text: 'There are no broadcast logs for this group yet.',
           });
-        }  
+        }
+
         const logsHtml = filteredLogs
-        .map(log => `
+          .map(
+            (log) => `
           <li style="margin-bottom: 8px;">
             <strong>📨 ${log.message}</strong><br/>
             <small>🕒 ${new Date(log.createdAt).toLocaleString()}</small><br/>
@@ -260,9 +286,10 @@ const ManageGroups = () => {
               ${log.targetGroups.length === 0 ? '🌍 Sent to all groups' : '👥 Sent to this group'}
             </span>
           </li>
-        `)
-        .join('');
-        
+        `
+          )
+          .join('');
+
         Swal.fire({
           title: 'Broadcast Logs for Group',
           html: `<ul style="text-align:left; padding-left: 20px;">${logsHtml}</ul>`,
@@ -270,7 +297,6 @@ const ManageGroups = () => {
           showCloseButton: true,
           confirmButtonText: 'Close',
         });
-  
       } else {
         Swal.fire({
           icon: 'info',
@@ -283,18 +309,18 @@ const ManageGroups = () => {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'An error occurred while fetching the broadcast logs.',
+        text: error.response?.data?.message || 'An error occurred while fetching the broadcast logs.',
       });
     }
   };
-        
+
   const closeAddMembersModal = () => {
     setShowAddMembersModal(false);
     setSearchQuery('');
     setSearchResults([]);
     setSelectedMember(null);
   };
-  
+
   return (
     <div className="page-flow-manage-groups">
       <div className="">
@@ -310,13 +336,13 @@ const ManageGroups = () => {
           ➕ Buat Komunitas
         </button>
         <button
-              onClick={() => {;
-                setShowBroadcastModal_all(true);
-              }}
-              className="button-member-manage"
-            >
-              📢 Pesan
-            </button>     
+          onClick={() => {
+            setShowBroadcastModal_all(true);
+          }}
+          className="button-member-manage"
+        >
+          📢 Pesan
+        </button>
       </div>
 
       {/* Group List */}
@@ -333,17 +359,17 @@ const ManageGroups = () => {
                   <li key={member._id}>
                     {member.fullName} - ({member.phoneNumber})
                     <button
-                    className='remove-member-group'
-                    onClick={() => handleRemoveMember(group._id, member._id)}>
-                      X</button>
-
+                      className="remove-member-group"
+                      onClick={() => handleRemoveMember(group._id, member._id)}
+                    >
+                      X
+                    </button>
                   </li>
                 ))}
                 {groupMembers[group._id]?.length === 0 && <li>No members</li>}
               </ul>
             </div>
 
-            {/* Add Members Button */}
             <button
               onClick={() => {
                 setEditingGroup(group);
@@ -361,17 +387,15 @@ const ManageGroups = () => {
               className="button-member-manage"
             >
               📢 Pesan
-            </button>            {/* Buttons */}
+            </button>
             <button
-                  type="button"
-                  onClick={() => fetchBroadcastLogs(group._id)}
-                  style={{
-                    fontWeight:'650',
-                  }}
-                  className="button-member-manage"
-                >
-                📝 History
-                </button>
+              type="button"
+              onClick={() => fetchBroadcastLogs(group._id)}
+              style={{ fontWeight: '650' }}
+              className="button-member-manage"
+            >
+              📝 History
+            </button>
             <div>
               <button
                 onClick={() => handleEdit(group)}
@@ -395,21 +419,19 @@ const ManageGroups = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Add Members to {editingGroup?.name}</h3>
-              <input
+            <input
               type="text"
               placeholder="Search member by name"
               value={selectedMember ? selectedMember.fullName : searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setSelectedMember(null); // Clear selected when typing
-                handleSearchChange(e);  
+                setSelectedMember(null);
+                handleSearchChange(e);
               }}
             />
             <div className="search-results-group">
               {searchResults.map((member, index) => {
-                // Skip if member is null or doesn't have _id
                 if (!member || !member._id) return null;
-
                 return (
                   <div
                     key={member._id || index}
@@ -418,7 +440,7 @@ const ManageGroups = () => {
                     }`}
                     onClick={() => {
                       setSelectedMember(member);
-                      setSearchQuery(member.fullName); // Show selected in input
+                      setSearchQuery(member.fullName);
                     }}
                   >
                     <p>{member.fullName}</p>
@@ -426,7 +448,6 @@ const ManageGroups = () => {
                 );
               })}
             </div>
-
             <div>
               <button
                 type="button"
@@ -440,76 +461,77 @@ const ManageGroups = () => {
                 onClick={handleAddMemberToGroup}
                 className="button-modal-groups"
                 disabled={!selectedMember}
-              > Add to Group </button>
+              >
+                Add to Group
+              </button>
             </div>
           </div>
         </div>
       )}
 
-        {showBroadcastModal && (
-          <div className="modal-backdrop-groups">
-            <div className="modal-container-groups">
-              <h3 className="text-xl font-semibold mb-4">Send Broadcast Message</h3>
-              
-              <textarea
-                placeholder="Type your broadcast message here..."
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                className="input-search"
-              />
-              
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowBroadcastModal(false)}
-                  className="button-member-manage-modal"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSendBroadcast}
-                  className="button-member-manage-modal"
-                >
-                  Send Broadcast
-                </button>
-              </div>
+      {/* Broadcast Modal */}
+      {showBroadcastModal && (
+        <div className="modal-backdrop-groups">
+          <div className="modal-container-groups">
+            <h3 className="text-xl font-semibold mb-4">Send Broadcast Message</h3>
+            <textarea
+              placeholder="Type your broadcast message here..."
+              value={broadcastMessage}
+              onChange={(e) => setBroadcastMessage(e.target.value)}
+              className="input-search"
+            />
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowBroadcastModal(false)}
+                className="button-member-manage-modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSendBroadcast}
+                className="button-member-manage-modal"
+                disabled={!broadcastMessage.trim()}
+              >
+                Send Broadcast
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-{showBroadcastModal_all && (
-          <div className="modal-backdrop-groups">
-            <div className="modal-container-groups">
-              <h3 className="text-xl font-semibold mb-4">Send Broadcast Message</h3>
-              
-              <textarea
-                placeholder="Type your broadcast message here..."
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                className="input-search"
-              />
-              
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setShowBroadcastModal_all(false)}
-                  className="button-member-manage-modal"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSendBroadcast_all}
-                  className="button-member-manage-modal"
-                >
-                  Send Broadcast
-                </button>
-              </div>
+      {/* Broadcast All Modal */}
+      {showBroadcastModal_all && (
+        <div className="modal-backdrop-groups">
+          <div className="modal-container-groups">
+            <h3 className="text-xl font-semibold mb-4">Send Broadcast Message to All Groups</h3>
+            <textarea
+              placeholder="Type your broadcast message here..."
+              value={broadcastMessage}
+              onChange={(e) => setBroadcastMessage(e.target.value)}
+              className="input-search"
+            />
+            <div>
+              <button
+                type="button"
+                onClick={() => setShowBroadcastModal_all(false)}
+                className="button-member-manage-modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSendBroadcast_all}
+                className="button-member-manage-modal"
+                disabled={!broadcastMessage.trim()}
+              >
+                Send Broadcast
+              </button>
             </div>
           </div>
-        )}
-
+        </div>
+      )}
 
       {/* Group Creation / Editing Modal */}
       {showModal && (
@@ -542,7 +564,7 @@ const ManageGroups = () => {
                 onChange={handleInputChange}
                 className=""
               />
-              <div> 
+              <div>
                 <button
                   type="button"
                   onClick={() => {
@@ -553,10 +575,7 @@ const ManageGroups = () => {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="button-modal-groups"
-                >
+                <button type="submit" className="button-modal-groups">
                   {editingGroup ? 'Update' : 'Create'}
                 </button>
               </div>
