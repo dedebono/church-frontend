@@ -235,10 +235,6 @@ const HomePage = () => {
                             Register Now
                           </button>
                         )}
-                        <button onClick={openModal} className="btn btn-secondary">
-                          <Youtube size={16} />
-                          Watch Live
-                        </button>
                       </div>
                     </div>
                   </div>
