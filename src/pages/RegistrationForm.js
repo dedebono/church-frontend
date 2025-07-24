@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import api from "./admin/api/API"
 import "./RegistrationForm.css"
+import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 
 function RegistrationForm() {
@@ -65,6 +66,27 @@ function RegistrationForm() {
       confirmButtonColor: "#10b981",
     })
   }
+  //navigate
+    const navigate = useNavigate()
+
+  //handle cancel
+    const handleCancel = async () => {
+      const result = await Swal.fire({
+        title: 'Apakah Anda yakin ingin membatalkan?',
+        text: "Semua perubahan Anda tidak akan disimpan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ea580c',
+        cancelButtonColor: '#d1d5db',
+        confirmButtonText: 'Ya, Batalkan!',
+        cancelButtonText: 'Tidak',
+      })
+  
+      if (result.isConfirmed) {
+        navigate('/')
+      }
+    }
+  
 
   const showErrorAlert = (message) => {
     Swal.fire({
@@ -377,7 +399,7 @@ function RegistrationForm() {
                   />
                   <small>Password akan dikirim ke email ini</small>
                 </div>
-
+                <button type="button" className="btn-primary-regis" onClick={handleCancel}>Batal</button>
                 <button type="submit" className="btn-primary-regis" disabled={isLoading}>
                   <span className="btn-text">{isLoading ? "Menyimpan..." : "Lanjutkan"}</span>
                   {isLoading && (
