@@ -205,9 +205,6 @@ export const deleteTransaction = async (id) => {
 export const importMembers = (membersData) =>
   api.post('/api/members/import', membersData);
 
-export const getAllGroups = () =>
-  api.get('/api/groups');
-
 export const AdminAttendance = () =>
   api.get('/api/attendance');
 
@@ -240,72 +237,38 @@ export const getFamilies = async () => {
 };
 
 //managegroups
-// Create a new group
-export const createGroup = async (groupData) => {
-  try {
-    const res = await api.post("/api/groups", groupData);
-    return res.data;
-  } catch (err) {
-    console.error("Error creating group:", err);
-    throw err;
-  }
-};
+// ✅ Create a new group
+export const createGroup = (groupData) => api.post('/api/groups', groupData);
 
-// Update an existing group
-export const updateGroup = async (groupId, groupData) => {
-  try {
-    const res = await api.put(`/api/groups/${groupId}`, groupData);
-    return res.data;
-  } catch (err) {
-    console.error("Error updating group:", err);
-    throw err;
-  }
-};
+// ✅ Get all groups
+export const getAllGroups = () => api.get('/api/groups');
 
-// Delete a group
-export const deleteGroup = async (groupId) => {
-  try {
-    const res = await api.delete(`/api/groups/${groupId}`);
-    return res.data;
-  } catch (err) {
-    console.error("Error deleting group:", err);
-    throw err;
-  }
-};
+// ✅ Get group by ID
+export const getGroupById = (groupId) => api.get(`/api/groups/${groupId}`);
 
-// Get members of a group
-export const getGroupMembers = async (groupId) => {
-  try {
-    const res = await api.get(`/api/groups/${groupId}/members`);
-    return res.data;
-  } catch (err) {
-    console.error("Error fetching group members:", err);
-    throw err;
-  }
-};
+// ✅ Update group info
+export const updateGroup = (groupId, updatedData) =>
+  api.put(`/api/groups/${groupId}`, updatedData);
 
-// Add member to a group
-export const addMemberToGroup = async (groupId, memberId) => {
-  try {
-    const res = await api.post(`/api/groups/${groupId}/members`, { memberId });
-    return res.data;
-  } catch (err) {
-    console.error("Error adding member to group:", err);
-    throw err;
-  }
-};
+// ✅ Delete a group
+export const deleteGroup = (groupId) => api.delete(`/api/groups/${groupId}`);
 
-// Remove member from a group
-export const removeMemberFromGroup = async (groupId, memberId) => {
-  try {
-    const res = await api.delete(`/api/groups/${groupId}/members/${memberId}`);
-    return res.data;
-  } catch (err) {
-    console.error("Error removing member from group:", err);
-    throw err;
-  }
-};
+// ✅ Add member to group
+export const addMemberToGroup = (groupId, memberId) =>
+  api.post(`/api/groups/${groupId}/add-member`, { memberId });
 
+// ✅ Remove member from group
+export const removeMemberFromGroup = (groupId, memberId) =>
+  api.put(`/api/groups/${groupId}/remove-member`, { memberId });
+
+// ✅ Get members in a group
+export const getGroupMembers = (groupId) =>
+  api.get(`/api/groups/${groupId}/members`);
+
+// Correct function to search members by name
+export const searchMembersByNameinGroups = (groupId, searchQuery) => {
+  return api.get(`/api/groups/${groupId}/members/search/${searchQuery}`);
+};
 
 // Health check function
 export const healthCheck = async () => {
