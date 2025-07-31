@@ -133,24 +133,26 @@ function ViewFamily() {
     })
 
     if (confirm.isConfirmed) {
-      try {
-        // Use the full URL for the API call as requested
-        await api.post("https://backend.dedebono.uk/api/members/request-password", { memberId, email })
-        Swal.fire({
-          icon: "success",
-          title: "Account Created!",
-          text: `A new password has been sent to ${email}.`,
-        })
-      } catch (err) {
-        console.error("Error creating account:", err)
-        const errorMessage = err.response?.data?.message || "Server error while creating account."
-        Swal.fire({
-          icon: "error",
-          title: "Failed",
-          text: errorMessage,
-        })
+        try {
+          await api.post(`/api/members/request-password`, {
+            memberId,
+            email,
+          })
+          Swal.fire({
+            icon: "success",
+            title: "Account Created!",
+            text: `A new password has been sent to ${email}.`,
+          })
+        } catch (err) {
+          console.error("Error creating account:", err)
+          const errorMessage = err.response?.data?.message || "Server error while creating account."
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: errorMessage,
+          })
+        }
       }
-    }
   }
 
   const handleDelete = async (memberId) => {

@@ -5,7 +5,7 @@ const devBackends = process.env.REACT_APP_DEV_BACKENDS;
 const prodBackends = process.env.REACT_APP_PROD_BACKENDS;
 
 const backends =
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'production'
     ? devBackends?.split(',') || []
     : prodBackends?.split(',') || [];
 
