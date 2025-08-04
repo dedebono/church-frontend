@@ -45,10 +45,13 @@ function ViewMember() {
       cancelButtonText: "Cancel",
     })
 
-    if (confirm.isConfirmed) {
-      try {
-        await api.post("https://dedebono.uk/api/members/request-password", { memberId, email })
-        Swal.fire({
+if (confirm.isConfirmed) {
+        try {
+          await api.post(`/api/members/request-password`, {
+            memberId,
+            email,
+          })
+            Swal.fire({
           icon: "success",
           title: "Account Created!",
           text: `A new password has been sent to ${email}.`,

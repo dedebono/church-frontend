@@ -74,7 +74,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 - 👀 I’m interested in game, movie and 3d art
 - 🌱 I’m currently learning blender, after effect and visual effect
 - 💞️ I’m looking to collaborate on 
-- 📫 How to reach me ...
+- 📫 How to reach me @dedebono
 
 <!---
 dedebono/dedebono is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
