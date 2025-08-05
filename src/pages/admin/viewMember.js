@@ -47,14 +47,14 @@ function ViewMember() {
 
 if (confirm.isConfirmed) {
         try {
-          await api.post(`/api/members/request-password`, {
+          await api.post(`/api/members/send-reset-link`, {
             memberId,
             email,
           })
             Swal.fire({
           icon: "success",
-          title: "Account Created!",
-          text: `A new password has been sent to ${email}.`,
+          title: "Reset link sent!",
+          text: `A reset link has been sent to ${email}.`,
         })
       } catch (err) {
         console.error("Error creating account:", err)

@@ -113,6 +113,50 @@ function ViewFamily() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
+  const handleSendFamilyResetLink = async () => {
+  const email = familyData?.email
+  const familyId = familyData?._id
+
+  if (!email) {
+    Swal.fire({
+      icon: "error",
+      title: "Email Tidak Ditemukan",
+      text: "Email keluarga belum diisi. Silakan isi email terlebih dahulu.",
+    })
+    return
+  }
+
+  const confirm = await Swal.fire({
+    title: "Kirim Tautan Reset?",
+    html: `Tautan reset akan dikirim ke <strong>${email}</strong>. Lanjutkan?`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Ya, kirim",
+    cancelButtonText: "Batal",
+  })
+
+  if (confirm.isConfirmed) {
+    try {
+      await api.post(`/api/families/send-reset-link`, {
+        familyId,
+        email,
+      })
+      Swal.fire({
+        icon: "success",
+        title: "Tautan Terkirim",
+        text: `Tautan reset telah dikirim ke ${email}.`,
+      })
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "Gagal mengirim tautan reset."
+      Swal.fire({
+        icon: "error",
+        title: "Gagal",
+        text: errorMessage,
+      })
+    }
+  }
+}
+
   const handleCreateAccount = async (memberId, email) => {
     if (!email) {
       Swal.fire({
@@ -134,18 +178,18 @@ function ViewFamily() {
 
     if (confirm.isConfirmed) {
         try {
-          await api.post(`/api/members/request-password`, {
+          await api.post(`/api/members/send-reset-link`, {
             memberId,
             email,
           })
           Swal.fire({
             icon: "success",
-            title: "Account Created!",
-            text: `A new password has been sent to ${email}.`,
+            title: "Reset Link Sent",
+            text: `A reset link has been sent to ${email}.`,
           })
         } catch (err) {
           console.error("Error creating account:", err)
-          const errorMessage = err.response?.data?.message || "Server error while creating account."
+          const errorMessage = err.response?.data?.message || "Server error send link."
           Swal.fire({
             icon: "error",
             title: "Failed",
@@ -568,6 +612,14 @@ const handleSearch = async () => {
                   <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setEditFamilyModal)}>
                     Batal
                   </button>
+                  <button
+                  type="button"
+                  onClick={handleSendFamilyResetLink}
+                  className="modal-submit"
+                >
+                  Rst Password
+                </button>
+
                   </div>
                 </form>
                 <button className="delete-family-button" onClick={handleDeleteFamily}>

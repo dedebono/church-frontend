@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from './admin/api/API'; // Adjust path if needed
+import api from './admin/api/API';
+import Swal from 'sweetalert2';
+
 
 const ResetPasswordPage = () => {
-  const { resetToken, type } = useParams(); // type should be 'family' or 'member'
+  const { resetToken, type } = useParams();
   const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState('');
@@ -11,36 +13,43 @@ const ResetPasswordPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
-      setErrorMessage('Passwords do not match');
+  if (newPassword !== confirmPassword) {
+    setErrorMessage('Passwords do not match');
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+
+    if (!['family', 'member'].includes(type)) {
+      setErrorMessage('Invalid reset link');
       return;
     }
 
-    try {
-      setIsLoading(true);
+    const response = await api.post(
+      `/api/${type === 'family' ? 'families' : 'members'}/reset-password/${resetToken}`,
+      { newPassword }
+    );
 
-      // Ensure type is either 'family' or 'member'
-      if (!['family', 'member'].includes(type)) {
-        setErrorMessage('Invalid reset link');
-        return;
-      }
-
-      const response = await api.post(`/api/${type === 'family' ? 'families' : 'members'}/reset-password/${resetToken}`, {
-        newPassword,
+    if (response.status === 200) {
+      await Swal.fire({
+        icon: 'success',
+        title: 'Password berhasil direset',
+        text: 'Silakan login dengan password baru.',
+        confirmButtonText: 'OK'
       });
 
-      if (response.status === 200) {
-        navigate('/');
-      }
-    } catch (err) {
-      setErrorMessage('Reset failed. Try again.');
-    } finally {
-      setIsLoading(false);
+      navigate('/login'); // ✅ Redirect to login
     }
-  };
+  } catch (err) {
+    setErrorMessage('Reset failed. Try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div style={{ maxWidth: 400, margin: 'auto', paddingTop: '5rem' }}>
