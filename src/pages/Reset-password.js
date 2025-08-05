@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import api from './admin/api/API'; // Adjust path if needed
 
 const ResetPasswordPage = () => {
-  const { resetToken } = useParams();
+  const { resetToken, type } = useParams(); // type should be 'family' or 'member'
   const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState('');
@@ -21,12 +21,19 @@ const ResetPasswordPage = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `https://church-backend-no8q.onrender.com//api/families/reset-password/${resetToken}`,
-        { newPassword }
-      );
+
+      // Ensure type is either 'family' or 'member'
+      if (!['family', 'member'].includes(type)) {
+        setErrorMessage('Invalid reset link');
+        return;
+      }
+
+      const response = await api.post(`/api/${type === 'family' ? 'families' : 'members'}/reset-password/${resetToken}`, {
+        newPassword,
+      });
+
       if (response.status === 200) {
-        navigate('/login');
+        navigate('/');
       }
     } catch (err) {
       setErrorMessage('Reset failed. Try again.');
@@ -36,8 +43,8 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div>
-      <h2>Reset Password</h2>
+    <div style={{ maxWidth: 400, margin: 'auto', paddingTop: '5rem' }}>
+      <h2>Reset {type === 'family' ? 'Family' : 'Member'} Password</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="password"
@@ -45,6 +52,7 @@ const ResetPasswordPage = () => {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
+          style={{ display: 'block', width: '100%', marginBottom: '1rem', padding: '0.5rem' }}
         />
         <input
           type="password"
@@ -52,9 +60,10 @@ const ResetPasswordPage = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
+          style={{ display: 'block', width: '100%', marginBottom: '1rem', padding: '0.5rem' }}
         />
-        {errorMessage && <p>{errorMessage}</p>}
-        <button type="submit" disabled={isLoading}>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        <button type="submit" disabled={isLoading} style={{ padding: '0.75rem 1.5rem' }}>
           {isLoading ? 'Resetting...' : 'Reset Password'}
         </button>
       </form>

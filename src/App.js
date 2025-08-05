@@ -15,9 +15,9 @@ function App() {
     <Router>
       <Routes> {/* Use Routes instead of Switch */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
+        <Route path="/register" element={<RegistrationForm />} />\
         <Route path="/login" element={<AdminLogin />} />
+        <Route path="/reset-password/:type/:resetToken" element={<ResetPasswordPage />} />
         <Route path="/admin" element={
         <ProtectedRoute allowedRoles={['regular_admin']}>
         <AdminPage />
