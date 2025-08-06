@@ -39,6 +39,8 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       const res = await api.post('/api/admin/verify-login', { email, code });
+      const { token } = res.data;
+      localStorage.setItem('authToken', token);
 if (res.data.success) {
   const role = res.data.role;
   Swal.fire({

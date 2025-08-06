@@ -18,6 +18,21 @@ const api = axios.create({
   timeout: 15000, // 5 seconds timeout to trigger faster failover
 });
 
+// Request Interceptor: Add JWT token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
 // Interceptor for automatic failover
 api.interceptors.response.use(
   response => response,
