@@ -17,6 +17,7 @@ import EventsAdmin from "./admin/EventsAdmin"
 import GalleryAdmin from "./admin/GalleryAdmin"
 import ServiceRequest from "./admin/serviceRequest"
 import ManageCertificates from "./admin/ManageCertificates"
+import BroadcastMessagesAdmin from "./admin/BroadcastAdmin"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -51,6 +52,7 @@ const AdminPage = () => {
       case "galleryAdmin" : return <GalleryAdmin/>
       case "serviceRequest" : return <ServiceRequest/>
       case "ManageCertificates" : return <ManageCertificates/>
+      case "broadcastMessagesAdmin" : return <BroadcastMessagesAdmin/>
       default: return <div>Select a tab</div>
     }
   }
@@ -80,7 +82,8 @@ const AdminPage = () => {
         ["adminDevotions", "Konten Renungan"],
         ["galleryAdmin", "Upload Foto"],
         ["serviceRequest","Permintaan Pelayanan"],
-        ["ManageCertificates","Sertifikat"]
+        ["ManageCertificates","Sertifikat"],
+        ["broadcastMessagesAdmin","Admin Pesan BC"]
       ],
     },
   ]
