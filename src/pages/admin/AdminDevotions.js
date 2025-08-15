@@ -14,7 +14,7 @@ function DevotionCalendar() {
   const [sending, setSending] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState("")
 
-  // NEW: table states
+  // Devotions log (view & delete)
   const [devotions, setDevotions] = useState([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
@@ -30,11 +30,9 @@ function DevotionCalendar() {
     { value: "gratitude", label: "Gratitude & Thanksgiving Template" },
   ]
 
-  useEffect(() => {
-    fetchDevotions()
-  }, [])
+  useEffect(() => { fetchDevotions() }, [])
 
-  const fetchDevotions = async () => {
+  async function fetchDevotions() {
     try {
       setLoading(true)
       const { data } = await api.get("/api/devotions")
@@ -47,82 +45,109 @@ function DevotionCalendar() {
     }
   }
 
-  // Calendar helpers
-  const getDevotionsForDate = (date) => {
-    return devotions.filter((devotion) => {
-      const d = new Date(devotion.sendDate || devotion.createdAt)
-      return d.toDateString() === date.toDateString()
+  // ---- Calendar helpers
+  function getDevotionsForDate(date) {
+    return devotions.filter((d) => {
+      const when = new Date(d.sendDate || d.createdAt)
+      return when.toDateString() === date.toDateString()
     })
   }
 
-  const getTileContent = ({ date, view }) => {
-    if (view === "month") {
-      const dayDevotions = getDevotionsForDate(date)
-      if (dayDevotions.length > 0) {
-        return (
-          <div className="devotion-indicators">
-            {dayDevotions.slice(0, 2).map((devotion, index) => (
-              <div
-                key={index}
-                className={`devotion-dot ${devotion.sendMode === "now" ? "immediate" : "scheduled"}`}
-                title={devotion.title}
-              />
-            ))}
-            {dayDevotions.length > 2 && <div className="devotion-count">+{dayDevotions.length - 2}</div>}
-          </div>
-        )
-      }
-    }
-    return null
+  function getTileContent({ date, view }) {
+    if (view !== "month") return null
+    const dayDevotions = getDevotionsForDate(date)
+    if (!dayDevotions.length) return null
+    return (
+      <div className="devotion-indicators">
+        {dayDevotions.slice(0, 2).map((devotion, i) => (
+          <div
+            key={i}
+            className={`devotion-dot ${devotion.sendMode === "now" ? "immediate" : "scheduled"}`}
+            title={devotion.title}
+          />
+        ))}
+        {dayDevotions.length > 2 && <div className="devotion-count">+{dayDevotions.length - 2}</div>}
+      </div>
+    )
   }
 
-  const handleDateChange = (date) => {
+  function handleDateChange(date) {
     setSelectedDate(date)
     setShowModal(true)
   }
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleTemplateChange = (e) => {
+  function handleTemplateChange(e) {
     setSelectedTemplate(e.target.value)
-    // optional: load template text into formData.content here
   }
 
-  const handleSubmit = async () => {
+  // ---- Build a safe local ISO from calendar date + HH:mm (no state mutation)
+  function buildLocalISO(date, timeStr) {
+    const [hStr = "0", mStr = "0"] = (timeStr || "").split(":")
+    const h = Number(hStr)
+    const m = Number(mStr)
+    if (Number.isNaN(h) || Number.isNaN(m)) return null
+    const dt = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m, 0, 0)
+    return dt.toISOString()
+  }
+
+  // ---- Create/save devotion (client expects fast server response)
+  async function handleSubmit() {
     if (!formData.title || !formData.content || !formData.sendMode) {
       return Swal.fire("Error", "All fields are required", "error")
     }
 
-    const payload = {
+    let payload = {
       title: formData.title,
       content: formData.content,
       sendMode: formData.sendMode,
-      sendDate:
-        formData.sendMode === "later"
-          ? new Date(selectedDate.setHours(...formData.sendTime.split(":"))).toISOString()
-          : null,
+      sendDate: null,
     }
 
-    try {
-      setSending(true)
-      await api.post("/api/devotions", payload)
-      Swal.fire("Success", "Devotion saved successfully", "success")
-      setFormData({ title: "", content: "", sendMode: "now", sendTime: "" })
-      setSelectedTemplate("")
-      setShowModal(false)
-      await fetchDevotions()
-    } catch (error) {
-      console.error("Failed to save devotion:", error)
-      Swal.fire("Error", "Failed to save devotion", "error")
-    } finally {
-      setSending(false)
+    if (formData.sendMode === "later") {
+      if (!selectedDate) {
+        return Swal.fire("Error", "Please pick a date on the calendar.", "error")
+      }
+      if (!formData.sendTime) {
+        return Swal.fire("Error", "Please choose a time for the scheduled devotion.", "error")
+      }
+      const iso = buildLocalISO(selectedDate, formData.sendTime)
+      if (!iso) return Swal.fire("Error", "Invalid time format.", "error")
+      payload.sendDate = iso
     }
+
+    setSending(true)
+    let resp
+    try {
+      // server should return immediately and push in background when sendMode === 'now'
+      resp = await api.post("/api/devotions", payload)
+    } catch (error) {
+      console.error("Save error:", error)
+      const msg = error?.response?.data?.message || error.message || "Failed to save devotion"
+      Swal.fire("Error", msg, "error")
+      setSending(false)
+      return
+    }
+
+    // Success UX + reset (message may be 'Queued for immediate send' or 'Devotion scheduled')
+    const serverMsg = resp?.data?.message || "Devotion saved"
+    Swal.fire("Success", serverMsg, "success")
+    setFormData({ title: "", content: "", sendMode: "now", sendTime: "" })
+    setSelectedTemplate("")
+    setShowModal(false)
+    setSending(false)
+
+    // Refresh list; if this fails, do not override the success toast
+    try {
+      await fetchDevotions()
+    } catch {}
   }
 
-  // NEW: delete devotion
-  const handleDelete = async (id) => {
+  // ---- Delete devotion
+  async function handleDelete(id) {
     const confirm = await Swal.fire({
       title: "Delete this devotion?",
       text: "This action cannot be undone.",
@@ -140,13 +165,14 @@ function DevotionCalendar() {
       Swal.fire("Deleted", "Devotion removed successfully", "success")
     } catch (err) {
       console.error(err)
-      Swal.fire("Error", err.message || "Failed to delete devotion", "error")
+      const msg = err?.response?.data?.message || err.message || "Failed to delete devotion"
+      Swal.fire("Error", msg, "error")
     } finally {
       setDeletingId(null)
     }
   }
 
-  // NEW: table filtering & pagination
+  // ---- Table filtering & pagination
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
     if (!q) return devotions
@@ -176,30 +202,16 @@ function DevotionCalendar() {
 
       {/* Legend */}
       <div className="calendar-legend">
-        <div className="legend-item">
-          <div className="legend-dot immediate"></div>
-          <span>Immediate Devotions</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot scheduled"></div>
-          <span>Scheduled Devotions</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot today"></div>
-          <span>Today</span>
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot selected"></div>
-          <span>Selected</span>
-        </div>
+        <div className="legend-item"><div className="legend-dot immediate"></div><span>Immediate Devotions</span></div>
+        <div className="legend-item"><div className="legend-dot scheduled"></div><span>Scheduled Devotions</span></div>
+        <div className="legend-item"><div className="legend-dot today"></div><span>Today</span></div>
+        <div className="legend-item"><div className="legend-dot selected"></div><span>Selected</span></div>
       </div>
 
-      {/* NEW: Devotions Log Table */}
+      {/* Devotions Log */}
       <div className="devotions-log mt-8">
         <div className="flex items-center justify-between mb-3">
-          <div className="text-sm text-gray-600">
-            {loading ? "Loading…" : `${filtered.length} devotion(s)`}
-          </div>
+          <div className="text-sm text-gray-600">{loading ? "Loading…" : `${filtered.length} devotion(s)`}</div>
           <div className="flex gap-2">
             <input
               value={search}
@@ -241,6 +253,11 @@ function DevotionCalendar() {
               <tbody>
                 {pageItems.map((d) => {
                   const when = d.sendMode === "later" ? d.sendDate : d.createdAt
+                  // Status: handle async push semantics gracefully
+                  let statusLabel = "Pending"
+                  if (d.sendMode === "now") statusLabel = d.isSent ? "Sent" : "Queued"
+                  else statusLabel = d.isSent ? "Sent" : "Pending"
+
                   return (
                     <tr key={d._id} className="border-t">
                       <td className="px-4 py-3 align-top">
@@ -262,12 +279,14 @@ function DevotionCalendar() {
                       <td className="px-4 py-3 align-top">
                         <span
                           className={`inline-flex px-2 py-1 rounded-lg text-xs ${
-                            d.isSent
+                            statusLabel === "Sent"
                               ? "bg-blue-50 text-blue-700 border border-blue-100"
+                              : statusLabel === "Queued"
+                              ? "bg-purple-50 text-purple-700 border border-purple-100"
                               : "bg-gray-100 text-gray-700 border border-gray-200"
                           }`}
                         >
-                          {d.isSent ? "Sent" : "Pending"}
+                          {statusLabel}
                         </span>
                       </td>
                       <td className="px-4 py-3 align-top text-right">
@@ -316,9 +335,7 @@ function DevotionCalendar() {
           <div className="modal-content">
             <div className="modal-header">
               <h3>Create Devotion</h3>
-              <button className="modal-close" onClick={() => setShowModal(false)} aria-label="Close modal">
-                ×
-              </button>
+              <button className="modal-close" onClick={() => setShowModal(false)} aria-label="Close modal">×</button>
             </div>
 
             <div className="modal-body">
@@ -375,7 +392,7 @@ function DevotionCalendar() {
                 </div>
 
                 <div className="tags-container">
-                  <span className="tag">📅 {selectedDate?.toDateString()}</span>
+                  <span className="tag">📅 {selectedDate?.toDateString() || "Pick a date"}</span>
                   <span className="tag">✉️ {formData.sendMode === "now" ? "Immediate" : "Scheduled"}</span>
                   {selectedTemplate && <span className="tag">📋 Template</span>}
                 </div>
@@ -415,7 +432,7 @@ function DevotionCalendar() {
                 />
               </div>
 
-              {/* Export (display-only for now) */}
+              {/* Export (display-only) */}
               <div className="form-section">
                 <div className="export-options">
                   <div className="export-icon">📄</div>
