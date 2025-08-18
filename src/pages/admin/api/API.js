@@ -15,7 +15,7 @@ let activeBackendIndex = 0;
 // Create Axios instance
 const api = axios.create({
   baseURL: backends[activeBackendIndex],
-  timeout: 15000, // 5 seconds timeout to trigger faster failover
+  timeout: 20000,
 });
 
 // Request Interceptor: Add JWT token
