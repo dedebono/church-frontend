@@ -96,6 +96,29 @@ export const deleteSermon = async (id) => {
   }
 }
 
+//Api Broadcast Messages
+// 📢 BROADCAST MESSAGES API
+export const getBroadcastMessages = async () => {
+  try {
+    const response = await api.get("/api/broadcast-messages");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching broadcast messages:", error);
+    throw error;
+  }
+};
+
+export const deleteBroadcastMessage = async (id) => {
+  try {
+    const response = await api.delete(`/api/broadcast-messages/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting broadcast message:", error);
+    throw error;
+  }
+};
+
+
 //events API
 export const getEvents = async () => {
   try {

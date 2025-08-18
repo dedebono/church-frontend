@@ -17,6 +17,8 @@ import EventsAdmin from "./admin/EventsAdmin"
 import GalleryAdmin from "./admin/GalleryAdmin"
 import ServiceRequest from "./admin/serviceRequest"
 import ManageCertificates from "./admin/ManageCertificates"
+import BroadcastMessagesAdmin from "./admin/BroadcastAdmin"
+import MessageAdmin from "./admin/AdminMessages"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -51,6 +53,8 @@ const AdminPage = () => {
       case "galleryAdmin" : return <GalleryAdmin/>
       case "serviceRequest" : return <ServiceRequest/>
       case "ManageCertificates" : return <ManageCertificates/>
+      case "broadcastMessagesAdmin" : return <BroadcastMessagesAdmin/>
+      case "adminMessages": return <MessageAdmin/>
       default: return <div>Select a tab</div>
     }
   }
@@ -69,6 +73,8 @@ const AdminPage = () => {
       header: "Komunitas",
       items: [
         ["manageGroups", "Admin Komunitas"],
+        ["adminMessages","Pesan Komunitas"],
+        ["broadcastMessagesAdmin","Broadcast Komunitas"]
       ],
     },
     {
