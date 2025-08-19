@@ -258,11 +258,23 @@ const ManageGroups = () => {
   };
 
   // ---- Chat modal helpers using shared socket ----
-  const openChat = (group) => {
-    setChatGroup(group);
-    setShowChatModal(true);
-    joinGroup(group._id);
-  };
+const openChat = async (group) => {
+  setChatGroup(group);
+  setShowChatModal(true);
+
+  try {
+    const { data } = await api.get('/api/admin/messages', {
+      params: { groupId: group._id, page: 1, limit: 50 }
+    });
+    // admin API returns { items, total, ... } sorted DESC
+    const msgs = (data.items || []).slice().reverse();
+    setChatMessages(msgs);
+  } catch (e) {
+    console.error('Failed to load history:', e);
+  }
+
+  joinGroup(group._id);
+};
 
   const closeChat = () => {
     if (chatGroup?._id) leaveGroup(chatGroup._id);
@@ -279,17 +291,32 @@ const ManageGroups = () => {
     setChatText('');
   };
 
+  const getSenderName = (s) => {
+  if (!s) return 'Unknown';
+  if (typeof s === 'string') return s;               // already an id string
+  return (
+    s.fullName ||
+    s.name ||
+    [s.firstName, s.lastName].filter(Boolean).join(' ') ||
+    s._id ||
+    'Unknown'
+  );
+};
+
   // Listen for new messages while modal is open
-  useEffect(() => {
-    if (!showChatModal || !chatGroup) return;
-    const handleNew = (msg) => {
-      // Show only messages for the active group
-      const gid = msg.group || msg.groupId;
-      if (gid === chatGroup._id) setChatMessages((prev) => [...prev, msg]);
-    };
-    on('chat:new', handleNew);
-    return () => off('chat:new', handleNew);
-  }, [showChatModal, chatGroup, on, off]);
+useEffect(() => {
+  if (!showChatModal || !chatGroup) return;
+  const handleNew = (msg) => {
+    const gid = msg.group || msg.groupId;
+    if (String(gid) === String(chatGroup._id)) {
+      setChatMessages((prev) => [...prev, msg]);
+    }
+  };
+  on('message:new', handleNew);
+  on('chat:new', handleNew); // keep if some places emit this
+  return () => { off('message:new', handleNew); off('chat:new', handleNew); };
+}, [showChatModal, chatGroup, on, off]);
+
 
   return (
     <div className="page-flow-manage-groups">
@@ -451,9 +478,11 @@ const ManageGroups = () => {
               {chatMessages.map((m) => (
                 <div key={m._id || Math.random()} style={{ marginBottom: 8 }}>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>
-                    {m.sender} • {new Date(m.createdAt).toLocaleString()}
+                    {getSenderName(m.sender)} • {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
                   </div>
-                  <div style={{ fontWeight: 500 }}>{m.text || '(non-text message)'}</div>
+                  <div style={{ fontWeight: 500 }}>
+                    {m.type === 'image' ? '📷 Image' : (m.text || '(non-text message)')}
+                  </div>
                 </div>
               ))}
             </div>

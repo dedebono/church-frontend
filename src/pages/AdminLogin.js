@@ -1,9 +1,11 @@
-// src/pages/AdminLogin.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../pages/admin/api/API'; // fixed path
-import Swal from 'sweetalert2'; // 💡 import SweetAlert
+import api from '../pages/admin/api/API'; // adjust path if needed
+import Swal from 'sweetalert2';
 import './AdminLogin.css';
+
+// 🔑 import useSocket
+import { useSocket } from '../../src/socket/SocketContext';
 
 const AdminLogin = () => {
   const [step, setStep] = useState('email');
@@ -11,6 +13,9 @@ const AdminLogin = () => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // use socket helpers
+  const { setToken, reconnect } = useSocket();
 
   const handleEmailSubmit = async () => {
     setLoading(true);
@@ -40,28 +45,36 @@ const AdminLogin = () => {
     try {
       const res = await api.post('/api/admin/verify-login', { email, code });
       const { token } = res.data;
-      localStorage.setItem('authToken', token);
-if (res.data.success) {
-  const role = res.data.role;
-  Swal.fire({
-    icon: 'success',
-    title: 'Berhasil Login',
-    text: `Login sebagai ${role.replace('_', ' ')}`,
-    timer: 2000,
-    showConfirmButton: false,
-  }).then(() => {
-    localStorage.setItem('isAdmin', 'true');
-    localStorage.setItem('adminRole', role);
 
-    if (role === 'regular_admin') {
-      navigate('/admin');
-    } else if (role === 'finance_admin') {
-      navigate('/finance');
-    } else {
-      navigate('/admin'); // Fallback
-    }
-  });
-}
+      if (!token) {
+        throw new Error('No token returned from server');
+      }
+
+      // 🔑 Save token for socket + API
+      setToken(token);   // updates axios headers + localStorage
+      reconnect();       // force socket to reconnect with new token
+
+      if (res.data.success) {
+        const role = res.data.role;
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Login',
+          text: `Login sebagai ${role.replace('_', ' ')}`,
+          timer: 2000,
+          showConfirmButton: false,
+        }).then(() => {
+          localStorage.setItem('isAdmin', 'true');
+          localStorage.setItem('adminRole', role);
+
+          if (role === 'regular_admin') {
+            navigate('/admin');
+          } else if (role === 'finance_admin') {
+            navigate('/finance');
+          } else {
+            navigate('/admin'); // fallback
+          }
+        });
+      }
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -88,10 +101,14 @@ if (res.data.success) {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
-            <div className='divider'>
-            <button className="button-login" onClick={handleEmailSubmit} disabled={loading}>
-              {loading ? 'Mengirim...' : 'Kirim Kode'}
-            </button>
+            <div className="divider">
+              <button
+                className="button-login"
+                onClick={handleEmailSubmit}
+                disabled={loading}
+              >
+                {loading ? 'Mengirim...' : 'Kirim Kode'}
+              </button>
             </div>
           </>
         ) : (
@@ -105,11 +122,14 @@ if (res.data.success) {
               onChange={(e) => setCode(e.target.value)}
               disabled={loading}
             />
-            <div
-            className='divider'>
-            <button className="button-login" onClick={handleCodeSubmit} disabled={loading}>
-              {loading ? 'Memverifikasi...' : 'Login'}
-            </button>
+            <div className="divider">
+              <button
+                className="button-login"
+                onClick={handleCodeSubmit}
+                disabled={loading}
+              >
+                {loading ? 'Memverifikasi...' : 'Login'}
+              </button>
             </div>
           </>
         )}

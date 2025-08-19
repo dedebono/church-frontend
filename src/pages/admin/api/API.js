@@ -19,35 +19,70 @@ const api = axios.create({
 });
 
 // Request Interceptor: Add JWT token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+api.interceptors.request.use((config) => {
+  const pick = (k) => (localStorage.getItem(k) || '').replace(/^"|"$/g, '');
+  const token =
+    (config.headers?.Authorization || '')
+      .replace(/^Bearer\s+/, '') ||
+    pick('adminToken') || pick('memberToken') || pick('token');
+
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+}, (error) => Promise.reject(error));
 
-
-// Interceptor for automatic failover
+// ---- Response interceptor: fallback + 401 one-time replay
 api.interceptors.response.use(
-  response => response,
-  async error => {
-    const isNetworkError = !error.response;
-    const isServerError = error.response?.status >= 500;
+  (response) => response,
+  async (error) => {
+    const config = error.config || {};
+    const rsp = error.response;
+    const isNetworkError = !rsp;
+    const isServerError  = rsp?.status >= 500;
+    const isUnauthorized = rsp?.status === 401;
 
-    // Try fallback if available and not already switched
-    if ((isNetworkError || isServerError) && activeBackendIndex === 0 && backends.length > 1) {
+    // 1) Switch to fallback on network/5xx (only from primary; avoid loops)
+    if ((isNetworkError || isServerError)
+        && activeBackendIndex === 0
+        && backends.length > 1
+        && !config._switchedToFallback) {
+
       console.warn('Primary backend failed, switching to fallback…');
       activeBackendIndex = 1;
       api.defaults.baseURL = backends[activeBackendIndex];
 
-      // Retry the failed request on fallback
-      return api.request(error.config);
+      // mark and replay against fallback
+      config._switchedToFallback = true;
+      config.baseURL = backends[activeBackendIndex];
+
+      // ensure Authorization is set for the replay
+      const pick = (k) => (localStorage.getItem(k) || '').replace(/^"|"$/g, '');
+      const t = pick('adminToken') || pick('memberToken') || pick('token');
+      if (t) {
+        config.headers = config.headers || {};
+        config.headers.Authorization = `Bearer ${t}`;
+      }
+      return api.request(config);
+    }
+
+    // 2) If 401 and this request had no/empty token header, attach and retry ONCE
+    if (isUnauthorized && !config._retriedWithToken) {
+      const hasBearer = !!config.headers?.Authorization;
+      const bearerVal = (config.headers?.Authorization || '').replace(/^Bearer\s+/, '');
+      const missingOrEmpty = !hasBearer || !bearerVal;
+
+      if (missingOrEmpty) {
+        const pick = (k) => (localStorage.getItem(k) || '').replace(/^"|"$/g, '');
+        const t = pick('adminToken') || pick('memberToken') || pick('token');
+        if (t) {
+          config._retriedWithToken = true;
+          config.headers = config.headers || {};
+          config.headers.Authorization = `Bearer ${t}`;
+          return api.request(config);
+        }
+      }
     }
 
     return Promise.reject(error);
