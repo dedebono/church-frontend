@@ -197,9 +197,12 @@ const ManageGroups = () => {
   const handleSendBroadcast_all = async () => {
     if (!broadcastMessage.trim()) return toast.error('Broadcast message cannot be empty.');
     try {
-      const payload = { message: broadcastMessage, targetGroups: [] };
-      await api.post('/api/broadcast-messages', payload);
-      toast.success('Terkirim !');
+      const payload = {
+        message: broadcastMessage,
+        targetGroups: [], // Empty array for all groups
+      };
+      await api.post('/api/broadcast-messages', payload); // Fixed to use POST
+      toast.success('Broadcast sent successfully!');
       setBroadcastMessage('');
       setShowBroadcastModal_all(false);
     } catch (error) {
