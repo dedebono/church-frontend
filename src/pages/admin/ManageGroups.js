@@ -307,17 +307,33 @@ const openChat = async (group) => {
 };
 
   // Listen for new messages while modal is open
+// Listen for new messages while modal is open
 useEffect(() => {
   if (!showChatModal || !chatGroup) return;
+  
+  console.log('[ManageGroups] Setting up message listeners for group:', chatGroup._id);
+  
   const handleNew = (msg) => {
+    console.log('[ManageGroups] 📨 Received new message:', msg);
     const gid = msg.group || msg.groupId;
+    console.log('[ManageGroups] Message group ID:', gid, 'Current group ID:', chatGroup._id);
+    
     if (String(gid) === String(chatGroup._id)) {
+      console.log('[ManageGroups] ✅ Adding message to chat');
       setChatMessages((prev) => [...prev, msg]);
+    } else {
+      console.log('[ManageGroups] ❌ Message not for current group, ignoring');
     }
   };
+  
   on('message:new', handleNew);
-  on('chat:new', handleNew); // keep if some places emit this
-  return () => { off('message:new', handleNew); off('chat:new', handleNew); };
+  on('chat:new', handleNew);
+  
+  return () => { 
+    console.log('[ManageGroups] Cleaning up message listeners');
+    off('message:new', handleNew); 
+    off('chat:new', handleNew); 
+  };
 }, [showChatModal, chatGroup, on, off]);
 
 
