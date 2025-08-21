@@ -20,7 +20,7 @@ import { useSocket } from '../../socket/SocketContext';
 
 const ManageGroups = () => {
   const { status, transport, error, on, off, joinGroup, leaveGroup, sendText, reconnect } = useSocket();
-
+  const [userId, setUserId] = useState(null);
   const [groups, setGroups] = useState([]);
   const [groupMembers, setGroupMembers] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +43,12 @@ const ManageGroups = () => {
 
   useEffect(() => {
     fetchGroups();
+  }, []);
+
+  useEffect(() => {
+  // If userId is stored in your socket context or global state
+  const currentUserId = "user_id_from_context_or_local_storage"; // Replace with actual logic to get user ID
+  setUserId(currentUserId);
   }, []);
 
   useEffect(() => {
@@ -71,6 +77,19 @@ const ManageGroups = () => {
       toast.error('Failed to fetch groups.');
     }
   };
+
+  const fetchMessagesFromBackend = async (groupId) => {
+  try {
+    const response = await api.get('/api/admin/messages', {
+      params: { groupId: groupId, page: 1, limit: 50 }
+    });
+    const messages = (response.data.items || []).slice().reverse();  // Reverse to show most recent on top
+    setChatMessages(messages);
+  } catch (e) {
+    console.error('Failed to load history:', e);
+  }
+};
+
 
   const handleEdit = (group) => {
     setFormData({ name: group.name, description: group.description, rules: group.rules });
@@ -264,7 +283,7 @@ const ManageGroups = () => {
 const openChat = async (group) => {
   setChatGroup(group);
   setShowChatModal(true);
-
+  fetchMessagesFromBackend(group._id);
   try {
     const { data } = await api.get('/api/admin/messages', {
       params: { groupId: group._id, page: 1, limit: 50 }
@@ -294,30 +313,13 @@ const openChat = async (group) => {
     setChatText('');
   };
 
-  const getSenderName = (s) => {
-  if (!s) return 'Unknown';
-  if (typeof s === 'string') return s;               // already an id string
-  return (
-    s.fullName ||
-    s.name ||
-    [s.firstName, s.lastName].filter(Boolean).join(' ') ||
-    s._id ||
-    'Unknown'
-  );
-};
-
-  // Listen for new messages while modal is open
-// Listen for new messages while modal is open
 useEffect(() => {
   if (!showChatModal || !chatGroup) return;
-  
-  console.log('[ManageGroups] Setting up message listeners for group:', chatGroup._id);
-  
+
   const handleNew = (msg) => {
-    console.log('[ManageGroups] 📨 Received new message:', msg);
+    console.log('[ManageGroups] 📨 Received new message:', msg);  // Log the message data
     const gid = msg.group || msg.groupId;
-    console.log('[ManageGroups] Message group ID:', gid, 'Current group ID:', chatGroup._id);
-    
+
     if (String(gid) === String(chatGroup._id)) {
       console.log('[ManageGroups] ✅ Adding message to chat');
       setChatMessages((prev) => [...prev, msg]);
@@ -325,17 +327,12 @@ useEffect(() => {
       console.log('[ManageGroups] ❌ Message not for current group, ignoring');
     }
   };
-  
+
   on('message:new', handleNew);
-  on('chat:new', handleNew);
-  
   return () => { 
-    console.log('[ManageGroups] Cleaning up message listeners');
     off('message:new', handleNew); 
-    off('chat:new', handleNew); 
   };
 }, [showChatModal, chatGroup, on, off]);
-
 
   return (
     <div className="page-flow-manage-groups">
@@ -486,26 +483,74 @@ useEffect(() => {
       {showChatModal && chatGroup && (
         <div className="modal-backdrop-groups">
           <div className="modal-container-groups" style={{ maxWidth: 640 }}>
-            <h3 className="text-xl font-semibold mb-2">Chat — {chatGroup.name}</h3>
-            <div
-              style={{
-                height: 300, overflowY: 'auto', border: '1px solid #eee',
-                borderRadius: 8, padding: 12, marginBottom: 12, background: '#fafafa',
-              }}
-            >
-              {chatMessages.length === 0 && <div style={{ opacity: 0.7 }}>No messages yet. Say hi 👋</div>}
-              {chatMessages.map((m) => (
-                <div key={m._id || Math.random()} style={{ marginBottom: 8 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>
-                    {getSenderName(m.sender)} • {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
-                  </div>
-                  <div style={{ fontWeight: 500 }}>
-                    {m.type === 'image' ? '📷 Image' : (m.text || '(non-text message)')}
-                  </div>
+            <h3 className="text-xl font-semibold mb-2">Chat — {chatGroup.name}
+              <button onClick={() => fetchMessagesFromBackend(chatGroup._id)} style={{ margin: '10px' }}>
+              🔄️
+            </button></h3>
+
+            
+            {/* Chat Messages Container */}
+              <div style={{
+                height: 300, overflowY: 'auto', 
+                border: '1px solid #eee', 
+                borderRadius: 8, 
+                padding: 12, 
+                marginBottom: 12, 
+                background: '#fafafa',
+                display: 'flex', 
+                flexDirection: 'column-reverse'
+              }}>
+              {chatMessages.length === 0 && (
+                <div style={{ opacity: 0.7, fontSize: 14 }}>
+                  No messages yet. Say hi 👋
                 </div>
-              ))}
+              )}
+
+{chatMessages.map((m) => (
+  <div
+    key={m._id || Math.random()}
+    style={{
+      marginBottom: 8,
+      display: 'flex',
+      justifyContent: m.sender === userId ? 'flex-end' : 'flex-start',
+    }}
+  >
+    {/* Message Bubble */}
+    <div
+      style={{
+        maxWidth: '70%', // Restrict bubble width
+        padding: '8px 12px',
+        borderRadius: 12,
+        backgroundColor: m.sender === userId ? '#dcf8c6' : '#ddddddff', // Green for sender, white for receiver
+        boxShadow: m.sender === userId ? '0 2px 5px rgba(0, 0, 0, 0.1)' : 'none', // Add shadow for sender
+        fontWeight: 500,
+        display: 'inline-block',
+      }}
+    >
+      {/* Sender Full Name and Timestamp */}
+      <div style={{ fontSize: 12, opacity: 0.7 , marginBottom: 4 , textAlign: m.sender === userId ? 'right' : 'left',}}>
+        {m.fullName || 'Unknown'} •{' '}
+        {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
+      </div>
+
+      {/* Message Content */}
+      <div style={{ marginTop: 6 }}>
+        {m.type === 'image' ? (
+          <img
+            src={m.image}
+            alt="message-image"
+            style={{ maxWidth: '100%', borderRadius: 8 }}
+          />
+        ) : (
+          m.text || '(non-text message)'
+        )}
+      </div>
+    </div>
+  </div>
+))}
             </div>
 
+            {/* Message Input */}
             <div style={{ display: 'flex', gap: 8 }}>
               <input
                 className="input-search"
@@ -513,14 +558,28 @@ useEffect(() => {
                 value={chatText}
                 onChange={(e) => setChatText(e.target.value)}
                 onKeyDown={(e) => (e.key === 'Enter' ? sendChatMessage() : null)}
-                style={{ flex: 1 }}
+                style={{ flex: 1, padding: '8px 12px', borderRadius: 12, border: '1px solid #ccc' }}
               />
-              <button className="button-member-manage-modal" onClick={sendChatMessage} disabled={!chatText.trim()}>Send</button>
-              <button className="button-member-manage-modal" onClick={closeChat}>Close</button>
+              <button
+                className="button-member-manage-modal"
+                onClick={sendChatMessage}
+                disabled={!chatText.trim()}
+                style={{ padding: '8px 12px', borderRadius: 12 }}
+              >
+                Send
+              </button>
+              <button
+                className="button-member-manage-modal"
+                onClick={closeChat}
+                style={{ padding: '8px 12px', borderRadius: 12 }}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
       )}
+
 
       {/* Broadcast Modal */}
       {showBroadcastModal && (
