@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import './ManageGroups.css';
-import api from './api/API';
+import api from './api/API'; // Keep this for general API calls like broadcast and messages
+
+// Import all group-related API functions from manageGroupsAPI.js
 import {
   getAllGroups,
   createGroup,
@@ -11,9 +13,9 @@ import {
   deleteGroup,
   removeMemberFromGroup,
   getGroupMembers,
-  searchMembersByName,
+  searchMembersByName, // This one is also in API.js, but manageGroupsAPI.js is more specific for group context
   addMemberToGroup,
-} from './api/API';
+} from './api/manageGroupsAPI'; // Changed from './api/API' to './api/manageGroupsAPI'
 
 // ⬇️ use the shared socket
 import { useSocket } from '../../socket/SocketContext';
@@ -56,6 +58,7 @@ const ManageGroups = () => {
       const membersByGroup = {};
       for (const group of groups) {
         try {
+          // Using getGroupMembers from manageGroupsAPI.js
           const res = await getGroupMembers(group._id);
           membersByGroup[group._id] = res.data;
         } catch (err) {
@@ -70,6 +73,7 @@ const ManageGroups = () => {
 
   const fetchGroups = async () => {
     try {
+      // Using getAllGroups from manageGroupsAPI.js
       const res = await getAllGroups();
       setGroups(res.data);
     } catch (err) {
@@ -80,6 +84,7 @@ const ManageGroups = () => {
 
   const fetchMessagesFromBackend = async (groupId) => {
   try {
+    // Using general api instance for messages
     const response = await api.get('/api/admin/messages', {
       params: { groupId: groupId, page: 1, limit: 50 }
     });
@@ -99,9 +104,10 @@ const ManageGroups = () => {
 
   const handleRemoveMember = async (groupId, memberId) => {
     try {
+      // Using removeMemberFromGroup from manageGroupsAPI.js
       await removeMemberFromGroup(groupId, memberId);
       toast.success('Member removed!');
-      fetchGroups();
+      fetchGroups(); // Re-fetch groups to update member list
     } catch (error) {
       console.error('Failed to remove member:', error);
       toast.error('Failed to remove member.');
@@ -115,6 +121,7 @@ const ManageGroups = () => {
 
     if (query.length > 2) {
       try {
+        // Using searchMembersByName from manageGroupsAPI.js (or API.js, both are fine here)
         const res = await searchMembersByName(query);
         if (res.data.length === 0) {
           setSearchResults([]);
@@ -139,9 +146,10 @@ const ManageGroups = () => {
   const handleAddMemberToGroup = async () => {
     if (!selectedMember) return;
     try {
+      // Using addMemberToGroup from manageGroupsAPI.js
       await addMemberToGroup(editingGroup._id, selectedMember._id);
       closeAddMembersModal();
-      fetchGroups();
+      fetchGroups(); // Re-fetch groups to update member list
       Swal.fire('Success', 'Member added to group!', 'success');
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -160,16 +168,18 @@ const ManageGroups = () => {
     const payload = { name: formData.name, description: formData.description, rules: formData.rules };
     try {
       if (editingGroup) {
+        // Using updateGroup from manageGroupsAPI.js
         await updateGroup(editingGroup._id, payload);
         toast.success('Group updated successfully!');
       } else {
+        // Using createGroup from manageGroupsAPI.js
         await createGroup(payload);
         toast.success('Group created successfully!');
       }
       setFormData({ name: '', description: '', rules: '' });
       setEditingGroup(null);
       setShowModal(false);
-      fetchGroups();
+      fetchGroups(); // Re-fetch groups to update the list
     } catch (error) {
       console.error('Error saving group:', error);
       toast.error(error.response?.data?.message || 'Failed to save group.');
@@ -189,8 +199,9 @@ const ManageGroups = () => {
 
     if (result.isConfirmed) {
       try {
+        // Using deleteGroup from manageGroupsAPI.js
         await deleteGroup(groupId);
-        fetchGroups();
+        fetchGroups(); // Re-fetch groups to update the list
         Swal.fire('Deleted!', 'Berhasil dihapus', 'success');
       } catch (error) {
         console.error('Error deleting group:', error);
@@ -203,6 +214,7 @@ const ManageGroups = () => {
     if (!broadcastMessage.trim()) return toast.error('Pesan broadcast tidak boleh kosong');
     try {
       const payload = { message: broadcastMessage, targetGroups: [selectedGroupIdForBroadcast] };
+      // Using general api instance for broadcast messages
       await api.post('/api/broadcast-messages', payload);
       toast.success('Pesan Broadcast terkirim');
       setBroadcastMessage('');
@@ -220,7 +232,8 @@ const ManageGroups = () => {
         message: broadcastMessage,
         targetGroups: [], // Empty array for all groups
       };
-      await api.post('/api/broadcast-messages', payload); // Fixed to use POST
+      // Using general api instance for broadcast messages
+      await api.post('/api/broadcast-messages', payload);
       toast.success('Broadcast sent successfully!');
       setBroadcastMessage('');
       setShowBroadcastModal_all(false);
@@ -232,6 +245,7 @@ const ManageGroups = () => {
 
   const fetchBroadcastLogs = async (groupId) => {
     try {
+      // Using general api instance for broadcast messages
       const response = await api.get('/api/broadcast-messages');
       if (response.data && response.data.length > 0) {
         const filteredLogs = response.data.filter(
@@ -285,6 +299,7 @@ const openChat = async (group) => {
   setShowChatModal(true);
   fetchMessagesFromBackend(group._id);
   try {
+    // Using general api instance for messages
     const { data } = await api.get('/api/admin/messages', {
       params: { groupId: group._id, page: 1, limit: 50 }
     });
@@ -329,8 +344,8 @@ useEffect(() => {
   };
 
   on('message:new', handleNew);
-  return () => { 
-    off('message:new', handleNew); 
+  return () => {
+    off('message:new', handleNew);
   };
 }, [showChatModal, chatGroup, on, off]);
 
@@ -488,16 +503,16 @@ useEffect(() => {
               🔄️
             </button></h3>
 
-            
+
             {/* Chat Messages Container */}
               <div style={{
-                height: 300, overflowY: 'auto', 
-                border: '1px solid #eee', 
-                borderRadius: 8, 
-                padding: 12, 
-                marginBottom: 12, 
+                height: 300, overflowY: 'auto',
+                border: '1px solid #eee',
+                borderRadius: 8,
+                padding: 12,
+                marginBottom: 12,
                 background: '#fafafa',
-                display: 'flex', 
+                display: 'flex',
                 flexDirection: 'column-reverse'
               }}>
               {chatMessages.length === 0 && (
