@@ -1,0 +1,160 @@
+.birthday-test-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.test-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.test-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.test-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.test-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.test-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.test-card:hover {
+  transform: translateY(-5px);
+}
+
+.test-card h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.test-card p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.test-buttons {
+  margin: 30px 0;
+}
+
+.test-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.test-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.test-btn:active {
+  transform: translateY(0);
+}
+
+.test-info {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #00bbf0;
+}
+
+.test-info h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.test-info ul {
+  list-style: none;
+  padding: 0;
+}
+
+.test-info li {
+  padding: 5px 0;
+  color: #555;
+  font-weight: 500;
+}
+
+.sample-data {
+  margin-top: 15px;
+}
+
+.sample-member {
+  background: #f0f9ff;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border-left: 4px solid #0ea5e9;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+.sample-member strong {
+  color: #0369a1;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .test-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .test-header h1 {
+    font-size: 2rem;
+  }
+  
+  .test-card {
+    padding: 20px;
+  }
+  
+  .birthday-test-container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .test-header p {
+    font-size: 1rem;
+  }
+  
+  .test-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+}

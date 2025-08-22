@@ -8,6 +8,7 @@ import FormulirJemaat from './pages/formpage';
 import ResetPasswordPage from './pages/Reset-password';
 import FinanceAdmin from './pages/FinanceDashboard';
 import ProtectedRoute from './pages/ProtectedRoute';
+import BirthdayReminderTest from './components/BirthdayReminderTest';
 import { SocketProvider } from './socket/SocketContext';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/test-birthday" element={<BirthdayReminderTest />} />
       </Routes>
     </Router>
     </SocketProvider>

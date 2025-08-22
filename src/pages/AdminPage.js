@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate, Navigate } from "react-router-dom"
 import "./AdminPage.css"
 
@@ -10,7 +10,7 @@ import ViewMember from "./admin/viewMember"
 import UploadCSV from "./admin/csvUpload"
 import AdminMembers from "./admin/AdminMembers"
 import ManageGroups from "./admin/ManageGroups"
-import AdminAttendance from "./admin/AdminAttendance"
+import AdminAttendances from "./admin/AdminAttendance"
 import AdminDevotions from "./admin/AdminDevotions"
 import SermonCMS from "./admin/SermonCMS"
 import EventsAdmin from "./admin/EventsAdmin"
@@ -19,6 +19,7 @@ import ServiceRequest from "./admin/serviceRequest"
 import ManageCertificates from "./admin/ManageCertificates"
 import BroadcastMessagesAdmin from "./admin/BroadcastAdmin"
 import MessageAdmin from "./admin/AdminMessages"
+import AdminBirthdayReminder from "../components/AdminBirthdayReminder"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -28,7 +29,24 @@ const AdminPage = () => {
     "Komunitas": false,
     "Sekretariat": false,
   });
+  const [showBirthdayReminder, setShowBirthdayReminder] = useState(false)
   const navigate = useNavigate()
+
+  // Check if birthday reminder should be shown on component mount
+  useEffect(() => {
+    const today = new Date().toDateString()
+    const lastSeen = localStorage.getItem('birthdayReminderSeen')
+    
+    // Show reminder if not seen today
+    if (lastSeen !== today) {
+      // Small delay to let the admin page load first
+      const timer = setTimeout(() => {
+        setShowBirthdayReminder(true)
+      }, 1000)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [])
   const handleLogout = () => {
     localStorage.removeItem("adminToken")
     localStorage.removeItem("isAdmin")
@@ -44,7 +62,7 @@ const AdminPage = () => {
       case "viewFamily": return <ViewFamily />
       case "viewMember": return <ViewMember />
       case "uploadCSV": return <UploadCSV />
-      case "adminAttendance": return <AdminAttendance />
+      case "adminAttendance": return <AdminAttendances />
       case "adminMembers": return <AdminMembers />
       case "adminKonten" : return <SermonCMS />
       case "eventsAdmin" : return <EventsAdmin/>
@@ -98,8 +116,21 @@ const AdminPage = () => {
     }));
   };
 
+  const handleCloseBirthdayReminder = () => {
+    setShowBirthdayReminder(false)
+  }
+
+  const handleShowBirthdayReminder = () => {
+    setShowBirthdayReminder(true)
+  }
+
   return (
     <div className="admin-layout">
+      {/* Birthday Reminder Popup */}
+      <AdminBirthdayReminder 
+        isVisible={showBirthdayReminder}
+        onClose={handleCloseBirthdayReminder}
+      />
 
       {/* Sidebar overlay for mobile */}
       <div className={`admin-sidebar-overlay ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)}>
@@ -140,7 +171,7 @@ const AdminPage = () => {
           </nav>
 
           <div className="sidebar-bottom">
-            <div className="bottom-header">SISTEM ADMIN</div>
+            <div className="极bottom-header">SISTEM ADMIN</div>
             <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
             <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
           </div>
@@ -181,6 +212,9 @@ const AdminPage = () => {
 
         <div className="sidebar-bottom">
           <div className="bottom-header">SISTEM ADMIN</div>
+          <button className="birthday-reminder-btn" onClick={handleShowBirthdayReminder}>
+            🎂 Ulang Tahun
+          </button>
           <button className="logout-btn" onClick={handleLogout}>KELUAR</button>
           <p className="bottom-description">Panel administrasi untuk mengelola data jemaat dan keluarga</p>
         </div>

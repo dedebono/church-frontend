@@ -375,5 +375,19 @@ export const fetchTotalFamilies = () =>
 export const fetchTotalAttendance = () =>
   api.get("/api/attendance/count").then((res) => res.data.count);
 
+// Birthday API
+export const getTodaysBirthdays = async () => {
+  try {
+    const response = await api.get("/api/members/birthdays/today");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching today's birthdays:", error);
+    // For testing purposes, return mock data if API fails
+    if (window.getTodaysBirthdays) {
+      return await window.getTodaysBirthdays();
+    }
+    throw error;
+  }
+};
 
 export default api;
