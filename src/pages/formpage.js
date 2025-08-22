@@ -43,8 +43,6 @@ const ServiceRequestForm = () => {
     e.preventDefault()
     try {
       const response = await api.post("/api/service-requests", form) // ✅ Real backend call
-      console.log("Submitted:", response.data)
-
       setMessage("✅ Permintaan sudah terkirim")
       setForm({
         serviceType: "",

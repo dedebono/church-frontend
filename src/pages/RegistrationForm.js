@@ -53,7 +53,6 @@ function RegistrationForm() {
 
   // Debugging: watch familyId
   useEffect(() => {
-    console.log("Updated familyId:", familyId)
   }, [familyId])
 
   // SweetAlert functions
@@ -222,7 +221,6 @@ function RegistrationForm() {
       }))
 
       const response = await api.post("/api/members", membersWithFamily)
-      console.log("Members submission response:", response)
 
       setCurrentStep(5)
       showSuccessAlert(

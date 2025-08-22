@@ -17,7 +17,6 @@ const getToken = () => {
   for (const k of keys) {
     if (!t) t = (localStorage.getItem(k) || '').replace(/^"|"$/g, '');
   }
-  console.log('[SocketContext] getToken() →', t || '(empty)');
   return t;
 };
 
@@ -26,7 +25,6 @@ const setToken = (token) => {
   if (!token) return;
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
   localStorage.setItem('adminToken', token);
-  console.log('[SocketContext] setToken() saved:', token);
 };
 
 export function SocketProvider({ children }) {
@@ -56,7 +54,6 @@ export function SocketProvider({ children }) {
       setStatus('connected');
       setTransport(s.io.engine.transport.name || '');
       setError('');
-      console.log('[socket] connected', { uri: s.io.uri, transport: s.io.engine.transport.name });
     });
     s.on('disconnect', () => setStatus('disconnected'));
     s.on('reconnect_attempt', () => setStatus('connecting'));

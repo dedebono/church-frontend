@@ -332,14 +332,11 @@ useEffect(() => {
   if (!showChatModal || !chatGroup) return;
 
   const handleNew = (msg) => {
-    console.log('[ManageGroups] 📨 Received new message:', msg);  // Log the message data
     const gid = msg.group || msg.groupId;
 
     if (String(gid) === String(chatGroup._id)) {
-      console.log('[ManageGroups] ✅ Adding message to chat');
       setChatMessages((prev) => [...prev, msg]);
     } else {
-      console.log('[ManageGroups] ❌ Message not for current group, ignoring');
     }
   };
 

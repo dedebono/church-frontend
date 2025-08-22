@@ -11,7 +11,6 @@ export const useSermons = (limit = null) => {
   const fetchSermons = async () => {
     try {
       setLoading(true)
-      console.log("🔄 Fetching sermons for homepage...")
       const data = await getSermons()
 
       // Ensure data is an array

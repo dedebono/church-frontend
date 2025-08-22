@@ -48,9 +48,7 @@ const EventCMS = () => {
 
   const fetchEvent = async () => {
     try {
-      console.log("🔄 Fetching events using API utility...")
       const data = await getEvents()
-      console.log("📥 events fetched:", data)
 
       // Ensure data is an array
       const eventsArray = Array.isArray(data) ? data : []

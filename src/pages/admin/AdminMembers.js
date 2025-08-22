@@ -40,9 +40,6 @@ function AdminMembers() {
     setIsLoading(true)
     try {
       const response = await api.get("/api/members")
-      console.log(response.data)
-
-      // Simulate minimum loading time for better UX
       await new Promise((resolve) => setTimeout(resolve, 800))
 
       setMembers(response.data)
@@ -52,7 +49,6 @@ function AdminMembers() {
       // Reset animation state after animation completes
       setTimeout(() => setTableAnimating(false), 600)
     } catch (error) {
-      console.log(error)
       console.error("Failed to fetch members:", error)
     } finally {
       setIsLoading(false)
