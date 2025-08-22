@@ -11,7 +11,6 @@ export const useGalleryPhotos = (limit = null) => {
   const fetchGalleryPhotos = async () => {
     try {
       setLoading(true)
-      console.log("🔄 Fetching GalleryPhotos for homepage...")
       const data = await getGalleryPhotos()
 
       // Ensure data is an array

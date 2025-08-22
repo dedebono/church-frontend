@@ -11,7 +11,6 @@ export const useEvents = (limit = null) => {
   const fetchEvents = async () => {
     try {
       setLoading(true)
-      console.log("🔄 Fetching events for homepage...")
       const data = await getEvents()
 
       // Ensure data is an array
