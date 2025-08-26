@@ -11,7 +11,7 @@ import "./viewMember.css"
 function ViewMember() {
   const [memberName, setMemberName] = useState("")
   const [results, setResults] = useState([])
-  const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null) // { [memberId]: File }
   const [uploadingFor, setUploadingFor] = useState(null) // to track which member is being uploaded
   const [error, setError] = useState("")
   const [isSearched, setIsSearched] = useState(false) // Track if search was performed
@@ -90,6 +90,34 @@ if (confirm.isConfirmed) {
     })
   }
 
+  // Convert API ISO -> "YYYY-MM-DD" for <input type="date">
+function isoToInputDate(iso) {
+  if (!iso) return ""
+  const d = new Date(iso)
+  // Use UTC parts to avoid timezone shift
+  const yyyy = d.getUTCFullYear()
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0")
+  const dd = String(d.getUTCDate()).padStart(2, "0")
+  return `${yyyy}-${mm}-${dd}`
+}
+
+// Convert "YYYY-MM-DD" -> ISO string for API (midnight UTC)
+function inputDateToIso(dateStr) {
+  if (!dateStr) return null
+  return new Date(`${dateStr}T00:00:00.000Z`).toISOString()
+}
+
+// Display "dd/mm/yyyy" FROM ISO using UTC parts
+function formatDateDDMMYYYYUTC(iso) {
+  if (!iso) return ""
+  const d = new Date(iso)
+  const dd = String(d.getUTCDate()).padStart(2, "0")
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0")
+  const yyyy = d.getUTCFullYear()
+  return `${dd}/${mm}/${yyyy}`
+}
+
+
   const handlePhotoUpload = async (memberId) => {
     if (!selectedFile) {
       Swal.fire({
@@ -102,9 +130,9 @@ if (confirm.isConfirmed) {
     try {
       setUploadingFor(memberId)
 
-      const fileName = `profile_photos/${memberId}_${selectedFile.name}`
+      const fileName = `profile_photos/${memberId}/${Date.now()}-${selectedFile.name}`;
       const fileRef = ref(storage, fileName)
-      await uploadBytes(fileRef, selectedFile)
+      await uploadBytes(fileRef, selectedFile, { contentType: selectedFile.type });
       const downloadURL = await getDownloadURL(fileRef)
 
       await api.put(`/api/members/${memberId}/photo`, { photoUrl: downloadURL })
@@ -132,33 +160,44 @@ if (confirm.isConfirmed) {
 
   const handleEdit = (member) => {
     setEditingMember(member._id)
-    setFormData({ ...member })
-  }
-
-  const handleUpdate = async () => {
-    const confirm = await Swal.fire({
-      title: "Save Changes?",
-      text: "Do you want to save the changes?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes, save it!",
-      cancelButtonText: "No, cancel!",
+    setFormData({ ...member, 
+    dateOfBirth: member.dateOfBirth ?? null,
+    dateOfBirthInput: isoToInputDate(member.dateOfBirth)
     })
-
-    if (confirm.isConfirmed) {
-      try {
-        await api.put(`/api/members/${editingMember}`, formData)
-        const updatedResults = results.map((member) =>
-          member._id === editingMember ? { ...formData, _id: editingMember } : member,
-        )
-        setResults(updatedResults)
-        setEditingMember(null)
-        Swal.fire("Saved!", "Member has been updated.", "success")
-      } catch (err) {
-        Swal.fire("Failed!", "Failed to update member.", "error")
-      }
-    }
   }
+
+const handleUpdate = async () => {
+  const confirm = await Swal.fire({
+    title: "Save Changes?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Save",
+  })
+  if (!confirm.isConfirmed) return
+
+  try {
+    const payload = {
+      ...formData,
+      // send ISO; if user cleared it, send null (or omit if your API prefers)
+      dateOfBirth: inputDateToIso(formData.dateOfBirthInput),
+    }
+
+    await api.put(`/api/members/${editingMember}`, payload)
+
+    // Update UI: keep the ISO, recompute the input field for future edits
+    setResults((r) =>
+      r.map((m) =>
+        m._id === editingMember
+          ? { ...m, ...payload, _id: editingMember }
+          : m
+      )
+    )
+    setEditingMember(null)
+    Swal.fire("Saved!", "Member has been updated.", "success")
+  } catch (err) {
+    Swal.fire("Failed!", err?.response?.data?.message || err.message || "Failed to update member.", "error")
+  }
+}
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -210,11 +249,13 @@ if (confirm.isConfirmed) {
             <input name="placeOfBirth" value={formData.placeOfBirth||""} onChange={handleChange}placeholder="Tempat-lahir"/>
             <p className="edit-member">Tanggal Lahir:</p>
             <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth || ""}
-                  onChange={handleChange}
-                />
+              type="date"
+              name="dateOfBirthInput"
+              value={formData.dateOfBirthInput || ""}
+              onChange={(e) =>
+                setFormData((f) => ({ ...f, dateOfBirthInput: e.target.value }))
+              }
+            />
 
             <p className="edit-member">Alamat:</p>
             <input name="address" value={formData.address || ""} onChange={handleChange} placeholder="alamat" />
