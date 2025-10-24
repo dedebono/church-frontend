@@ -5,6 +5,7 @@ import api, { getFamilies } from "./api/API"
 import "./viewFamily.css"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "./firebase" // your Firebase config
+import { isoToInputDateMakassar, inputDateToIsoMakassar, formatDateToMakassar } from '../../utils/dateHelpers'
 
 function ViewFamily() {
   const [showModal, setShowModal] = useState(false)
@@ -64,7 +65,10 @@ function ViewFamily() {
 
   const handleEdit = (member) => {
     setEditingMember(member._id)
-    setFormData({ ...member })
+    setFormData({
+      ...member,
+      dateOfBirthInput: isoToInputDateMakassar(member.dateOfBirth)
+    })
   }
 
    const handleFamilyPhotoUpload = async (familyId) => {
@@ -275,7 +279,12 @@ function ViewFamily() {
 
     if (confirm.isConfirmed) {
       try {
-        await api.put(`/api/members/${editingMember}`, formData)
+        const updatedFormData = {
+          ...formData,
+          dateOfBirth: inputDateToIsoMakassar(formData.dateOfBirthInput),
+        }
+        delete updatedFormData.dateOfBirthInput
+        await api.put(`/api/members/${editingMember}`, updatedFormData)
         await handleSearch()
         setEditingMember(null)
 
@@ -296,14 +305,6 @@ function ViewFamily() {
     }
   }
 
-  const formatDate = (isoDate) => {
-    if (!isoDate) return ""
-    const date = new Date(isoDate)
-    const day = String(date.getDate()).padStart(2, "0")
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const year = date.getFullYear()
-    return `${day}/${month}/${year}`
-  }
 
 const handleSearch = async () => {
     setIsSearched(true) // Mark that search was performed
@@ -329,7 +330,7 @@ const handleSearch = async () => {
     try {
       await api.put(`/api/families/id/${familyData._id}`, {
         familyName: editedFamily.familyName,
-        familyDate: editedFamily.familyDate,
+        familyDate: inputDateToIsoMakassar(editedFamily.familyDate), // <-- ISO midnight UTC
         email: editedFamily.email,
       })
       setEditFamilyModal(false)
@@ -518,10 +519,10 @@ const handleSearch = async () => {
             <img src={familyData.profilePhoto} alt="Family Profile" className="family-profile-photo" />
           )}
 
-          {/* Marriage date - only show if exists */}
           {hasContent(familyData.familyDate) && (
-            <div className="tanggal-pernikahan">👰 Tanggal Pernikahan: {formatDate(familyData.familyDate)}</div>
+            <div className="tanggal-pernikahan">👰 Tanggal Pernikahan: {formatDateToMakassar(familyData.familyDate)}</div>
           )}
+
 
           {hasContent(familyData.email) && 
           <div className="tanggal-pernikahan">📧 Email: {familyData.email}</div>}
@@ -531,7 +532,17 @@ const handleSearch = async () => {
             <button className="add-member-button" onClick={() => setShowModal(true)}>
               Tambah Anggota
             </button>
-            <button className="add-member-button" onClick={() => setEditFamilyModal(true)}>
+            <button
+              className="add-member-button"
+              onClick={() => {
+                setEditedFamily({
+                  familyName: familyData?.familyName || "",
+                  familyDate: isoToInputDateMakassar(familyData?.familyDate),
+                  email: familyData?.email || "",
+                })
+                setEditFamilyModal(true)
+              }}
+            >
               Edit Keluarga
             </button>
           </div>
@@ -628,6 +639,7 @@ const handleSearch = async () => {
               </div>
             </div>
             )}
+            
           {/* Edit Member Modal */}
           {editingMember && (
             <div className="modal-overlay">
@@ -647,8 +659,8 @@ const handleSearch = async () => {
                 <p className="edit-member">Tanggal Lahir:</p>
                 <input
                   type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth || ""}
+                  name="dateOfBirthInput"
+                  value={formData.dateOfBirthInput || ""}
                   onChange={handleChange}
                 />
                 <p className="edit-member">Alamat:</p>
@@ -724,10 +736,10 @@ const handleSearch = async () => {
                         <span className="member-detail-label">TTL: </span>
                         <span className="member-detail-value">
                           {hasContent(member.placeOfBirth) && hasContent(member.dateOfBirth)
-                            ? `${member.placeOfBirth}, ${formatDate(member.dateOfBirth)}`
+                            ? `${member.placeOfBirth}, ${formatDateToMakassar(member.dateOfBirth)}`
                             : hasContent(member.placeOfBirth)
                               ? member.placeOfBirth
-                              : formatDate(member.dateOfBirth)}
+                              : formatDateToMakassar(member.dateOfBirth)}
                         </span>
                       </p>
                     )}

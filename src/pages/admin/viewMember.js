@@ -6,6 +6,7 @@ import Swal from "sweetalert2"
 import api from "./api/API"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "./firebase" // your Firebase config
+import { isoToInputDateMakassar, inputDateToIsoMakassar, formatDateToMakassar } from '../../utils/dateHelpers'
 import "./viewMember.css"
 
 function ViewMember() {
@@ -17,14 +18,6 @@ function ViewMember() {
   const [isSearched, setIsSearched] = useState(false) // Track if search was performed
   const [editingMember, setEditingMember] = useState(null)
   const [formData, setFormData] = useState({})
-
-  const formatDate = (isoDate) => {
-    const date = new Date(isoDate)
-    const day = String(date.getDate()).padStart(2, "0")
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const year = date.getFullYear()
-    return `${day}/${month}/${year}`
-  }
 
   const handleCreateAccount = async (memberId, email) => {
     if (!email) {
@@ -90,34 +83,6 @@ if (confirm.isConfirmed) {
     })
   }
 
-  // Convert API ISO -> "YYYY-MM-DD" for <input type="date">
-function isoToInputDate(iso) {
-  if (!iso) return ""
-  const d = new Date(iso)
-  // Use UTC parts to avoid timezone shift
-  const yyyy = d.getUTCFullYear()
-  const mm = String(d.getUTCMonth() + 1).padStart(2, "0")
-  const dd = String(d.getUTCDate()).padStart(2, "0")
-  return `${yyyy}-${mm}-${dd}`
-}
-
-// Convert "YYYY-MM-DD" -> ISO string for API (midnight UTC)
-function inputDateToIso(dateStr) {
-  if (!dateStr) return null
-  return new Date(`${dateStr}T00:00:00.000Z`).toISOString()
-}
-
-// Display "dd/mm/yyyy" FROM ISO using UTC parts
-function formatDateDDMMYYYYUTC(iso) {
-  if (!iso) return ""
-  const d = new Date(iso)
-  const dd = String(d.getUTCDate()).padStart(2, "0")
-  const mm = String(d.getUTCMonth() + 1).padStart(2, "0")
-  const yyyy = d.getUTCFullYear()
-  return `${dd}/${mm}/${yyyy}`
-}
-
-
   const handlePhotoUpload = async (memberId) => {
     if (!selectedFile) {
       Swal.fire({
@@ -160,9 +125,9 @@ function formatDateDDMMYYYYUTC(iso) {
 
   const handleEdit = (member) => {
     setEditingMember(member._id)
-    setFormData({ ...member, 
+    setFormData({ ...member,
     dateOfBirth: member.dateOfBirth ?? null,
-    dateOfBirthInput: isoToInputDate(member.dateOfBirth)
+    dateOfBirthInput: isoToInputDateMakassar(member.dateOfBirth)
     })
   }
 
@@ -179,7 +144,7 @@ const handleUpdate = async () => {
     const payload = {
       ...formData,
       // send ISO; if user cleared it, send null (or omit if your API prefers)
-      dateOfBirth: inputDateToIso(formData.dateOfBirthInput),
+      dateOfBirth: inputDateToIsoMakassar(formData.dateOfBirthInput),
     }
 
     await api.put(`/api/members/${editingMember}`, payload)
@@ -256,7 +221,6 @@ const handleUpdate = async () => {
                 setFormData((f) => ({ ...f, dateOfBirthInput: e.target.value }))
               }
             />
-
             <p className="edit-member">Alamat:</p>
             <input name="address" value={formData.address || ""} onChange={handleChange} placeholder="alamat" />
             <p className="edit-member">Telepon:</p>
@@ -338,8 +302,8 @@ const handleUpdate = async () => {
                     <span className="member-detail-label">TTL: </span>
                     <span className="member-detail-value">
                       {member.placeOfBirth && member.dateOfBirth
-                        ? `${member.placeOfBirth}, ${formatDate(member.dateOfBirth)}`
-                        : member.placeOfBirth || formatDate(member.dateOfBirth)}
+                    ? `${member.placeOfBirth}, ${formatDateToMakassar(member.dateOfBirth)}`
+                    : member.placeOfBirth || formatDateToMakassar(member.dateOfBirth)}
                     </span>
                   </p>
                 )}
