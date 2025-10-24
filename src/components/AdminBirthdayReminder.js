@@ -2,11 +2,56 @@ import React, { useState, useEffect } from 'react';
 import './AdminBirthdayReminder.css';
 
 // Use mock function if available, otherwise use real API
-const getTodaysBirthdays = window.getTodaysBirthdays || 
+const getTodaysBirthdays = window.getTodaysBirthdays ||
   (async () => {
     const module = await import('../pages/admin/api/API');
     return module.getTodaysBirthdays();
   });
+
+/** --- UTC-safe helpers (same approach as in ViewMember) --- */
+
+// If API returns "YYYY-MM-DD", make it UTC midnight ISO; otherwise keep as-is
+function normalizeIsoFromApi(iso) {
+  if (!iso) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) return `${iso}T00:00:00.000Z`;
+  return iso;
+}
+
+// Extract UTC Y/M/D from any date-like input
+function getUtcYmd(input) {
+  if (!input) return null;
+  let d = input instanceof Date ? input : new Date(input);
+  if (isNaN(d.getTime()) && typeof input === 'string') {
+    d = new Date(input + 'T00:00:00Z');
+  }
+  if (isNaN(d.getTime())) return null;
+  return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate() };
+}
+
+// For optional display of DOB as dd/mm/yyyy (UTC-safe)
+function formatDateDDMMYYYYUTC(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const yyyy = d.getUTCFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
+// Age using UTC parts (prevents +1 errors in UTC+ timezones)
+function formatAgeUTC(birthDate) {
+  const parts = getUtcYmd(birthDate);
+  if (!parts) return '';
+  const now = new Date();
+  const ty = now.getUTCFullYear();
+  const tm = now.getUTCMonth();
+  const td = now.getUTCDate();
+  let age = ty - parts.y;
+  const hadBirthday =
+    tm > parts.m || (tm === parts.m && td >= parts.d);
+  if (!hadBirthday) age--;
+  return `(${age} tahun)`;
+}
 
 const AdminBirthdayReminder = ({ isVisible, onClose }) => {
   const [birthdays, setBirthdays] = useState([]);
@@ -23,25 +68,23 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
     try {
       setLoading(true);
       const response = await getTodaysBirthdays();
-      setBirthdays(response.birthdays || []);
+
+      // Normalize date fields to UTC midnight ISO so parsing is stable
+      const normalized = (response.birthdays || []).map((m) => ({
+        ...m,
+        birthDate: normalizeIsoFromApi(m.birthDate),
+      }));
+
+      setBirthdays(normalized);
     } catch (err) {
-      console.error('Error fetching today\'s birthdays:', err);
+      console.error("Error fetching today's birthdays:", err);
       setError('Failed to load birthday data');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatAge = (birthDate) => {
-    if (!birthDate) return '';
-    const today = new Date();
-    const birth = new Date(birthDate);
-    const age = today.getFullYear() - birth.getFullYear();
-    return `(${age} tahun)`;
-  };
-
   const handleClose = () => {
-    // Mark as seen for today to prevent showing again
     localStorage.setItem('birthdayReminderSeen', new Date().toDateString());
     onClose();
   };
@@ -53,9 +96,7 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
       <div className="birthday-reminder-modal">
         <div className="birthday-reminder-header">
           <h2>🎉 Ulang Tahun Hari Ini</h2>
-          <button className="close-button" onClick={handleClose}>
-            ✖
-          </button>
+          <button className="close-button" onClick={handleClose}>✖</button>
         </div>
 
         <div className="birthday-reminder-content">
@@ -67,9 +108,7 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
           ) : error ? (
             <div className="error-message">
               <p>❌ {error}</p>
-              <button onClick={fetchTodaysBirthdays} className="retry-button">
-                Coba Lagi
-              </button>
+              <button onClick={fetchTodaysBirthdays} className="retry-button">Coba Lagi</button>
             </div>
           ) : birthdays.length > 0 ? (
             <div className="birthday-list">
@@ -85,7 +124,9 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
                         {member.family && <span>Keluarga: {member.family}</span>}
                         {member.birthDate && (
                           <span className="age-info">
-                            {formatAge(member.birthDate)}
+                            {/* Age in UTC; optionally add DOB display if you want */}
+                            {formatAgeUTC(member.birthDate)}
+                            {/* · {formatDateDDMMYYYYUTC(member.birthDate)} */}
                           </span>
                         )}
                       </p>
