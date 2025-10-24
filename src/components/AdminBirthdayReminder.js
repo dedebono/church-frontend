@@ -28,15 +28,7 @@ function getUtcYmd(input) {
   return { y: d.getUTCFullYear(), m: d.getUTCMonth(), d: d.getUTCDate() };
 }
 
-// For optional display of DOB as dd/mm/yyyy (UTC-safe)
-function formatDateDDMMYYYYUTC(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  const dd = String(d.getUTCDate()).padStart(2, '0');
-  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const yyyy = d.getUTCFullYear();
-  return `${dd}/${mm}/${yyyy}`;
-}
+
 
 // Age using UTC parts (prevents +1 errors in UTC+ timezones)
 function formatAgeUTC(birthDate) {

@@ -21,12 +21,10 @@ function isoToInputDateMakassar(utcIso) {
   return `${yyyy}-${mm}-${dd}`
 }
 
-// Convert YYYY-MM-DD (from input, assumed Makassar time) to UTC ISO string
+// Convert YYYY-MM-DD (from input) to UTC ISO string at midnight UTC
 function inputDateToIsoMakassar(dateStr) {
   if (!dateStr) return null
-  // Assume dateStr is in Makassar time, subtract 8 hours to get UTC
-  const localDate = new Date(`${dateStr}T00:00:00.000Z`) // Midnight UTC for the date
-  const utcDate = new Date(localDate.getTime() - (8 * 60 * 60 * 1000)) // Subtract 8 hours
+  const utcDate = new Date(`${dateStr}T00:00:00.000Z`) // Midnight UTC for the date
   return utcDate.toISOString()
 }
 
