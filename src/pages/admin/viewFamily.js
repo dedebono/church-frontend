@@ -6,6 +6,7 @@ import "./viewFamily.css"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "./firebase" // your Firebase config
 import { isoToInputDateMakassar, inputDateToIsoMakassar, formatDateToMakassar } from '../../utils/dateHelpers'
+import { Eye, EyeOff, X, Users, Heart, Mail } from "lucide-react";
 
 function ViewFamily() {
   const [showModal, setShowModal] = useState(false)
@@ -71,7 +72,7 @@ function ViewFamily() {
     })
   }
 
-   const handleFamilyPhotoUpload = async (familyId) => {
+  const handleFamilyPhotoUpload = async (familyId) => {
     if (!selectedFamilyFile) {
       Swal.fire({
         icon: "warning",
@@ -118,48 +119,48 @@ function ViewFamily() {
   }
 
   const handleSendFamilyResetLink = async () => {
-  const email = familyData?.email
-  const familyId = familyData?._id
+    const email = familyData?.email
+    const familyId = familyData?._id
 
-  if (!email) {
-    Swal.fire({
-      icon: "error",
-      title: "Email Tidak Ditemukan",
-      text: "Email keluarga belum diisi. Silakan isi email terlebih dahulu.",
-    })
-    return
-  }
-
-  const confirm = await Swal.fire({
-    title: "Kirim Tautan Reset?",
-    html: `Tautan reset akan dikirim ke <strong>${email}</strong>. Lanjutkan?`,
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Ya, kirim",
-    cancelButtonText: "Batal",
-  })
-
-  if (confirm.isConfirmed) {
-    try {
-      await api.post(`/api/families/send-reset-link`, {
-        familyId,
-        email,
-      })
-      Swal.fire({
-        icon: "success",
-        title: "Tautan Terkirim",
-        text: `Tautan reset telah dikirim ke ${email}.`,
-      })
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "Gagal mengirim tautan reset."
+    if (!email) {
       Swal.fire({
         icon: "error",
-        title: "Gagal",
-        text: errorMessage,
+        title: "Email Tidak Ditemukan",
+        text: "Email keluarga belum diisi. Silakan isi email terlebih dahulu.",
       })
+      return
+    }
+
+    const confirm = await Swal.fire({
+      title: "Kirim Tautan Reset?",
+      html: `Tautan reset akan dikirim ke <strong>${email}</strong>. Lanjutkan?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, kirim",
+      cancelButtonText: "Batal",
+    })
+
+    if (confirm.isConfirmed) {
+      try {
+        await api.post(`/api/families/send-reset-link`, {
+          familyId,
+          email,
+        })
+        Swal.fire({
+          icon: "success",
+          title: "Tautan Terkirim",
+          text: `Tautan reset telah dikirim ke ${email}.`,
+        })
+      } catch (err) {
+        const errorMessage = err.response?.data?.message || "Gagal mengirim tautan reset."
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: errorMessage,
+        })
+      }
     }
   }
-}
 
   const handleCreateAccount = async (memberId, email) => {
     if (!email) {
@@ -181,26 +182,26 @@ function ViewFamily() {
     })
 
     if (confirm.isConfirmed) {
-        try {
-          await api.post(`/api/members/send-reset-link`, {
-            memberId,
-            email,
-          })
-          Swal.fire({
-            icon: "success",
-            title: "Reset Link Sent",
-            text: `A reset link has been sent to ${email}.`,
-          })
-        } catch (err) {
-          console.error("Error creating account:", err)
-          const errorMessage = err.response?.data?.message || "Server error send link."
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: errorMessage,
-          })
-        }
+      try {
+        await api.post(`/api/members/send-reset-link`, {
+          memberId,
+          email,
+        })
+        Swal.fire({
+          icon: "success",
+          title: "Reset Link Sent",
+          text: `A reset link has been sent to ${email}.`,
+        })
+      } catch (err) {
+        console.error("Error creating account:", err)
+        const errorMessage = err.response?.data?.message || "Server error send link."
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: errorMessage,
+        })
       }
+    }
   }
 
   const handleDelete = async (memberId) => {
@@ -306,7 +307,7 @@ function ViewFamily() {
   }
 
 
-const handleSearch = async () => {
+  const handleSearch = async () => {
     setIsSearched(true) // Mark that search was performed
     try {
       const cleanName = familyName.trim()
@@ -365,7 +366,7 @@ const handleSearch = async () => {
         try {
           await api.delete(`/api/families/id/${familyData._id}`)
           Swal.fire("Deleted!", "The family and all its members have been deleted.", "success")
-          
+
           // Clear current family data and reset search state
           setFamilyData(null)
           setIsSearched(false)
@@ -470,12 +471,12 @@ const handleSearch = async () => {
           Cari
         </button>
 
-         {error && <div className="error-message">{error}</div>}
+        {error && <div className="error-message">{error}</div>}
 
         {/* Toggle button for family list */}
         {families.length > 0 && (
           <button className="toggle-family-list-button" onClick={toggleFamilyList}>
-            {showFamilyList ? "🙈 Sembunyikan Semua" : "👁️ Tampilkan Semua"}
+            {showFamilyList ? <><EyeOff size={16} /> Sembunyikan Semua</> : <><Eye size={16} /> Tampilkan Semua</>}
           </button>
         )}
       </div>
@@ -486,7 +487,7 @@ const handleSearch = async () => {
           <div className="family-list-header">
             <strong>Daftar Keluarga ({families.length} keluarga):</strong>
             <button className="collapse-button" onClick={toggleFamilyList}>
-              ✕
+              <X size={16} />
             </button>
           </div>
           <ul className="members-list-families">
@@ -511,21 +512,21 @@ const handleSearch = async () => {
 
           {/* Family name - always show if exists */}
           {hasContent(familyData.familyName) && (
-            <div className="nama-keluarga">👨‍👩‍👧‍👦 Nama Keluarga: {familyData.familyName}</div>
+            <div className="nama-keluarga"><Users size={18} /> Nama Keluarga: {familyData.familyName}</div>
           )}
           <div className="photo-family-detail">
-          {/* New: Display Family Profile Photo */}
-          {hasContent(familyData.profilePhoto) && (
-            <img src={familyData.profilePhoto} alt="Family Profile" className="family-profile-photo" />
-          )}
+            {/* New: Display Family Profile Photo */}
+            {hasContent(familyData.profilePhoto) && (
+              <img src={familyData.profilePhoto} alt="Family Profile" className="family-profile-photo" />
+            )}
 
-          {hasContent(familyData.familyDate) && (
-            <div className="tanggal-pernikahan">👰 Tanggal Pernikahan: {formatDateToMakassar(familyData.familyDate)}</div>
-          )}
+            {hasContent(familyData.familyDate) && (
+              <div className="tanggal-pernikahan"><Heart size={16} /> Tanggal Pernikahan: {formatDateToMakassar(familyData.familyDate)}</div>
+            )}
 
 
-          {hasContent(familyData.email) && 
-          <div className="tanggal-pernikahan">📧 Email: {familyData.email}</div>}
+            {hasContent(familyData.email) &&
+              <div className="tanggal-pernikahan"><Mail size={16} /> Email: {familyData.email}</div>}
           </div>
 
           <div className="button-group">
@@ -547,7 +548,7 @@ const handleSearch = async () => {
             </button>
           </div>
 
- {/* Edit Family Modal */}
+          {/* Edit Family Modal */}
           {editFamilyModal && (
             <div className="modal-overlay">
               <div className="modal-content">
@@ -617,29 +618,29 @@ const handleSearch = async () => {
                       {uploadingForFamily === familyData._id ? "Uploading..." : "Upload Photo"}
                     </button>
 
-                  <button className="modal-submit" type="submit">
-                    Simpan
-                  </button>
-                  <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setEditFamilyModal)}>
-                    Batal
-                  </button>
-                  <button
-                  type="button"
-                  onClick={handleSendFamilyResetLink}
-                  className="modal-submit"
-                >
-                  Rst Password
-                </button>
+                    <button className="modal-submit" type="submit">
+                      Simpan
+                    </button>
+                    <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setEditFamilyModal)}>
+                      Batal
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendFamilyResetLink}
+                      className="modal-submit"
+                    >
+                      Rst Password
+                    </button>
 
                   </div>
                 </form>
                 <button className="delete-family-button" onClick={handleDeleteFamily}>
-                    Hapus Keluarga
+                  Hapus Keluarga
                 </button>
               </div>
             </div>
-            )}
-            
+          )}
+
           {/* Edit Member Modal */}
           {editingMember && (
             <div className="modal-overlay">
@@ -655,7 +656,7 @@ const handleSearch = async () => {
                 <p className="edit-member">L/P:</p>
                 <input name="gender" value={formData.gender || ""} onChange={handleChange} placeholder="Gender" />
                 <p className="placofBirth"> Tempat Lahir</p>
-                <input name="placeOfBirth" value={formData.placeOfBirth||""} onChange={handleChange}placeholder="Tempat-lahir"/>
+                <input name="placeOfBirth" value={formData.placeOfBirth || ""} onChange={handleChange} placeholder="Tempat-lahir" />
                 <p className="edit-member">Tanggal Lahir:</p>
                 <input
                   type="date"
@@ -928,7 +929,7 @@ const handleSearch = async () => {
                 value={newMember.phoneNumber}
                 onChange={(e) => setNewMember({ ...newMember, phoneNumber: e.target.value })}
               />
-                <input
+              <input
                 type="text"
                 placeholder="Email"
                 value={newMember.email}
@@ -1013,12 +1014,12 @@ const handleSearch = async () => {
                 <option value="Tamu">Tamu</option>
               </select>
               <div className="button-collection">
-              <button className="modal-submit" type="submit">
-                Simpan
-              </button>
-              <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setShowModal)}>
-                Batal
-              </button>
+                <button className="modal-submit" type="submit">
+                  Simpan
+                </button>
+                <button className="modal-submit" type="button" onClick={() => confirmCancelModal(setShowModal)}>
+                  Batal
+                </button>
               </div>
             </form>
           </div>

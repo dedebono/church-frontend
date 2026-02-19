@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react"
 import api from "./api/API"
 import Swal from "sweetalert2"
 import "./sertificate.css"
+import { Award, CheckCircle, FileText, Printer, Trash2 } from "lucide-react";
 
 
 function BaptismSertificate() {
@@ -20,13 +21,13 @@ function BaptismSertificate() {
     date: "",
     certificateNumber: "",
     phoneNumber: "",
-    gender:"",
-    placeofbirth:"",
-    dateofbirth:"",
-    dadName:"", // Now functions as autocomplete input
-    momName:"", // Now functions as autocomplete input
-    placeofbaptism:"",
-    pastorname:""
+    gender: "",
+    placeofbirth: "",
+    dateofbirth: "",
+    dadName: "", // Now functions as autocomplete input
+    momName: "", // Now functions as autocomplete input
+    placeofbaptism: "",
+    pastorname: ""
   })
   const [loading, setLoading] = useState(false)
 
@@ -135,13 +136,13 @@ function BaptismSertificate() {
         date: "",
         certificateNumber: "",
         phoneNumber: "",
-        gender:"",
-        placeofbirth:"",
-        dateofbirth:"",
-        dadName:"",
-        momName:"",
-        placeofbaptism:"",
-        pastorname:""
+        gender: "",
+        placeofbirth: "",
+        dateofbirth: "",
+        dadName: "",
+        momName: "",
+        placeofbaptism: "",
+        pastorname: ""
       })
       setSearchQuery("")
       setSearchResults([])
@@ -185,7 +186,7 @@ function BaptismSertificate() {
       day: "numeric",
     })
 
-const content = `
+    const content = `
       <html>
       <head>
         <title>Sertifikat Baptisan</title>
@@ -232,7 +233,7 @@ const content = `
   return (
     <div className="event-cms-container">
       <div className="cms-header">
-        <h1>🕊️ Manajemen Sertifikat Baptis</h1>
+        <h1><Award size={28} className="inline-icon" /> Manajemen Sertifikat Baptis</h1>
         <p>Isi form untuk membuat sertifikat baru</p>
       </div>
 
@@ -268,7 +269,7 @@ const content = `
           {/* Display selected member ID */}
           {formData.member && (
             <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
-              ✅ ID Jemaat terpilih: <code>{formData.member}</code>
+              <CheckCircle size={14} className="inline-icon" /> ID Jemaat terpilih: <code>{formData.member}</code>
             </p>
           )}
 
@@ -399,7 +400,7 @@ const content = `
 
       <div className="event-section">
         <div className="section-header">
-          <h2>📜 Daftar Sertifikat</h2>
+          <h2><FileText size={24} className="inline-icon" /> Daftar Sertifikat</h2>
         </div>
         {services.length === 0 ? (
           <p>Tidak ada data sertifikat.</p>
@@ -424,8 +425,8 @@ const content = `
                     <p><strong>Nama Ibu:</strong> {svc.momName || "-"}</p>
                   </div>
                   <div className="event-actions">
-                    <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>
-                    <button className="btn-delete" onClick={() => handleDelete(svc._id)}>🗑️ Hapus</button>
+                    <button className="btn-view" onClick={() => handlePrint(svc)}><Printer size={16} /> Cetak</button>
+                    <button className="btn-delete" onClick={() => handleDelete(svc._id)}><Trash2 size={16} /> Hapus</button>
                   </div>
                 </div>
               </div>

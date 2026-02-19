@@ -40,14 +40,14 @@ api.interceptors.response.use(
     const config = error.config || {};
     const rsp = error.response;
     const isNetworkError = !rsp;
-    const isServerError  = rsp?.status >= 500;
+    const isServerError = rsp?.status >= 500;
     const isUnauthorized = rsp?.status === 401;
 
     // 1) Switch to fallback on network/5xx (only from primary; avoid loops)
     if ((isNetworkError || isServerError)
-        && activeBackendIndex === 0
-        && backends.length > 1
-        && !config._switchedToFallback) {
+      && activeBackendIndex === 0
+      && backends.length > 1
+      && !config._switchedToFallback) {
 
       console.warn('Primary backend failed, switching to fallback…');
       activeBackendIndex = 1;
@@ -374,6 +374,16 @@ export const fetchTotalFamilies = () =>
 
 export const fetchTotalAttendance = () =>
   api.get("/api/attendance/count").then((res) => res.data.count);
+
+export const fetchAttendanceTrends = async () => {
+  try {
+    const response = await api.get("/api/attendance/trends");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching attendance trends:", error);
+    return [];
+  }
+};
 
 // Birthday API
 export const getTodaysBirthdays = async () => {

@@ -16,6 +16,19 @@ import {
   searchMembersByName, // This one is also in API.js, but manageGroupsAPI.js is more specific for group context
   addMemberToGroup,
 } from './api/manageGroupsAPI'; // Changed from './api/API' to './api/manageGroupsAPI'
+import {
+  Mail,
+  Clock,
+  Globe,
+  Users,
+  RefreshCw,
+  Plus,
+  Megaphone,
+  FileText,
+  Edit2,
+  Trash2,
+  MessageCircle,
+} from "lucide-react";
 
 // ⬇️ use the shared socket
 import { useSocket } from '../../socket/SocketContext';
@@ -48,9 +61,9 @@ const ManageGroups = () => {
   }, []);
 
   useEffect(() => {
-  // If userId is stored in your socket context or global state
-  const currentUserId = "user_id_from_context_or_local_storage"; // Replace with actual logic to get user ID
-  setUserId(currentUserId);
+    // If userId is stored in your socket context or global state
+    const currentUserId = "user_id_from_context_or_local_storage"; // Replace with actual logic to get user ID
+    setUserId(currentUserId);
   }, []);
 
   useEffect(() => {
@@ -83,17 +96,17 @@ const ManageGroups = () => {
   };
 
   const fetchMessagesFromBackend = async (groupId) => {
-  try {
-    // Using general api instance for messages
-    const response = await api.get('/api/admin/messages', {
-      params: { groupId: groupId, page: 1, limit: 50 }
-    });
-    const messages = (response.data.items || []).slice().reverse();  // Reverse to show most recent on top
-    setChatMessages(messages);
-  } catch (e) {
-    console.error('Failed to load history:', e);
-  }
-};
+    try {
+      // Using general api instance for messages
+      const response = await api.get('/api/admin/messages', {
+        params: { groupId: groupId, page: 1, limit: 50 }
+      });
+      const messages = (response.data.items || []).slice().reverse();  // Reverse to show most recent on top
+      setChatMessages(messages);
+    } catch (e) {
+      console.error('Failed to load history:', e);
+    }
+  };
 
 
   const handleEdit = (group) => {
@@ -260,10 +273,10 @@ const ManageGroups = () => {
           .map(
             (log) => `
           <li style="margin-bottom: 8px;">
-            <strong>📨 ${log.message}</strong><br/>
-            <small>🕒 ${new Date(log.createdAt).toLocaleString()}</small><br/>
+            <strong><Mail size={14} style={{ display: 'inline' }}/> ${log.message}</strong><br/>
+            <small><Clock size={12} style={{ display: 'inline' }}/> ${new Date(log.createdAt).toLocaleString()}</small><br/>
             <span style="color: ${log.targetGroups.length === 0 ? 'green' : 'blue'};">
-              ${log.targetGroups.length === 0 ? '🌍 Terkirim ke semua komunitas' : '👥 Terkirim ke komunitas ini'}
+              ${log.targetGroups.length === 0 ? '<Globe size={14} style={{ display: "inline" }}/> Terkirim ke semua komunitas' : '<Users size={14} style={{ display: "inline" }}/> Terkirim ke komunitas ini'}
             </span>
           </li>
         `
@@ -294,24 +307,24 @@ const ManageGroups = () => {
   };
 
   // ---- Chat modal helpers using shared socket ----
-const openChat = async (group) => {
-  setChatGroup(group);
-  setShowChatModal(true);
-  fetchMessagesFromBackend(group._id);
-  try {
-    // Using general api instance for messages
-    const { data } = await api.get('/api/admin/messages', {
-      params: { groupId: group._id, page: 1, limit: 50 }
-    });
-    // admin API returns { items, total, ... } sorted DESC
-    const msgs = (data.items || []).slice().reverse();
-    setChatMessages(msgs);
-  } catch (e) {
-    console.error('Failed to load history:', e);
-  }
+  const openChat = async (group) => {
+    setChatGroup(group);
+    setShowChatModal(true);
+    fetchMessagesFromBackend(group._id);
+    try {
+      // Using general api instance for messages
+      const { data } = await api.get('/api/admin/messages', {
+        params: { groupId: group._id, page: 1, limit: 50 }
+      });
+      // admin API returns { items, total, ... } sorted DESC
+      const msgs = (data.items || []).slice().reverse();
+      setChatMessages(msgs);
+    } catch (e) {
+      console.error('Failed to load history:', e);
+    }
 
-  joinGroup(group._id);
-};
+    joinGroup(group._id);
+  };
 
   const closeChat = () => {
     if (chatGroup?._id) leaveGroup(chatGroup._id);
@@ -328,23 +341,23 @@ const openChat = async (group) => {
     setChatText('');
   };
 
-useEffect(() => {
-  if (!showChatModal || !chatGroup) return;
+  useEffect(() => {
+    if (!showChatModal || !chatGroup) return;
 
-  const handleNew = (msg) => {
-    const gid = msg.group || msg.groupId;
+    const handleNew = (msg) => {
+      const gid = msg.group || msg.groupId;
 
-    if (String(gid) === String(chatGroup._id)) {
-      setChatMessages((prev) => [...prev, msg]);
-    } else {
-    }
-  };
+      if (String(gid) === String(chatGroup._id)) {
+        setChatMessages((prev) => [...prev, msg]);
+      } else {
+      }
+    };
 
-  on('message:new', handleNew);
-  return () => {
-    off('message:new', handleNew);
-  };
-}, [showChatModal, chatGroup, on, off]);
+    on('message:new', handleNew);
+    return () => {
+      off('message:new', handleNew);
+    };
+  }, [showChatModal, chatGroup, on, off]);
 
   return (
     <div className="page-flow-manage-groups">
@@ -363,12 +376,12 @@ useEffect(() => {
               fontWeight: 600,
               background:
                 status === 'connected' ? '#e6ffed' :
-                status === 'connecting' ? '#fff7e6' :
-                status === 'error' ? '#ffecec' : '#f2f2f2',
+                  status === 'connecting' ? '#fff7e6' :
+                    status === 'error' ? '#ffecec' : '#f2f2f2',
               border:
                 status === 'connected' ? '1px solid #b7eb8f' :
-                status === 'connecting' ? '1px solid #ffe58f' :
-                status === 'error' ? '1px solid #ffa39e' : '1px solid #ddd'
+                  status === 'connecting' ? '1px solid #ffe58f' :
+                    status === 'error' ? '1px solid #ffa39e' : '1px solid #ddd'
             }}
             title={error || ''}
           >
@@ -379,13 +392,13 @@ useEffect(() => {
                 borderRadius: '50%',
                 background:
                   status === 'connected' ? '#52c41a' :
-                  status === 'connecting' ? '#faad14' :
-                  status === 'error' ? '#f5222d' : '#8c8c8c'
+                    status === 'connecting' ? '#faad14' :
+                      status === 'error' ? '#f5222d' : '#8c8c8c'
               }}
             />
             {status.toUpperCase()}{status === 'connected' && transport ? ` (${transport})` : ''}
           </span>
-          <button className="button-member-manage" onClick={reconnect}>↻ Reconnect</button>
+          <button className="button-member-manage" onClick={reconnect}><RefreshCw size={14} className="inline-icon" /> Reconnect</button>
 
           <button
             onClick={() => {
@@ -395,10 +408,10 @@ useEffect(() => {
             }}
             className="button-manage"
           >
-            ➕ Buat Komunitas
+            <Plus size={14} className="inline-icon" /> Buat Komunitas
           </button>
           <button onClick={() => setShowBroadcastModal_all(true)} className="button-member-manage">
-            📢 Broadcast
+            <Megaphone size={14} className="inline-icon" /> Broadcast
           </button>
         </div>
       </div>
@@ -409,9 +422,9 @@ useEffect(() => {
           <div key={group._id} className="member-card-grup">
             <div className="Member-text-top">{group.name}</div>
             <p className="Member-text">{group.description}</p>
-            <p className="Member-text">📝 Rules: {group.rules}</p>
+            <p className="Member-text"><FileText size={14} className="inline-icon" /> Rules: {group.rules}</p>
             <div className="Member-text">
-              👥 Members:
+              <Users size={14} className="inline-icon" /> Members:
               <ul>
                 {(groupMembers[group._id] || []).map((member) => (
                   <li key={member._id}>
@@ -427,13 +440,13 @@ useEffect(() => {
               onClick={() => { setEditingGroup(group); setShowAddMembersModal(true); }}
               className="button-member-manage"
             >
-              ➕ Anggota
+              <Plus size={14} className="inline-icon" /> Anggota
             </button>
             <button
               onClick={() => { setSelectedGroupIdForBroadcast(group._id); setShowBroadcastModal(true); }}
               className="button-member-manage"
             >
-              📢 Broadcast
+              <Megaphone size={14} className="inline-icon" /> Broadcast
             </button>
             <button
               type="button"
@@ -441,13 +454,13 @@ useEffect(() => {
               style={{ fontWeight: '650' }}
               className="button-member-manage"
             >
-              📝 BC Log
+              <FileText size={14} className="inline-icon" /> BC Log
             </button>
             <div>
-              <button onClick={() => handleEdit(group)} className="button-member-manage">✏️ Edit</button>
-              <button onClick={() => handleDelete(group._id)} className="button-member-manage">🗑️ Hapus</button>
+              <button onClick={() => handleEdit(group)} className="button-member-manage"><Edit2 size={14} className="inline-icon" /> Edit</button>
+              <button onClick={() => handleDelete(group._id)} className="button-member-manage"><Trash2 size={14} className="inline-icon" /> Hapus</button>
               <button onClick={() => openChat(group)} className="button-member-manage" style={{ fontWeight: 650 }}>
-                💬 Chat
+                <MessageCircle size={14} className="inline-icon" /> Chat
               </button>
             </div>
           </div>
@@ -497,69 +510,69 @@ useEffect(() => {
           <div className="modal-container-groups" style={{ maxWidth: 640 }}>
             <h3 className="text-xl font-semibold mb-2">Chat — {chatGroup.name}
               <button onClick={() => fetchMessagesFromBackend(chatGroup._id)} style={{ margin: '10px' }}>
-              🔄️
-            </button></h3>
+                <RefreshCw size={14} />
+              </button></h3>
 
 
             {/* Chat Messages Container */}
-              <div style={{
-                height: 300, overflowY: 'auto',
-                border: '1px solid #eee',
-                borderRadius: 8,
-                padding: 12,
-                marginBottom: 12,
-                background: '#fafafa',
-                display: 'flex',
-                flexDirection: 'column-reverse'
-              }}>
+            <div style={{
+              height: 300, overflowY: 'auto',
+              border: '1px solid #eee',
+              borderRadius: 8,
+              padding: 12,
+              marginBottom: 12,
+              background: '#fafafa',
+              display: 'flex',
+              flexDirection: 'column-reverse'
+            }}>
               {chatMessages.length === 0 && (
                 <div style={{ opacity: 0.7, fontSize: 14 }}>
                   No messages yet. Say hi 👋
                 </div>
               )}
 
-{chatMessages.map((m) => (
-  <div
-    key={m._id || Math.random()}
-    style={{
-      marginBottom: 8,
-      display: 'flex',
-      justifyContent: m.sender === userId ? 'flex-end' : 'flex-start',
-    }}
-  >
-    {/* Message Bubble */}
-    <div
-      style={{
-        maxWidth: '70%', // Restrict bubble width
-        padding: '8px 12px',
-        borderRadius: 12,
-        backgroundColor: m.sender === userId ? '#dcf8c6' : '#ddddddff', // Green for sender, white for receiver
-        boxShadow: m.sender === userId ? '0 2px 5px rgba(0, 0, 0, 0.1)' : 'none', // Add shadow for sender
-        fontWeight: 500,
-        display: 'inline-block',
-      }}
-    >
-      {/* Sender Full Name and Timestamp */}
-      <div style={{ fontSize: 12, opacity: 0.7 , marginBottom: 4 , textAlign: m.sender === userId ? 'right' : 'left',}}>
-        {m.fullName || 'Unknown'} •{' '}
-        {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
-      </div>
+              {chatMessages.map((m) => (
+                <div
+                  key={m._id || Math.random()}
+                  style={{
+                    marginBottom: 8,
+                    display: 'flex',
+                    justifyContent: m.sender === userId ? 'flex-end' : 'flex-start',
+                  }}
+                >
+                  {/* Message Bubble */}
+                  <div
+                    style={{
+                      maxWidth: '70%', // Restrict bubble width
+                      padding: '8px 12px',
+                      borderRadius: 12,
+                      backgroundColor: m.sender === userId ? '#dcf8c6' : '#ddddddff', // Green for sender, white for receiver
+                      boxShadow: m.sender === userId ? '0 2px 5px rgba(0, 0, 0, 0.1)' : 'none', // Add shadow for sender
+                      fontWeight: 500,
+                      display: 'inline-block',
+                    }}
+                  >
+                    {/* Sender Full Name and Timestamp */}
+                    <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4, textAlign: m.sender === userId ? 'right' : 'left', }}>
+                      {m.fullName || 'Unknown'} •{' '}
+                      {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
+                    </div>
 
-      {/* Message Content */}
-      <div style={{ marginTop: 6 }}>
-        {m.type === 'image' ? (
-          <img
-            src={m.image}
-            alt="message-image"
-            style={{ maxWidth: '100%', borderRadius: 8 }}
-          />
-        ) : (
-          m.text || '(non-text message)'
-        )}
-      </div>
-    </div>
-  </div>
-))}
+                    {/* Message Content */}
+                    <div style={{ marginTop: 6 }}>
+                      {m.type === 'image' ? (
+                        <img
+                          src={m.image}
+                          alt="message-image"
+                          style={{ maxWidth: '100%', borderRadius: 8 }}
+                        />
+                      ) : (
+                        m.text || '(non-text message)'
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Message Input */}

@@ -6,6 +6,21 @@ import { getSermons, createSermon, updateSermon, deleteSermon, healthCheck } fro
 import Swal from "sweetalert2"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "../admin/firebase" // your Firebase config
+import {
+  Mic2,
+  AlertTriangle,
+  Plus,
+  Edit,
+  Calendar,
+  User,
+  Image as ImageIcon,
+  Music,
+  Upload,
+  Link,
+  Eye,
+  Trash2,
+  Edit2
+} from "lucide-react";
 
 const SermonCMS = () => {
   const [sermons, setSermons] = useState([])
@@ -28,6 +43,9 @@ const SermonCMS = () => {
   const [uploadingImage, setUploadingImage] = useState(false)
   const [uploadingAudio, setUploadingAudio] = useState(false)
   const [imagePreview, setImagePreview] = useState(null)
+
+  // UI States
+  const [activeTab, setActiveTab] = useState({ image: 'file', audio: 'file' })
 
   // Reset form data when editing changes
   useEffect(() => {
@@ -453,78 +471,53 @@ const SermonCMS = () => {
     <div className="sermon-cms-container">
       {/* Header */}
       <div className="cms-header">
-        <h1>🎤 Sermon Management System</h1>
-        <p>Manage your church sermons with ease</p>
+        <h1><Mic2 className="inline-icon" size={28} /> Sermon Management</h1>
+        <p>Manage your church sermons, recordings, and resources.</p>
 
-        {/* API Test Button */}
         <button
           onClick={testApiConnection}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#f59e0b",
-            color: "white",
-            border: "none",
-            borderRadius: "0.375rem",
-            cursor: "pointer",
-            fontSize: "0.875rem",
-          }}
+          style={{ marginTop: '12px', fontSize: '12px', opacity: 0.7 }}
         >
-          🧪 Test API Connection
+          Test API
         </button>
       </div>
 
       {/* Error Alert */}
       {error && (
         <div className="error-alert">
-          <span className="error-icon">⚠️</span>
-          <span>{error}</span>
-          <button
-            onClick={refreshSermons}
-            style={{
-              marginLeft: "auto",
-              padding: "0.25rem 0.75rem",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "0.25rem",
-              cursor: "pointer",
-              fontSize: "0.75rem",
-            }}
-          >
-            Retry
-          </button>
+          <span><AlertTriangle size={18} /> {error}</span>
+          <button onClick={refreshSermons} style={{ marginLeft: "auto", fontWeight: 'bold' }}>Retry</button>
         </div>
       )}
 
       {/* Sermon Form */}
       <div className="form-card">
         <div className="form-header">
-          <h2>{editing ? "✏️ Edit Sermon" : "➕ Tambahkan Ibadah"}</h2>
-          <p>{editing ? "Update the sermon details below" : "Isi data ibadah dengan lengkap"}</p>
+          <h2>{editing ? <><Edit size={20} /> Edit Sermon</> : <><Plus size={20} /> Add New Sermon</>}</h2>
+          <p>{editing ? "Update the details below" : "Fill in the information to create a new sermon entry"}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="sermon-form">
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="title">Nama Ibadah</label>
+              <label htmlFor="title">Title</label>
               <input
                 id="title"
                 name="title"
                 type="text"
-                placeholder="Enter sermon title"
+                placeholder="e.g. The Power of Faith"
                 value={formData.title}
                 onChange={handleChange}
                 required
               />
             </div>
             <div className="form-group">
-              <label htmlFor="preacher">Pelayan Firman</label>
+              <label htmlFor="preacher">Preacher</label>
               <input
                 id="preacher"
                 name="preacher"
                 type="text"
-                placeholder="Enter preacher name"
+                placeholder="e.g. Rev. John Doe"
                 value={formData.preacher}
                 onChange={handleChange}
                 required
@@ -532,23 +525,24 @@ const SermonCMS = () => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="date">Tanggal</label>
-            <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
-          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="date">Date</label>
+              <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="time">Waktu</label>
-            <input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
+            <div className="form-group">
+              <label htmlFor="time">Time</label>
+              <input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
+            </div>
           </div>
-
 
           <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
               id="description"
               name="description"
-              placeholder="Enter sermon description"
+              placeholder="Brief summary or scripture references..."
               value={formData.description}
               onChange={handleChange}
               rows={4}
@@ -557,93 +551,129 @@ const SermonCMS = () => {
           </div>
 
           {/* Image Upload Section */}
-          <div className="form-group">
+          <div className="form-group upload-group">
             <label>Sermon Image</label>
-            <div className="upload-section">
-              <div className="upload-option">
-                <h4>📁 Upload Image File</h4>
-                <input
-                  id="imageFile"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageFileChange}
-                  className="file-input"
-                />
+            <div className="upload-tabs">
+              <button
+                type="button"
+                className={`upload-tab ${activeTab.image === 'file' ? 'active' : ''}`}
+                onClick={() => setActiveTab(prev => ({ ...prev, image: 'file' }))}
+              >
+                <Upload size={14} /> File Upload
+              </button>
+              <button
+                type="button"
+                className={`upload-tab ${activeTab.image === 'url' ? 'active' : ''}`}
+                onClick={() => setActiveTab(prev => ({ ...prev, image: 'url' }))}
+              >
+                <Link size={14} /> Media URL
+              </button>
+            </div>
+
+            {activeTab.image === 'file' ? (
+              <div className="upload-area">
+                <div className="file-input-wrapper">
+                  <input
+                    id="imageFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => document.getElementById('imageFile').click()}
+                  >
+                    {selectedImageFile ? selectedImageFile.name : "Choose Image File"}
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={handleImageUpload}
                   disabled={!selectedImageFile || uploadingImage}
                   className="btn-upload"
                 >
-                  {uploadingImage ? "⏳ Uploading..." : "📤 Upload Image"}
+                  {uploadingImage ? "Uploading..." : "Upload"}
                 </button>
               </div>
+            ) : (
+              <input
+                name="imageUrl"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={formData.imageUrl}
+                onChange={handleChange}
+              />
+            )}
 
-              <div className="upload-divider">OR</div>
-
-              <div className="upload-option">
-                <h4>🔗 Image URL</h4>
-                <input
-                  name="imageUrl"
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  className="url-input"
-                />
-              </div>
-            </div>
-
-            {/* Image Preview */}
             {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview || "/placeholder.svg"} alt="Preview" className="preview-image" />
+              <div className="media-preview">
+                <img src={imagePreview} alt="Preview" className="preview-image" />
               </div>
             )}
           </div>
 
           {/* Audio Upload Section */}
-          <div className="form-group">
+          <div className="form-group upload-group">
             <label>Sermon Audio</label>
-            <div className="upload-section">
-              <div className="upload-option">
-                <h4>📁 Upload Audio File</h4>
-                <input
-                  id="audioFile"
-                  type="file"
-                  accept="audio/*"
-                  onChange={handleAudioFileChange}
-                  className="file-input"
-                />
+            <div className="upload-tabs">
+              <button
+                type="button"
+                className={`upload-tab ${activeTab.audio === 'file' ? 'active' : ''}`}
+                onClick={() => setActiveTab(prev => ({ ...prev, audio: 'file' }))}
+              >
+                <Upload size={14} /> File Upload
+              </button>
+              <button
+                type="button"
+                className={`upload-tab ${activeTab.audio === 'url' ? 'active' : ''}`}
+                onClick={() => setActiveTab(prev => ({ ...prev, audio: 'url' }))}
+              >
+                <Link size={14} /> Audio URL
+              </button>
+            </div>
+
+            {activeTab.audio === 'file' ? (
+              <div className="upload-area">
+                <div className="file-input-wrapper">
+                  <input
+                    id="audioFile"
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => document.getElementById('audioFile').click()}
+                  >
+                    {selectedAudioFile ? selectedAudioFile.name : "Choose Audio File"}
+                  </button>
+                </div>
                 <button
                   type="button"
                   onClick={handleAudioUpload}
                   disabled={!selectedAudioFile || uploadingAudio}
                   className="btn-upload"
                 >
-                  {uploadingAudio ? "⏳ Uploading..." : "📤 Upload Audio"}
+                  {uploadingAudio ? "Uploading..." : "Upload"}
                 </button>
               </div>
+            ) : (
+              <input
+                name="audioUrl"
+                type="url"
+                placeholder="https://example.com/audio.mp3"
+                value={formData.audioUrl}
+                onChange={handleChange}
+              />
+            )}
 
-              <div className="upload-divider">OR</div>
-
-              <div className="upload-option">
-                <h4>🔗 Audio URL</h4>
-                <input
-                  name="audioUrl"
-                  type="url"
-                  placeholder="https://example.com/audio.mp3"
-                  value={formData.audioUrl}
-                  onChange={handleChange}
-                  className="url-input"
-                />
-              </div>
-            </div>
-
-            {/* Audio Preview */}
             {formData.audioUrl && (
-              <div className="audio-preview">
-                <audio controls className="preview-audio">
+              <div className="media-preview" style={{ padding: '10px', width: '100%' }}>
+                <audio controls style={{ width: '100%' }}>
                   <source src={formData.audioUrl} />
                   Your browser does not support the audio element.
                 </audio>
@@ -653,7 +683,7 @@ const SermonCMS = () => {
 
           <div className="form-actions">
             <button type="submit" disabled={loading} className="btn-primary">
-              {loading ? "⏳ Saving..." : editing ? "Update Sermon" : "Add Sermon"}
+              {loading ? "Saving..." : editing ? "Update Sermon" : "Add Sermon"}
             </button>
             {editing && (
               <button type="button" className="btn-secondary" onClick={cancelEdit}>
@@ -664,40 +694,20 @@ const SermonCMS = () => {
         </form>
       </div>
 
-      <div className="separator"></div>
-
       {/* Sermons List */}
       <div className="sermons-section">
         <div className="section-header">
-          <h2>📚 All Sermons</h2>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span className="sermon-count">{sermons.length} sermons</span>
-            <button
-              onClick={refreshSermons}
-              className="btn-refresh"
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#10b981",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              🔄 Refresh
-            </button>
-          </div>
+          <h2>All Sermons ({sermons.length})</h2>
+          <button onClick={refreshSermons} className="btn-refresh">
+            Refresh List
+          </button>
         </div>
 
         {sermons.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🎵</div>
+          <div className="empty-state" style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+            <div className="empty-icon"><Music size={48} /></div>
             <h3>No sermons yet</h3>
-            <p>Get started by adding your first sermon using the form above.</p>
+            <p>Add your first sermon using the form above.</p>
           </div>
         ) : (
           <div className="sermons-grid">
@@ -707,37 +717,26 @@ const SermonCMS = () => {
                   <img
                     src={sermon.imageUrl || "/placeholder.svg?height=200&width=300"}
                     alt={sermon.title}
-                    onError={(e) => {
-                      e.target.src = "/placeholder.svg?height=200&width=300"
-                    }}
+                    onError={(e) => { e.target.src = "https://placehold.co/600x400?text=No+Image" }}
                   />
                 </div>
                 <div className="sermon-content">
                   <h3 className="sermon-title">{sermon.title}</h3>
                   <div className="sermon-meta">
-                    <div className="meta-item">
-                      <span className="meta-icon">👤</span>
-                      <span>{sermon.preacher}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-icon">📅</span>
-                      <span>{new Date(sermon.date).toLocaleDateString()}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-icon">⏲️</span>
-                      <span>{sermon.time}</span>
-                    </div>
+                    <span className="meta-item"><User size={14} /> {sermon.preacher}</span>
+                    <span className="meta-item"><Calendar size={14} /> {new Date(sermon.date).toLocaleDateString()}</span>
                   </div>
                   <p className="sermon-description">{sermon.description}</p>
+
                   <div className="sermon-actions">
-                    <button className="btn-view" onClick={() => showSermonDetails(sermon)}>
-                      👁️ View
+                    <button className="card-btn btn-view" onClick={() => showSermonDetails(sermon)}>
+                      <Eye size={16} /> View
                     </button>
-                    <button className="btn-edit" onClick={() => handleEdit(sermon)}>
-                      ✏️ Edit
+                    <button className="card-btn btn-edit" onClick={() => handleEdit(sermon)}>
+                      <Edit2 size={16} /> Edit
                     </button>
-                    <button className="btn-delete" onClick={() => sermon._id && handleDelete(sermon._id)}>
-                      🗑️ Delete
+                    <button className="card-btn btn-delete" onClick={() => sermon._id && handleDelete(sermon._id)}>
+                      <Trash2 size={16} /> Delete
                     </button>
                   </div>
                 </div>

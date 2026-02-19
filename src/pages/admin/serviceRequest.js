@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Swal from 'sweetalert2';
 import api from './api/API'; // ✅ Use your custom Axios instance
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const App = () => {
   const [serviceRequests, setServiceRequests] = useState([]);
@@ -121,9 +122,8 @@ const App = () => {
   };
 
   const LoadingSpinner = ({ size = "small" }) => (
-    <div className={`inline-block animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] ${
-      size === "small" ? "h-4 w-4" : "h-6 w-6"
-    }`}>
+    <div className={`inline-block animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] ${size === "small" ? "h-4 w-4" : "h-6 w-6"
+      }`}>
       <span className="sr-only">Loading...</span>
     </div>
   );
@@ -205,19 +205,19 @@ const App = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sm:px-6" onClick={() => handleSort('serviceType')}>
-                    Service Type {sortField === 'serviceType' && (sortOrder === 'asc' ? '▲' : '▼')}
+                    Service Type {sortField === 'serviceType' && (sortOrder === 'asc' ? <ChevronUp size={14} className="inline" /> : <ChevronDown size={14} className="inline" />)}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sm:px-6" onClick={() => handleSort('fullName')}>
-                    Full Name {sortField === 'fullName' && (sortOrder === 'asc' ? '▲' : '▼')}
+                    Full Name {sortField === 'fullName' && (sortOrder === 'asc' ? <ChevronUp size={14} className="inline" /> : <ChevronDown size={14} className="inline" />)}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
                     Phone Number
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sm:px-6" onClick={() => handleSort('status')}>
-                    Status {sortField === 'status' && (sortOrder === 'asc' ? '▲' : '▼')}
+                    Status {sortField === 'status' && (sortOrder === 'asc' ? <ChevronUp size={14} className="inline" /> : <ChevronDown size={14} className="inline" />)}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sm:px-6" onClick={() => handleSort('createdAt')}>
-                    Requested On {sortField === 'createdAt' && (sortOrder === 'asc' ? '▲' : '▼')}
+                    Requested On {sortField === 'createdAt' && (sortOrder === 'asc' ? <ChevronUp size={14} className="inline" /> : <ChevronDown size={14} className="inline" />)}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sm:px-6">
                     Actions
@@ -231,11 +231,10 @@ const App = () => {
                     <td className="px-4 py-4 text-sm text-gray-700 sm:px-6">{request.fullName}</td>
                     <td className="px-4 py-4 text-sm text-gray-700 sm:px-6">{request.phoneNumber}</td>
                     <td className="px-4 py-4 text-sm sm:px-6">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                        request.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                          request.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                            'bg-green-100 text-green-800'
+                        }`}>
                         {request.status}
                       </span>
                     </td>

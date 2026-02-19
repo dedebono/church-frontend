@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import api from "./api/API"
 import Swal from "sweetalert2"
 import "./marriageForm.css"
+import { HeartHandshake, Heart, CheckCircle, FileText, Printer, Trash2 } from "lucide-react";
 
 function MarriageForm() {
   const [formData, setFormData] = useState({
@@ -111,7 +112,7 @@ function MarriageForm() {
         phoneNumber: "",
         marriageStatus: "",
         placeOfMarriage: "",
-        pastorName:"",
+        pastorName: "",
       })
       fetchServices()
     } catch (err) {
@@ -174,99 +175,99 @@ function MarriageForm() {
 
   return (
     <div
-    className="event-cms-container">
-        <div className="cms-header">
-      <h2>💍 Formulir Sertifikat Pernikahan</h2>
-        </div>
-        <div className="form-card">
-      <form onSubmit={handleSubmit} className="event-form">
-        {/* Search husband */}
-<div className="form-row">
-  <div className="form-group">
-    <label>Cari Suami</label>
-    <input
-      type="text"
-      value={searchHusband}
-      onChange={(e) => setSearchHusband(e.target.value)}
-      onKeyDown={(e) => e.key === "Enter" && searchMember(searchHusband, setResultsHusband)}
-      placeholder="Ketik nama lalu Enter"
-    />
-    {resultsHusband.length > 0 && (
-      <ul className="search-results">
-        {resultsHusband.map((member) => (
-          <li key={member._id} className="search-item" onClick={() => handleselectMember(member._id, "husband")}>
-            {member.fullName}
-          </li>
-        ))}
-      </ul>
-    )}
-    {formData.husband && (
-      <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
-        ✅ Calon suami terpilih: <code>{formData.husband}</code>
-      </p>
-    )}
-  </div>
+      className="event-cms-container">
+      <div className="cms-header">
+        <h2><HeartHandshake size={24} className="inline-icon" /> Formulir Sertifikat Pernikahan</h2>
+      </div>
+      <div className="form-card">
+        <form onSubmit={handleSubmit} className="event-form">
+          {/* Search husband */}
+          <div className="form-row">
+            <div className="form-group">
+              <label>Cari Suami</label>
+              <input
+                type="text"
+                value={searchHusband}
+                onChange={(e) => setSearchHusband(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && searchMember(searchHusband, setResultsHusband)}
+                placeholder="Ketik nama lalu Enter"
+              />
+              {resultsHusband.length > 0 && (
+                <ul className="search-results">
+                  {resultsHusband.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleselectMember(member._id, "husband")}>
+                      {member.fullName}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {formData.husband && (
+                <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
+                  <CheckCircle size={14} className="inline-icon" /> Calon suami terpilih: <code>{formData.husband}</code>
+                </p>
+              )}
+            </div>
 
-  <div className="form-group">
-    <label>Cari Istri</label>
-    <input
-      type="text"
-      value={searchWife}
-      onChange={(e) => setSearchWife(e.target.value)}
-      onKeyDown={(e) => e.key === "Enter" && searchMember(searchWife, setResultsWife)}
-      placeholder="Ketik nama lalu Enter"
-    />
-    {resultsWife.length > 0 && (
-      <ul className="search-results">
-        {resultsWife.map((member) => (
-          <li key={member._id} className="search-item" onClick={() => handleselectMember(member._id, "wife")}>
-            {member.fullName}
-          </li>
-        ))}
-      </ul>
-    )}
-    {formData.wife && (
-      <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
-        ✅ Calon istri terpilih: <code>{formData.wife}</code>
-      </p>
-    )}
-  </div>
-</div>
+            <div className="form-group">
+              <label>Cari Istri</label>
+              <input
+                type="text"
+                value={searchWife}
+                onChange={(e) => setSearchWife(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && searchMember(searchWife, setResultsWife)}
+                placeholder="Ketik nama lalu Enter"
+              />
+              {resultsWife.length > 0 && (
+                <ul className="search-results">
+                  {resultsWife.map((member) => (
+                    <li key={member._id} className="search-item" onClick={() => handleselectMember(member._id, "wife")}>
+                      {member.fullName}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {formData.wife && (
+                <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
+                  <CheckCircle size={14} className="inline-icon" /> Calon istri terpilih: <code>{formData.wife}</code>
+                </p>
+              )}
+            </div>
+          </div>
 
-        {/* Form details */}
-        <div className="form-row">
-        <input name="certificateNumber" 
-        className="form-group"
-        placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
-        <input name="placeOfMarriage" 
-        placeholder="Tempat Pernikahan" 
-        className="form-group"
-        value={formData.placeOfMarriage} onChange={handleChange} required />
-        <input name="date" type="date" value={formData.date} onChange={handleChange} required />
-        <input name="phoneNumber" placeholder="No. HP" value={formData.phoneNumber} onChange={handleChange} />
-        <input name="husbandFatherName" placeholder="Ayah Suami" value={formData.husbandFatherName} onChange={handleChange} />
-        <input name="husbandMotherName" placeholder="Ibu Suami" value={formData.husbandMotherName} onChange={handleChange} />
-        <input name="wifeFatherName" placeholder="Ayah Istri" value={formData.wifeFatherName} onChange={handleChange} />
-        <input name="wifeMotherName" placeholder="Ibu Istri" value={formData.wifeMotherName} onChange={handleChange} />
-        <input name="pastorName" placeholder="Pendeta yang memberkati" value={formData.pastorName} onChange={handleChange} />
- </div>
-        <button className="btn-primary" type="submit" disabled={loading}>
-          {loading ? "Menyimpan..." : "Buat Sertifikat"}
-        </button>
-      </form>
+          {/* Form details */}
+          <div className="form-row">
+            <input name="certificateNumber"
+              className="form-group"
+              placeholder="No. Sertifikat" value={formData.certificateNumber} onChange={handleChange} required />
+            <input name="placeOfMarriage"
+              placeholder="Tempat Pernikahan"
+              className="form-group"
+              value={formData.placeOfMarriage} onChange={handleChange} required />
+            <input name="date" type="date" value={formData.date} onChange={handleChange} required />
+            <input name="phoneNumber" placeholder="No. HP" value={formData.phoneNumber} onChange={handleChange} />
+            <input name="husbandFatherName" placeholder="Ayah Suami" value={formData.husbandFatherName} onChange={handleChange} />
+            <input name="husbandMotherName" placeholder="Ibu Suami" value={formData.husbandMotherName} onChange={handleChange} />
+            <input name="wifeFatherName" placeholder="Ayah Istri" value={formData.wifeFatherName} onChange={handleChange} />
+            <input name="wifeMotherName" placeholder="Ibu Istri" value={formData.wifeMotherName} onChange={handleChange} />
+            <input name="pastorName" placeholder="Pendeta yang memberkati" value={formData.pastorName} onChange={handleChange} />
+          </div>
+          <button className="btn-primary" type="submit" disabled={loading}>
+            {loading ? "Menyimpan..." : "Buat Sertifikat"}
+          </button>
+        </form>
       </div>
 
       <hr />
-      <h2>📄 Daftar Sertifikat Pernikahan</h2>
+      <h2><FileText size={24} className="inline-icon" /> Daftar Sertifikat Pernikahan</h2>
       <div className="events-grid">
         {records.map((svc) => (
           <div key={svc._id} className="event-card">
-            <h4>{svc.husband?.fullName} ❤️ {svc.wife?.fullName}</h4>
+            <h4>{svc.husband?.fullName} <Heart size={16} fill="red" color="red" className="inline-icon" /> {svc.wife?.fullName}</h4>
             <p><strong>Tanggal:</strong> {new Date(svc.date).toLocaleDateString("id-ID")}</p>
             <p><strong>No. Sertifikat:</strong> {svc.certificateNumber}</p>
             <p><strong>Tempat:</strong> {svc.placeOfMarriage}</p>
-            <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>
-            <button className="btn-delete" onClick={() => handleDelete(svc._id)}>🗑️ Hapus</button>
+            <button className="btn-view" onClick={() => handlePrint(svc)}><Printer size={16} /> Cetak</button>
+            <button className="btn-delete" onClick={() => handleDelete(svc._id)}><Trash2 size={16} /> Hapus</button>
           </div>
         ))}
       </div>

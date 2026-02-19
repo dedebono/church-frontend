@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AdminBirthdayReminder.css';
+import { PartyPopper, X, AlertCircle, Phone, Cake, Lightbulb, Calendar, RefreshCw } from "lucide-react";
 
 // Use mock function if available, otherwise use real API
 const getTodaysBirthdays = window.getTodaysBirthdays ||
@@ -87,8 +88,8 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
     <div className="birthday-reminder-overlay">
       <div className="birthday-reminder-modal">
         <div className="birthday-reminder-header">
-          <h2>🎉 Ulang Tahun Hari Ini</h2>
-          <button className="close-button" onClick={handleClose}>✖</button>
+          <h2><PartyPopper size={24} className="inline-icon" /> Ulang Tahun Hari Ini</h2>
+          <button className="close-button" onClick={handleClose}><X size={20} /></button>
         </div>
 
         <div className="birthday-reminder-content">
@@ -99,7 +100,7 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
             </div>
           ) : error ? (
             <div className="error-message">
-              <p>❌ {error}</p>
+              <p><AlertCircle size={16} className="inline-icon" /> {error}</p>
               <button onClick={fetchTodaysBirthdays} className="retry-button">Coba Lagi</button>
             </div>
           ) : birthdays.length > 0 ? (
@@ -123,22 +124,22 @@ const AdminBirthdayReminder = ({ isVisible, onClose }) => {
                         )}
                       </p>
                       {member.phone && (
-                        <p className="contact-info">📞 {member.phone}</p>
+                        <p className="contact-info"><Phone size={14} className="inline-icon" /> {member.phone}</p>
                       )}
                     </div>
-                    <div className="birthday-icon">🎂</div>
+                    <div className="birthday-icon"><Cake size={24} /></div>
                   </div>
                 ))}
               </div>
               <div className="birthday-actions">
                 <p className="reminder-text">
-                  💡 Jangan lupa untuk mengucapkan selamat ulang tahun!
+                  <Lightbulb size={16} className="inline-icon" /> Jangan lupa untuk mengucapkan selamat ulang tahun!
                 </p>
               </div>
             </div>
           ) : (
             <div className="no-birthdays">
-              <div className="no-birthday-icon">📅</div>
+              <div className="no-birthday-icon"><Calendar size={48} /></div>
               <h3>Tidak Ada Ulang Tahun Hari Ini</h3>
               <p>Tidak ada anggota jemaat yang berulang tahun hari ini.</p>
             </div>

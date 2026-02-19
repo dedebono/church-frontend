@@ -6,6 +6,14 @@ import Swal from "sweetalert2"
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 import { storage } from "../admin/firebase"
 import { getGalleryPhotos, createGalleryPhoto, deleteGalleryPhoto } from "../admin/api/API"
+import {
+  Camera,
+  Upload,
+  Link,
+  Image as ImageIcon,
+  Trash2,
+  Plus
+} from "lucide-react";
 
 const GalleryAdmin = () => {
   const [photos, setPhotos] = useState([])
@@ -21,9 +29,13 @@ const GalleryAdmin = () => {
   const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [preview, setPreview] = useState(null)
+  // UI State
+  const [activeTab, setActiveTab] = useState("file")
   const [uploadProgress, setUploadProgress] = useState(0)
 
   const MAX_FILE_SIZE_MB = 2
+
+
 
   useEffect(() => {
     fetchPhotos()
@@ -142,7 +154,7 @@ const GalleryAdmin = () => {
     <div className="gallery-admin-container">
       {/* Header */}
       <div className="gallery-admin-header">
-        <h1>Photo Gallery Admin</h1>
+        <h1><Camera className="inline-icon" size={28} /> Photo Gallery Admin</h1>
       </div>
 
       <div className="gallery-admin-content">
@@ -150,61 +162,93 @@ const GalleryAdmin = () => {
         <div className="form-card">
           <div className="form-header">
             <h2>Add New Photo</h2>
-            <p>Upload photo with details</p>
+            <p>Upload a new photo to the gallery collection</p>
           </div>
 
           <form onSubmit={handleSubmit} className="gallery-form">
             <div className="form-group">
               <label>Title</label>
-              <input name="title" value={formData.title} onChange={handleChange} required />
+              <input name="title" placeholder="e.g. Christmas Service 2023" value={formData.title} onChange={handleChange} required />
             </div>
 
             <div className="form-group">
               <label>Description</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} />
+              <textarea name="description" placeholder="Brief description of the event..." value={formData.description} onChange={handleChange} />
             </div>
 
             <div className="form-group">
               <label>Tags (comma separated)</label>
-              <input name="tags" value={formData.tags} onChange={handleChange} />
+              <input name="tags" placeholder="worship, event, youth" value={formData.tags} onChange={handleChange} />
             </div>
 
             <div className="form-group">
               <label>Category</label>
-              <input name="category" value={formData.category} onChange={handleChange} />
+              <input name="category" placeholder="General" value={formData.category} onChange={handleChange} />
             </div>
 
-            <div className="form-group">
-              <label>Upload Image (Max {MAX_FILE_SIZE_MB}MB)</label>
-              <input type="file" accept="image/*" onChange={handleFileChange} />
-              <button type="button" className="btn-upload" onClick={handleUpload} disabled={!selectedFile || loading}>
-                Choose File
-              </button>
+            {/* Upload Section */}
+            <div className="form-group upload-group">
+              <label>Photo Source</label>
+              <div className="upload-tabs">
+                <button
+                  type="button"
+                  className={`upload-tab ${activeTab === 'file' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('file')}
+                >
+                  <Upload size={14} /> File Upload
+                </button>
+                <button
+                  type="button"
+                  className={`upload-tab ${activeTab === 'url' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('url')}
+                >
+                  <Link size={14} /> Image URL
+                </button>
+              </div>
 
-              {loading && uploadProgress > 0 && (
-                <div className="progress-bar-container">
-                  <div className="progress-bar" style={{ width: `${uploadProgress}%` }}>
-                    {uploadProgress.toFixed(0)}%
+              {activeTab === 'file' ? (
+                <div className="upload-area">
+                  <div className="file-input-wrapper">
+                    <input
+                      id="galleryFile"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                    />
+                    <button type="button" className="btn-upload-file" onClick={() => document.getElementById('galleryFile').click()}>
+                      {selectedFile ? selectedFile.name : "Choose Image File"}
+                    </button>
+                    <button type="button" className="btn-upload-file" onClick={handleUpload} disabled={!selectedFile || loading} style={{ background: '#10b981' }}>
+                      {loading ? "Uploading..." : "Upload"}
+                    </button>
                   </div>
+                  {loading && uploadProgress > 0 && (
+                    <div className="progress-bar-container">
+                      <div className="progress-bar" style={{ width: `${uploadProgress}%` }}></div>
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <input
+                  name="imageUrl"
+                  placeholder="https://example.com/photo.jpg"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                />
               )}
-            </div>
-
-            <div className="form-group">
-              <label>OR use Image URL</label>
-              <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
             </div>
 
             {preview && (
               <div className="image-preview">
-                <img src={preview || "/placeholder.svg"} alt="Preview" className="preview-image" />
-                <p className="preview-text">Sample Photo for upload</p>
+                <img src={preview} alt="Preview" className="preview-image" />
+                <div className="preview-text">Preview</div>
               </div>
             )}
 
             <div className="form-actions">
               <button className="btn-primary" type="submit" disabled={loading || (!formData.imageUrl && !preview)}>
-                {loading ? "Saving..." : "Save Photo"}
+                {loading ? "Saving..." : "Add to Gallery"}
               </button>
             </div>
           </form>
@@ -215,18 +259,18 @@ const GalleryAdmin = () => {
           <div className="section-header">
             <div>
               <h2>All Photos</h2>
-              <span className="photos-count">{photos.length} Photo(s)</span>
+              <span className="photos-count">{photos.length} item(s)</span>
             </div>
             <button className="btn-refresh" onClick={fetchPhotos}>
-              🔄 Refresh
+              Refresh List
             </button>
           </div>
 
           {photos.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">🖼️</div>
+              <div className="empty-icon"><ImageIcon size={48} /></div>
               <h3>No Photos Yet</h3>
-              <p>Add your first photo above.</p>
+              <p>Add your first photo above to get started.</p>
             </div>
           ) : (
             <div className="photos-grid">
@@ -234,11 +278,11 @@ const GalleryAdmin = () => {
                 <div className="photo-card" key={photo._id}>
                   <div className="photo-image">
                     <img src={photo.imageUrl || "/placeholder.svg"} alt={photo.title} />
-                    <button className="btn-delete-overlay" onClick={() => handleDelete(photo._id)}>
-                      🗑️
+                    <button className="btn-delete-overlay" onClick={() => handleDelete(photo._id)} title="Delete Photo">
+                      <Trash2 size={16} />
                     </button>
                   </div>
-                  <button className="btn-title">{photo.title}</button>
+                  <div className="photo-title">{photo.title}</div>
                 </div>
               ))}
             </div>

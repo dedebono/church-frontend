@@ -3,7 +3,7 @@
 import { useState } from "react"
 import "../pages/admin/HomePageNot.css" // Ensure the path is correct
 import { Link } from "react-router-dom"
-import { MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube } from "lucide-react"
+import { MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube, Loader2, AlertTriangle, Music, Camera, Image as ImageIcon } from "lucide-react"
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
 import { useEvents } from "./hooks/useEvents"
 import { useGalleryPhotos } from "./hooks/useGallery"
@@ -127,14 +127,14 @@ const HomePage = () => {
                 <Link to="/register" onClick={closeMobileMenu}>Daftar</Link>
               </li>
               <li>
-                <Link to="/login"onClick={closeMobileMenu}>Admin</Link>
+                <Link to="/login" onClick={closeMobileMenu}>Admin</Link>
               </li>
               <li>
                 <a href="#about" onClick={closeMobileMenu}>Tentang</a>
               </li>
             </ul>
             <button className="mobile-menu-toggle"
-            onClick={toggleMobileMenu}>
+              onClick={toggleMobileMenu}>
               <Menu size={24} />
             </button>
           </div>
@@ -149,7 +149,7 @@ const HomePage = () => {
         {eventsLoading && (
           <div className="hero-content">
             <div className="hero-loading">
-              <div className="loading-spinner">🔄</div>
+              <div className="loading-spinner"><Loader2 size={40} className="animate-spin" /></div>
               <p>Loading upcoming events...</p>
             </div>
           </div>
@@ -159,7 +159,7 @@ const HomePage = () => {
         {eventsError && !eventsLoading && (
           <div className="hero-content">
             <div className="hero-error">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon"><AlertTriangle size={40} /></div>
               <h2>Unable to load events</h2>
               <p>{eventsError}</p>
             </div>
@@ -282,7 +282,7 @@ const HomePage = () => {
           {/* Loading State */}
           {loading && (
             <div className="sermons-loading">
-              <div className="loading-spinner">🔄</div>
+              <div className="loading-spinner"><Loader2 size={40} className="animate-spin" /></div>
               <p>Loading latest sermons...</p>
             </div>
           )}
@@ -290,7 +290,7 @@ const HomePage = () => {
           {/* Error State */}
           {error && !loading && (
             <div className="sermons-error">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon"><AlertTriangle size={40} /></div>
               <p>Unable to load sermons at this time. Please try again later.</p>
               <small>{error}</small>
             </div>
@@ -326,7 +326,7 @@ const HomePage = () => {
           {/* Empty State */}
           {!loading && !error && sermons.length === 0 && (
             <div className="sermons-empty">
-              <div className="empty-icon">🎵</div>
+              <div className="empty-icon"><Music size={40} /></div>
               <h3>No Sermons Available</h3>
               <p>Check back soon for our latest sermons and messages.</p>
             </div>
@@ -343,49 +343,49 @@ const HomePage = () => {
         </div>
       </section>
 
-{!eventsLoading && !eventsError && events.length > 0 && (
-  <section className="events-section section-padding" id="events">
-    <div className="container">
-      <h2 className="confession-title">Upcoming Events</h2>
+      {!eventsLoading && !eventsError && events.length > 0 && (
+        <section className="events-section section-padding" id="events">
+          <div className="container">
+            <h2 className="confession-title">Upcoming Events</h2>
 
-      <div className="events-grid">
-        {events.map((event) => (
-          <div key={event._id} className="event-card">
-            <img
-              src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
-              alt={event.title}
-              onError={(e) => {
-                e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
-              }}
-            />
-            <div className="event-content">
-              <h3>{event.title}</h3>
-              <p className="event-meta">
-                <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
-                {event.location && (
-                  <>
-                    <br />
-                    <MapPin size={16} /> {event.location}
-                  </>
-                )}
-              </p>
-              <p>{truncateText(event.description)}</p>
-              <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
-                {event.registrationUrl ? "Register Now" : "Learn More"}
-              </button>
+            <div className="events-grid">
+              {events.map((event) => (
+                <div key={event._id} className="event-card">
+                  <img
+                    src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
+                    alt={event.title}
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
+                    }}
+                  />
+                  <div className="event-content">
+                    <h3>{event.title}</h3>
+                    <p className="event-meta">
+                      <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
+                      {event.location && (
+                        <>
+                          <br />
+                          <MapPin size={16} /> {event.location}
+                        </>
+                      )}
+                    </p>
+                    <p>{truncateText(event.description)}</p>
+                    <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
+                      {event.registrationUrl ? "Register Now" : "Learn More"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="events-view-all">
+              <Link to="#events" className="btn btn-secondary">
+                All Events <Star size={16} />
+              </Link>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="events-view-all">
-        <Link to="#events" className="btn btn-secondary">
-          All Events <Star size={16} />
-        </Link>
-      </div>
-    </div>
-  </section>
-)}
+        </section>
+      )}
 
 
       {/* About Section */}
@@ -423,7 +423,7 @@ const HomePage = () => {
           {/* Loading State */}
           {galleryLoading && (
             <div className="gallery-loading">
-              <div className="loading-spinner">🔄</div>
+              <div className="loading-spinner"><Loader2 size={40} className="animate-spin" /></div>
               <p>Loading gallery photos...</p>
             </div>
           )}
@@ -431,7 +431,7 @@ const HomePage = () => {
           {/* Error State */}
           {galleryError && !galleryLoading && (
             <div className="gallery-error">
-              <div className="error-icon">⚠️</div>
+              <div className="error-icon"><AlertTriangle size={40} /></div>
               <p>Unable to load gallery photos at this time. Please try again later.</p>
               <small>{galleryError}</small>
             </div>
@@ -498,7 +498,7 @@ const HomePage = () => {
             !galleryLoading &&
             !galleryError && (
               <div className="gallery-empty">
-                <div className="empty-icon">📸</div>
+                <div className="empty-icon"><ImageIcon size={40} /></div>
                 <h3>No Photos Available</h3>
                 <p>Check back soon for more moments from our church.</p>
               </div>
@@ -517,9 +517,9 @@ const HomePage = () => {
         </div>
       </section>
 
-    <div className="churchinfocard">
-      <ChurchInfoCard />
-    </div>
+      <div className="churchinfocard">
+        <ChurchInfoCard />
+      </div>
 
 
       {/* YouTube Modal (Fixed and Consolidated) */}
@@ -543,7 +543,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="footer">
-              <FooterPage /> {/* Changed to uppercase 'FooterPage' */}
+        <FooterPage /> {/* Changed to uppercase 'FooterPage' */}
       </div>
     </div>
   )
