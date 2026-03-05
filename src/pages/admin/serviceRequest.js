@@ -12,9 +12,6 @@ const App = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterServiceType, setFilterServiceType] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
   const fetchServiceRequests = async () => {
@@ -93,32 +90,94 @@ const App = () => {
   };
 
   const handleOpenDetailsModal = (request) => {
-    setSelectedRequest({ ...request });
-    setShowModal(true);
-  };
-
-  const handleUpdateStatus = async () => {
-    if (!selectedRequest) return;
-
-    setIsUpdating(true);
-    try {
-      await api.put(`/api/service-requests/${selectedRequest._id}/status`, {
-        status: selectedRequest.status,
-      }); // ✅ Use Axios PUT
-
-      setServiceRequests(prevRequests =>
-        prevRequests.map(req =>
-          req._id === selectedRequest._id ? { ...req, status: selectedRequest.status } : req
-        )
-      );
-      Swal.fire('Success', 'Service request status updated successfully!', 'success');
-      setShowModal(false);
-    } catch (err) {
-      console.error("Failed to update service request:", err);
-      Swal.fire('Error', 'Failed to update service request status.', 'error');
-    } finally {
-      setIsUpdating(false);
+    let detailsHtml = '';
+    if (request.requestDetails && typeof request.requestDetails === 'object' && Object.keys(request.requestDetails).length > 0) {
+      detailsHtml = `<div style="background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb;">
+        <ul style="list-style-type: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">`;
+      for (const [key, value] of Object.entries(request.requestDetails)) {
+        let displayValue = value;
+        if (typeof value === 'boolean') displayValue = value ? 'Yes' : 'No';
+        else if (value && typeof value === 'object') displayValue = JSON.stringify(value);
+        if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
+          try { displayValue = formatDate(value); } catch (e) { }
+        }
+        detailsHtml += `<li style="display: flex; flex-direction: column; border-bottom: 1px solid #f3f4f6; padding-bottom: 4px;">
+            <span style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 4px;">
+              ${key.replace(/([A-Z])/g, ' $1').trim()}
+            </span>
+            <span style="color: #111827; font-weight: 500; white-space: pre-wrap;">
+              ${displayValue || '-'}
+            </span>
+          </li>`;
+      }
+      detailsHtml += `</ul></div>`;
+    } else {
+      detailsHtml = '<p style="color: #6b7280; font-style: italic; text-align: center; padding: 10px 0;">No additional details provided.</p>';
     }
+
+    Swal.fire({
+      title: '<h2 style="font-size: 1.5rem; font-weight: bold; color: #1f2937; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; text-align: left; margin: 0;">Detail Permintaan</h2>',
+      width: '600px',
+      html: `
+        <div style="text-align: left; font-size: 14px; line-height: 1.6; color: #374151;">
+          <div style="background: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; margin-top: 16px;">
+            <div style="grid-column: span 1;"><strong style="color: #374151; display: block; margin-bottom: 4px;">Service Type:</strong> <span style="color: #111827; font-weight: 500;">${request.serviceType}</span></div>
+            <div style="grid-column: span 1;"><strong style="color: #374151; display: block; margin-bottom: 4px;">Full Name:</strong> <span style="color: #111827; font-weight: 500;">${request.fullName}</span></div>
+            <div style="grid-column: span 1;"><strong style="color: #374151; display: block; margin-bottom: 4px;">Phone Number:</strong> <span style="color: #111827; font-weight: 500;">${request.phoneNumber}</span></div>
+            <div style="grid-column: span 1;"><strong style="color: #374151; display: block; margin-bottom: 4px;">Requested On:</strong> <span style="color: #111827; font-weight: 500;">${formatDate(request.createdAt)}</span></div>
+            <div style="grid-column: span 2;"><strong style="color: #374151; display: block; margin-bottom: 4px;">Address:</strong> <span style="color: #111827; font-weight: 500;">${request.address || '-'}</span></div>
+          </div>
+
+          <strong style="display: block; font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 12px; padding-top: 16px; border-top: 1px solid #e5e7eb;">Request Details:</strong>
+          ${detailsHtml}
+          
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+            <label for="swal-update-status" style="display: block; font-size: 0.875rem; font-weight: 700; color: #374151; margin-bottom: 8px;">
+              Update Status:
+            </label>
+            <select id="swal-update-status" style="display: block; width: 100%; padding: 8px 12px; font-size: 1rem; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); color: #111827; outline: none; background-color: #fff;">
+              <option value="Pending" ${request.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="In Progress" ${request.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+              <option value="Completed" ${request.status === 'Completed' ? 'selected' : ''}>Completed</option>
+            </select>
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Save Changes',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#ea580c',
+      showLoaderOnConfirm: true,
+      preConfirm: () => {
+        const newStatus = document.getElementById('swal-update-status').value;
+        if (newStatus === request.status) {
+          return null; // Return null if no change is made, bypassing the API call
+        }
+
+        return api.put(`/api/service-requests/${request._id}/status`, {
+          status: newStatus,
+        }).then(response => {
+          return { newStatus };
+        }).catch(error => {
+          Swal.showValidationMessage(
+            `Request failed: ${error}`
+          );
+        });
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      // If result.value is true, it means the API call succeeded (or no change was made if it's null).
+      if (result.isConfirmed && result.value) {
+        setServiceRequests(prevRequests =>
+          prevRequests.map(req =>
+            req._id === request._id ? { ...req, status: result.value.newStatus } : req
+          )
+        );
+        Swal.fire('Success', 'Service request status updated successfully!', 'success');
+      } else if (result.isConfirmed && result.value === null) {
+        Swal.fire('Info', 'No changes were made to the status.', 'info');
+      }
+    });
   };
 
   const LoadingSpinner = ({ size = "small" }) => (
@@ -232,8 +291,8 @@ const App = () => {
                     <td className="px-4 py-4 text-sm text-gray-700 sm:px-6">{request.phoneNumber}</td>
                     <td className="px-4 py-4 text-sm sm:px-6">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${request.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          request.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                            'bg-green-100 text-green-800'
+                        request.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                          'bg-green-100 text-green-800'
                         }`}>
                         {request.status}
                       </span>
@@ -256,60 +315,6 @@ const App = () => {
           </div>
         )}
       </div>
-
-      {showModal && selectedRequest && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h2>Detail Permintaan</h2>
-            <div className="space-y-3 mb-6">
-              <p><strong>Service Type:</strong> {selectedRequest.serviceType}</p>
-              <p><strong>Full Name:</strong> {selectedRequest.fullName}</p>
-              <p><strong>Address:</strong> {selectedRequest.address}</p>
-              <p><strong>Phone Number:</strong> {selectedRequest.phoneNumber}</p>
-              <p><strong>Requested On:</strong> {formatDate(selectedRequest.createdAt)}</p>
-              <div>
-                <strong>Request Details:</strong>
-                <pre className="bg-gray-100 p-3 rounded-md text-sm whitespace-pre-wrap break-words mt-1">
-                  {JSON.stringify(selectedRequest.requestDetails, null, 2)}
-                </pre>
-              </div>
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-                  Status:
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                  value={selectedRequest.status}
-                  onChange={(e) => setSelectedRequest({ ...selectedRequest, status: e.target.value })}
-                  disabled={isUpdating}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors duration-200"
-                disabled={isUpdating}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleUpdateStatus}
-                className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors duration-200 flex items-center justify-center space-x-2"
-                disabled={isUpdating}
-              >
-                {isUpdating ? <LoadingSpinner /> : 'Update Status'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
