@@ -1,0 +1,34 @@
+{
+  "summary": "Frontend-only visual/UI review of the dark-mode redesign across /, /login, /register, /form on desktop (1920x1080) and mobile (390x844). Backend is intentionally down; CORS/Network Error console messages are expected and treated as non-issues. Overall the dark redesign is applied consistently (body bg rgb(10,10,13) on every route, no light/white large-bg elements detected on any page). Gold accents are present on active step indicators, primary CTA buttons, and gallery quote icon. Mobile hamburger opens the nav menu and there is no horizontal overflow on home/mobile. Two real UI bugs found: (1) primary 'Lanjutkan' button on /register has invisible text (span.btn-text color = button background gold), and (2) /form desktop has ~120px horizontal overflow caused by decorative circles.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "RegistrationForm primary CTA", "issue": "The 'Lanjutkan' button text is invisible. Button background = rgb(212,162,78) (gold) but the inner <span class=\"btn-text\"> has color: rgb(212,162,78) (also gold), so text is completely unreadable. Verified computed styles: span_color == parent_bg. Root cause is a CSS rule targeting .btn-text (or similar) in RegistrationForm.css / index.css that sets color to the gold accent instead of the dark on-primary color. Also affects the top-most 'Lanjutkan' primary CTA on subsequent steps.", "selector": "button .btn-text (on /register)", "priority": "HIGH"},
+      {"component": "RegistrationForm 'Batal' (cancel) button", "issue": "The secondary 'Batal' button is rendered with the SAME gold background as the primary button (bg rgb(212,162,78)). Visually the cancel button competes with / looks stronger than the primary CTA (whose text is invisible). Batal should be an outline/ghost/secondary style, not a solid gold button. This is a design uniformity issue.", "selector": "button:has-text('Batal') on /register", "priority": "MEDIUM"},
+      {"component": "FormPage decorative circles", "issue": "On /form at 1920x1080 the page has horizontal scroll (documentElement.scrollWidth = 2040 vs viewport 1920). Culprits are .decoration-circle.circle-1 (right=2040) and .decoration-circle.circle-3 (right=2000). Fix: add overflow-x: hidden to the .home / form page root, OR clamp the decoration circles' right/left positions, OR wrap them in a container with overflow: hidden.", "selector": ".decoration-circle.circle-1, .decoration-circle.circle-3", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/register", "issues": ["Primary CTA is invisible-text; cancel button uses primary color — visual hierarchy is inverted."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix invisible-text bug on /register primary 'Lanjutkan' button: set .btn-text color to the dark on-primary token (e.g. rgb(23,18,4) or var(--color-on-primary)) — do NOT inherit gold accent color. Check RegistrationForm.css and any global .btn-text rule in /app/src/index.css.",
+    "Restyle 'Batal' cancel button as a secondary/ghost button (transparent bg, gold or muted border, gold/light text) to differentiate it from the gold primary CTA and restore visual hierarchy.",
+    "Fix horizontal overflow on /form at 1920px by adding overflow-x: hidden to the .home wrapper on formpage or clamping .decoration-circle positioning inside its container."
+  ],
+  "critical_code_review_comments": [
+    "Global .btn-text color rule likely applied without an override for buttons that already have a colored background — leads to text/background color collision on primary buttons.",
+    "Cancel/secondary buttons across pages should use a shared secondary/ghost variant class instead of receiving the primary gold background by default.",
+    "Absolute-positioned decorative elements should always be inside a container with overflow: hidden to prevent creating horizontal scroll on large viewports."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "80%"},
+  "test_credentials": "N/A (OTP login skipped, backend down as expected)",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Dark theme is applied globally and correctly (body bg rgb(10,10,13) on all tested routes). No light/white large-bg leftovers detected. Mobile hamburger + menu works on / (mobile-menu-toggle button present, opens nav list). Only outstanding UI issues are the /register invisible primary button text, the /register secondary button styling, and the /form horizontal overflow from .decoration-circle .circle-1/.circle-3. All console errors are expected (backend 503 + CORS). No page/runtime JS errors captured (pageerror count = 0).",
+  "rca of the issue": "Invisible 'Lanjutkan' text: span.btn-text inherits/receives color: var(--gold-accent) (rgb(212,162,78)) while its parent button also has that gold as background, producing zero contrast. Fix: override .btn-text color inside primary buttons to the on-primary dark token. Overflow on /form: two decorative absolutely-positioned circles are placed past x=1920 without an overflow-hidden container, so scrollWidth = 2040."
+}

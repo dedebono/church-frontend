@@ -1,11 +1,15 @@
+/* ChurchInfoCard.css - Dark Minimal */
+
 .church-card {
-  width: 320px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
+  width: 340px;
+  max-width: 92vw;
+  border: 1px solid var(--border);
+  border-radius: 16px;
   overflow: hidden;
-  font-family: sans-serif;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  font-family: 'Manrope', sans-serif;
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  animation: fadeUp 0.5s ease-out;
 }
 
 .church-image {
@@ -15,80 +19,106 @@
 }
 
 .church-body {
-  padding: 16px;
+  padding: 20px;
 }
 
 .church-title {
-  color:black;
-  margin: 0 0 12px;
+  color: var(--text-main);
+  margin: 0 0 16px;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .tab-buttons {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
 .tab-button {
   flex: 1;
-  padding: 6px 8px;
-  margin: 0 2px;
-  font-size: 14px;
-  border: none;
-  border-radius: 20px;
-  background: #eee;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
 }
-.account-number{
-    font-weight: 700;
-    font-size: 2rem;
+
+.tab-button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .tab-button.active {
-  background: #0d47a1;
-  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #171204;
+}
+
+.account-number {
+  font-weight: 800;
+  font-size: 1.75rem;
+  color: var(--accent);
+  letter-spacing: 0.02em;
 }
 
 .tab-content {
-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-font-size: 12px;
-color: #333;
-line-height: 1rem;
-padding-bottom: 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-bottom: 4px;
 }
 
 .section-label {
   display: block;
-  font-weight: bold;
-  color: #0d47a1;
+  font-weight: 700;
+  color: var(--accent);
   margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .blue-button {
-  background: #0d47a1;
-  color: white;
-  padding: 6px 12px;
+  background: var(--accent);
+  color: #171204;
+  padding: 8px 16px;
   border: none;
-  border-radius: 6px;
-  margin-top: 8px;
+  border-radius: 8px;
+  margin-top: 10px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.blue-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 .qr-code {
   width: 120px;
   height: 120px;
-  margin: 10px auto;
+  margin: 12px auto;
   display: block;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
 }
 
 .pay-icons span {
-  background: #eee;
-  padding: 4px 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 4px 8px;
   margin: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 12px;
   display: inline-block;
 }

@@ -175,7 +175,7 @@ const ServiceRequestForm = () => {
 
   return (
 
-    <div>
+    <div className="home">
             <header className="pagelayer-header">
         {/* Main Navigation Section */}
         <nav className="main-nav">

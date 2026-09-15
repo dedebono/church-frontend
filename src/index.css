@@ -1,45 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Modern Professional Palette */
-  --primary: #0f172a;       /* Slate 900 - Deep Navy */
-  --secondary: #334155;     /* Slate 700 - Professional Grey-Blue */
-  --accent: #3b82f6;        /* Blue 500 - Vibrant Action Color */
-  --accent-hover: #2563eb;  /* Blue 600 */
-  
-  --background: #f8fafc;    /* Slate 50 - Very Light Gray Background */
-  --surface: #ffffff;       /* White - Card Background */
-  
-  --text-main: #0f172a;     /* Slate 900 - High Contrast Text */
-  --text-muted: #64748b;    /* Slate 500 - Secondary Text */
-  --text-on-primary: #ffffff;
-  
-  --border: #e2e8f0;        /* Slate 200 - Subtle Borders */
-  
-  --success: #10b981;       /* Emerald 500 */
-  --warning: #f59e0b;       /* Amber 500 */
-  --danger: #ef4444;        /* Red 500 */
-  
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --radius: 0.5rem;
+  /* Dark Minimal Palette */
+  --primary: #0e0e12;          /* Sidebar / deep surface */
+  --secondary: #17171d;        /* Secondary surface */
+  --accent: #d4a24e;           /* Muted gold */
+  --accent-hover: #e3b661;
+  --accent-soft: rgba(212, 162, 78, 0.12);
+
+  --background: #0a0a0d;       /* Page background */
+  --surface: #131318;          /* Card background */
+  --surface-2: #1a1a21;        /* Elevated surface */
+
+  --text-main: #f4f4f6;
+  --text-muted: #9b9ba4;
+  --text-on-primary: #f4f4f6;
+
+  --border: rgba(255, 255, 255, 0.08);
+
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 8px 24px -6px rgb(0 0 0 / 0.6);
+  --radius: 12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background);
+  background-color: var(--background) !important;
+  color: var(--text-main) !important;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
   color: var(--text-main);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+::selection {
+  background: rgba(212, 162, 78, 0.3);
+  color: #fff;
 }
 
 /* Scrollbar Styling */
@@ -53,10 +67,345 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #2c2c34;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #3f3f4a;
+}
+
+/* Simple entrance animation used across pages */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================ */
+/* SWEETALERT2 DARK THEME                       */
+/* ============================================ */
+.swal2-popup {
+  background: var(--surface-2) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border);
+  border-radius: 16px !important;
+}
+
+.swal2-title,
+.swal2-html-container {
+  color: var(--text-main) !important;
+}
+
+.swal2-confirm {
+  background: var(--accent) !important;
+  color: #171204 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.swal2-cancel {
+  background: var(--surface) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+}
+
+.swal2-input, .swal2-textarea, .swal2-select {
+  background: var(--surface) !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* ============================================ */
+/* TOASTIFY DARK THEME                          */
+/* ============================================ */
+.Toastify__toast {
+  background: var(--surface-2);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+/* ============================================ */
+/* REACT CALENDAR DARK BASE                     */
+/* ============================================ */
+.react-calendar {
+  background: var(--surface);
+  border: 1px solid var(--border) !important;
+  color: var(--text-main);
+  border-radius: 12px;
+}
+
+.react-calendar button {
+  color: var(--text-main);
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background: var(--surface-2);
+}
+
+.react-calendar__tile--active {
+  background: var(--accent) !important;
+  color: #171204 !important;
+}
+
+/* ============================================ */
+/* ADMIN AREA DARK NORMALIZATION LAYER          */
+/* Scoped to .admin-layout & .finance-dashboard   */
+/* ============================================ */
+.admin-layout,
+.finance-dashboard {
+  color: var(--text-main);
+}
+
+.admin-layout h1, .admin-layout h2, .admin-layout h3, .admin-layout h4,
+.finance-dashboard h1, .finance-dashboard h2, .finance-dashboard h3 {
+  color: var(--text-main);
+}
+
+.admin-layout p, .admin-layout label, .admin-layout li, .admin-layout td, .admin-layout th,
+.finance-dashboard p, .finance-dashboard label {
+  color: var(--text-muted);
+}
+
+.admin-layout th, .finance-dashboard th {
+  color: var(--text-main);
+}
+
+/* Cards & containers */
+.admin-layout .member-card,
+.admin-layout .form-card,
+.admin-layout .review-card,
+.admin-layout .family-viewer,
+.admin-layout .container-body,
+.admin-layout .container-csv,
+.admin-layout .container-member-families,
+.admin-layout .upload-area,
+.admin-layout .upload-container,
+.admin-layout .upload-section,
+.admin-layout .event-form,
+.admin-layout .sermon-form,
+.admin-layout .gallery-form,
+.admin-layout .container-list-member,
+.admin-layout .member-card-grup,
+.admin-layout .filter-container,
+.admin-layout .event-card,
+.admin-layout .sermon-card,
+.admin-layout .photo-card,
+.admin-layout .confirmation-card,
+.admin-layout .success-card,
+.admin-layout .family-details,
+.finance-dashboard .summary,
+.finance-dashboard .filters,
+.finance-dashboard .transaction-form,
+.finance-dashboard .transactions,
+.finance-dashboard .member-search-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Form elements */
+.admin-layout input:not([type="checkbox"]):not([type="radio"]),
+.admin-layout select,
+.admin-layout textarea,
+.finance-dashboard input:not([type="checkbox"]):not([type="radio"]),
+.finance-dashboard select,
+.finance-dashboard textarea {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  border-radius: 8px;
+}
+
+.admin-layout input::placeholder,
+.admin-layout textarea::placeholder,
+.finance-dashboard input::placeholder {
+  color: var(--text-muted);
+}
+
+.admin-layout input:focus,
+.admin-layout select:focus,
+.admin-layout textarea:focus,
+.finance-dashboard input:focus,
+.finance-dashboard select:focus,
+.finance-dashboard textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
+}
+
+/* Tables */
+.admin-layout table,
+.finance-dashboard table {
+  background: var(--surface);
+  color: var(--text-main);
+  border-collapse: collapse;
+}
+
+.admin-layout thead,
+.finance-dashboard thead {
+  background: var(--surface-2);
+}
+
+.admin-layout th, .admin-layout td,
+.finance-dashboard th, .finance-dashboard td {
+  border-color: var(--border) !important;
+}
+
+.admin-layout tbody tr:hover,
+.finance-dashboard tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Buttons */
+.admin-layout button,
+.finance-dashboard button {
+  border-radius: 8px;
+  transition: background-color var(--transition), color var(--transition), transform var(--transition), border-color var(--transition);
+}
+
+.admin-layout .btn-primary,
+.admin-layout .add-button,
+.admin-layout .add-member-button,
+.admin-layout .modal-submit,
+.admin-layout .search-button,
+.admin-layout .search-button-csv,
+.admin-layout .search-button-upload,
+.admin-layout .button-save,
+.admin-layout .button-export,
+.admin-layout .button-upload,
+.admin-layout .button-download,
+.admin-layout .button-manage,
+.admin-layout .btn-upload,
+.admin-layout .btn-refresh,
+.admin-layout .btn-test-api,
+.admin-layout .confirm-btn,
+.admin-layout .btn-view,
+.admin-layout .button-member-manage,
+.admin-layout .retry-button,
+.admin-layout .dismiss-button,
+.finance-dashboard button[type="submit"] {
+  background: var(--accent);
+  color: #171204;
+  border: none;
+  font-weight: 600;
+}
+
+.admin-layout .btn-primary:hover,
+.admin-layout .add-button:hover,
+.admin-layout .modal-submit:hover,
+.admin-layout .search-button:hover,
+.admin-layout .button-save:hover,
+.admin-layout .button-upload:hover,
+.admin-layout .btn-upload:hover,
+.admin-layout .btn-refresh:hover,
+.admin-layout .confirm-btn:hover,
+.admin-layout .dismiss-button:hover,
+.finance-dashboard button[type="submit"]:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.admin-layout .btn-delete,
+.admin-layout .delete-btn,
+.admin-layout .delete-family-button,
+.admin-layout .remove-member-group,
+.admin-layout .cancel-btn,
+.admin-layout .btn-delete-overlay {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--danger);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.admin-layout .btn-delete:hover,
+.admin-layout .delete-btn:hover,
+.admin-layout .delete-family-button:hover,
+.admin-layout .cancel-btn:hover {
+  background: rgba(248, 113, 113, 0.22);
+}
+
+.admin-layout .btn-secondary,
+.admin-layout .btn-edit {
+  background: var(--surface-2);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.admin-layout .btn-secondary:hover,
+.admin-layout .btn-edit:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Modals */
+.admin-layout .modal-overlay,
+.admin-layout .modal-backdrop,
+.admin-layout .modal-backdrop-groups,
+.admin-layout .birthday-reminder-overlay,
+.finance-dashboard .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+}
+
+.admin-layout .modal,
+.admin-layout .modal-content,
+.admin-layout .modal-form,
+.admin-layout .modal-container-groups,
+.admin-layout .birthday-reminder-modal,
+.admin-layout .sermon-details-popup {
+  background: var(--surface-2);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+/* Status badges */
+.admin-layout .status-present { background: rgba(52, 211, 153, 0.15); color: var(--success); }
+.admin-layout .status-late { background: rgba(251, 191, 36, 0.15); color: var(--warning); }
+.admin-layout .status-absent { background: rgba(248, 113, 113, 0.15); color: var(--danger); }
+
+/* Progress bars */
+.admin-layout .progress-bar-container,
+.admin-layout .pprogress-bar {
+  background: var(--surface-2);
+  border-radius: 999px;
+}
+
+.admin-layout .progress-bar,
+.admin-layout .pprogress-fill {
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+/* Error / empty states */
+.admin-layout .error-message,
+.admin-layout .error-alert,
+.admin-layout .error,
+.finance-dashboard .error {
+  background: rgba(248, 113, 113, 0.1);
+  color: var(--danger);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+/* Links */
+.admin-layout a {
+  color: var(--accent);
 }

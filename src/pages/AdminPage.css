@@ -1,4 +1,4 @@
-/* AdminPage.css */
+/* AdminPage.css - Dark Minimal */
 
 .admin-layout {
   display: flex;
@@ -6,17 +6,11 @@
   background-color: var(--background);
   color: var(--text-main);
   overflow: hidden;
-  /* Prevent body scroll, handle in implementation */
 }
-
-/* -------------------------------------------------------------------------- */
-/*                               Sidebar Styles                               */
-/* -------------------------------------------------------------------------- */
 
 /* Desktop Sidebar */
 .admin-sidebar-desktop {
-  width: 260px;
-  /* Comfortable width */
+  width: 264px;
   background: var(--primary);
   color: var(--text-on-primary);
   display: flex;
@@ -26,7 +20,7 @@
   left: 0;
   top: 0;
   z-index: 50;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid var(--border);
   transition: width 0.3s ease;
 }
 
@@ -36,27 +30,27 @@
   align-items: center;
   gap: 12px;
   padding: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border);
   margin-bottom: 16px;
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  background-color: var(--accent);
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #fff;
+  color: #171204;
   font-size: 18px;
 }
 
 .logo-text {
-  font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.06em;
 }
 
 /* Navigation */
@@ -67,7 +61,7 @@
 }
 
 .nav-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .nav-header-button {
@@ -77,24 +71,19 @@
   width: 100%;
   background: none;
   border: none;
-  color: #94a3b8;
-  /* Muted text for headers */
+  color: var(--text-muted);
   padding: 8px 12px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-align: left;
   transition: color 0.2s;
 }
 
 .nav-header-button:hover {
-  color: #fff;
-}
-
-.toggle-icon {
-  font-size: 10px;
+  color: var(--text-main);
 }
 
 .nav-items {
@@ -109,16 +98,16 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border-radius: var(--radius);
+  border-radius: 10px;
   background: transparent;
   border: none;
-  color: #e2e8f0;
+  color: #c9c9d1;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
   width: 100%;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .nav-item:hover {
@@ -127,19 +116,9 @@
 }
 
 .nav-item.active {
-  background-color: var(--accent);
-  color: #fff;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
-  /* Glowing effect */
-}
-
-/* Bullet decoration for active state fallback or variety */
-.nav-bullet {
-  width: 6px;
-  height: 6px;
-  background-color: currentColor;
-  border-radius: 50%;
-  opacity: 0.6;
+  background: var(--accent);
+  color: #171204;
+  font-weight: 700;
 }
 
 /* Bottom Section */
@@ -147,37 +126,37 @@
   margin-top: auto;
   flex-shrink: 0;
   padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .bottom-header {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  color: #94a3b8;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
   margin-bottom: 12px;
 }
 
 .bottom-description {
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--text-muted);
   margin-top: 12px;
   line-height: 1.5;
 }
 
 .birthday-reminder-btn {
-  background-color: var(--danger);
-  /* Rose color */
-  color: white;
-  border: none;
+  background: rgba(212, 162, 78, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(212, 162, 78, 0.3);
   padding: 10px;
-  border-radius: var(--radius);
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
   margin-bottom: 8px;
-  transition: filter 0.2s;
+  transition: background-color 0.2s ease;
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -186,38 +165,40 @@
 }
 
 .birthday-reminder-btn:hover {
-  filter: brightness(110%);
+  background: rgba(212, 162, 78, 0.22);
 }
 
 .logout-btn {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.06);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border);
   padding: 10px;
-  border-radius: var(--radius);
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease;
   font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .logout-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: var(--danger);
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                Mobile Overlay                              */
-/* -------------------------------------------------------------------------- */
-
+/* Mobile Overlay */
 .admin-sidebar-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: none;
@@ -244,7 +225,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border: none;
   color: white;
   width: 32px;
@@ -256,57 +237,44 @@
   cursor: pointer;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               Content Area                                 */
-/* -------------------------------------------------------------------------- */
-
+/* Content Area */
 .admin-content {
   flex: 1;
-  margin-left: 260px;
-  /* Matches Sidebar Width */
+  margin-left: 264px;
   display: flex;
   flex-direction: column;
   background-color: var(--background);
-  width: calc(100% - 260px);
+  width: calc(100% - 264px);
   height: 100vh;
-  /* Force height constraint */
   overflow: hidden;
-  /* Prevent outer scroll */
 }
 
 .admin-main {
   flex: 1;
   padding: 32px;
   overflow-y: auto;
-  /* Enable vertical scrolling */
   overflow-x: hidden;
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;
   padding-bottom: 100px;
-  /* Extra padding at bottom to ensure content isn't cut off */
 }
 
 .toggle-button {
   display: none;
-  /* Hidden on desktop */
-  background-color: var(--primary);
-  color: white;
-  border: none;
+  background-color: var(--surface-2);
+  color: var(--text-main);
+  border: 1px solid var(--border);
   padding: 12px 16px;
   margin: 16px;
-  border-radius: var(--radius);
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
   align-items: center;
   gap: 8px;
-  box-shadow: var(--shadow);
 }
 
-/* -------------------------------------------------------------------------- */
-/*                            Responsive Queries                              */
-/* -------------------------------------------------------------------------- */
-
+/* Responsive */
 @media (max-width: 1024px) {
   .admin-sidebar-desktop {
     width: 0;

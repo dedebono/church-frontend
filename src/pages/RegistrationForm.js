@@ -397,7 +397,7 @@ function RegistrationForm() {
                   />
                   <small>Password akan dikirim ke email ini</small>
                 </div>
-                <button type="button" className="btn-primary-regis" onClick={handleCancel}>Batal</button>
+                <button type="button" className="btn-secondary-regis" onClick={handleCancel}>Batal</button>
                 <button type="submit" className="btn-primary-regis" disabled={isLoading}>
                   <span className="btn-text">{isLoading ? "Menyimpan..." : "Lanjutkan"}</span>
                   {isLoading && (

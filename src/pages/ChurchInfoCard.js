@@ -8,7 +8,7 @@ const ChurchInfoCard = () => {
     <div className="church-card">
       <img
         className="church-image"
-        src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=b70cea5f-d93f-4ea0-ac0f-35600c717d04"
+        src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=simple-effects-ui"
         alt="Making Life Better Church"
       />
       <div className="church-body">
