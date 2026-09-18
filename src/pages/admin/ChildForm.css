@@ -1,32 +1,29 @@
-/* General body styling for background effect */
-body {
-  min-height: 100vh;
-  margin: 0;
-  font-family: 'Inter', sans-serif; /* A modern, clean sans-serif font */
-}
+/* ChildForm.css - Dark Theme with high contrast */
 
-/* Main container for the form, mimicking the card-like appearance */
+/* Main container for the form */
 .form-child {
   display: flex;
   flex-direction: column;
-  padding: 30px; /* Increased padding */
-  max-width: 450px; /* Slightly adjusted max-width to match image better */
-  width: 100%; /* Ensure it takes full width up to max-width */
-  background-color: #ffffff;
-  border-radius: 20px; /* More rounded corners */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Softer, more pronounced shadow */
-  font-family: 'Inter', sans-serif;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  position: relative; /* For positioning the top-right icons */
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  margin: 20px auto;
+  background-color: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+  position: relative;
+  color: var(--text-main, #f8fafc);
 }
 
 /* Header styling */
 .form-child h2 {
-  text-align: left; /* Align title to left */
-  color: #333;
-  margin-bottom: 25px; /* More space below title */
-  font-size: 1.8rem; /* Larger font size */
-  font-weight: 600; /* Semi-bold */
+  text-align: left;
+  color: var(--text-main, #f8fafc);
+  margin-bottom: 24px;
+  font-size: 1.6rem;
+  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -36,14 +33,15 @@ body {
 .form-row-child {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Increased gap between form elements */
+  gap: 16px;
 }
 
 .form-row-child label {
-  font-weight: 500; /* Medium font weight */
-  color: #333;
-  margin-bottom: 5px;
-  font-size: 0.95rem; /* Slightly smaller label font */
+  font-weight: 500;
+  color: var(--text-muted, #b0b0bb);
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  display: block;
 }
 
 /* Input field styling */
@@ -53,287 +51,176 @@ body {
 .form-row-child input[type="email"],
 .form-row-child select,
 .form-row-child textarea {
-  padding: 12px 15px; /* Adjusted padding */
-  border: 1px solid #e0e0e0; /* Lighter border color */
-  border-radius: 10px; /* More rounded input fields */
-  font-size: 1rem;
+  padding: 12px 16px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  font-size: 0.95rem;
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fcfcfc; /* Slightly off-white background for inputs */
+  transition: all 0.2s ease;
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
 }
 
 .form-row-child input::placeholder {
-  color: #b0b0b0; /* Lighter placeholder text */
+  color: var(--border, rgba(255, 255, 255, 0.3));
 }
 
-.form-row-child input[type="text"]:focus,
-.form-row-child input[type="date"]:focus,
-.form-row-child input[type="number"]:focus,
-.form-row-child input[type="email"]:focus,
+.form-row-child input:focus,
 .form-row-child select:focus,
 .form-row-child textarea:focus {
-  border-color: #8c71ff; /* Purple border on focus */
-  box-shadow: 0 0 0 3px rgba(140, 113, 255, 0.2); /* Soft purple glow */
+  border-color: var(--accent, #d4a24e);
+  box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
   outline: none;
 }
 
-/* Specific styling for the 'Cari Anak' input and its container if needed */
+/* Specific styling for the 'Cari Anak' input and its container */
 .form-row-child > div:has(input[type="text"][placeholder="Ketik nama lalu tekan Enter"]) {
-    margin-bottom: 15px; /* Space before search results or next input */
+  margin-bottom: 15px;
 }
 
 /* Search results styling */
-.search-results {
+.form-child .search-results {
   list-style: none;
   padding: 0;
-  margin: 8px 0 0 0; /* Adjusted margin */
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  max-height: 180px; /* Slightly taller search results */
+  margin: 8px 0 0 0;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  max-height: 180px;
   overflow-y: auto;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background-color: var(--surface-2, #1c1c24);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.search-results li {
-  padding: 10px 15px;
+.form-child .search-results li {
+  padding: 10px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f0f0f0; /* Lighter separator */
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.05));
   font-size: 0.95rem;
-  color: #555;
+  color: var(--text-main, #f8fafc);
+  transition: background 0.15s ease;
 }
 
-.search-results li:last-child {
+.form-child .search-results li:last-child {
   border-bottom: none;
 }
 
-.search-results li:hover {
-  background-color: #f7f7f7; /* Subtle hover effect */
+.form-child .search-results li:hover {
+  background-color: var(--surface-3, #262632);
+  color: var(--accent, #d4a24e);
 }
 
 /* Submit button styling */
-.btn-primary {
-  background-color: #725bff; /* Purple color as in the image */
-  color: white;
-  padding: 15px 25px; /* Larger padding */
+.form-child .btn-primary {
+  background-color: var(--accent, #d4a24e);
+  color: #171204;
+  padding: 14px 24px;
   border: none;
-  border-radius: 12px; /* More rounded button */
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 1.1rem; /* Larger font size */
-  font-weight: 600; /* Semi-bold */
-  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 25px; /* More space above the button */
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px; /* Space for potential icon */
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.btn-primary:hover {
-  background-color: #624bd8; /* Slightly darker purple on hover */
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(114, 91, 255, 0.3); /* Soft shadow on hover */
+.form-child .btn-primary:hover {
+  background-color: var(--accent-hover, #e3b661);
+  transform: translateY(-1px);
 }
 
-.btn-primary:disabled {
-  background-color: #cccccc;
+.form-child .btn-primary:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
 /* Separator styling */
-hr {
+.form-child hr {
   border: none;
-  border-top: 1px solid #f0f0f0; /* Lighter and softer line */
-  margin: 30px 0;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  margin: 28px 0;
 }
 
-/* List of records styling (event-card) */
-.form-child > div:last-of-type { /* Target the div containing the records */
-    margin-top: 20px;
+/* List of records styling inside form-child */
+.form-child > div:last-of-type {
+  margin-top: 20px;
 }
 
-.form-child > div:last-of-type h2 { /* Style for the second h2 (Daftar Sertifikat) */
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 25px;
-    color: #444;
+.form-child > div:last-of-type h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  margin-bottom: 20px;
+  color: var(--text-main, #f8fafc);
 }
 
-.event-card {
-  background-color: #fcfcfc; /* Consistent light background */
-  border: 1px solid #e5e5e5; /* Lighter border */
-  border-radius: 12px; /* More rounded corners */
-  padding: 20px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Softer shadow */
+.form-child .event-card {
+  background-color: var(--surface-2, #1c1c24);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Space between text lines */
+  gap: 8px;
+  color: var(--text-main, #f8fafc);
 }
 
-.event-card h4 {
-  color: #725bff; /* Purple for names */
+.form-child .event-card h4 {
+  color: var(--accent, #d4a24e);
   margin-top: 0;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.event-card p {
+.form-child .event-card p {
   margin: 0;
-  color: #555;
-  font-size: 0.95rem;
+  color: var(--text-muted, #b0b0bb);
+  font-size: 0.9rem;
 }
 
-.event-card strong {
-  color: #333;
+.form-child .event-card strong {
+  color: var(--text-main, #f8fafc);
+  font-weight: 600;
+}
+
+.form-child .event-card .btn-view,
+.form-child .event-card .btn-delete {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 500;
 }
 
-.event-card .btn-view,
-.event-card .btn-delete {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px; /* More rounded buttons */
-  cursor: pointer;
-  font-size: 0.85rem; /* Slightly smaller font for action buttons */
-  margin-right: 10px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  display: inline-flex; /* Allow icon and text to sit together */
-  align-items: center;
-  gap: 5px;
+.form-child .event-card .btn-view {
+  background-color: rgba(212, 162, 78, 0.15);
+  color: var(--accent, #d4a24e);
 }
 
-.event-card .btn-view {
-  background-color: #007bff;
-  color: white;
+.form-child .event-card .btn-view:hover {
+  background-color: rgba(212, 162, 78, 0.25);
 }
 
-.event-card .btn-view:hover {
-  background-color: #0069d9;
-  transform: translateY(-1px);
+.form-child .event-card .btn-delete {
+  background-color: rgba(248, 113, 113, 0.15);
+  color: var(--danger, #f87171);
 }
 
-.event-card .btn-delete {
-  background-color: #dc3545;
-  color: white;
-}
-
-.event-card .btn-delete:hover {
-  background-color: #c82333;
-  transform: translateY(-1px);
-}
-
-/* Top right icons (dots and expand icon) - requires HTML modification */
-/* For the three colored dots */
-.top-dots {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  display: flex;
-  gap: 6px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.dot.red { background-color: #fc605a; }
-.dot.yellow { background-color: #fdbc40; }
-.dot.green { background-color: #34c749; }
-
-/* For the expand icon */
-.expand-icon {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background-color: #f0f2f5; /* Light background for the icon */
-  border-radius: 8px;
-  padding: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.expand-icon:hover {
-  background-color: #e0e2e5;
-}
-
-/* Adding a placeholder for an icon next to the Submit button */
-.btn-primary::after {
-    content: '→'; /* Unicode arrow character */
-    font-size: 1.2em;
-    line-height: 1;
-}
-
-/* Add the "Add another" button style - requires HTML modification */
-.add-another-button {
-    background-color: #f0f2f5;
-    color: #555;
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    width: fit-content; /* Adjust width to content */
-    margin-top: 5px; /* Space after Email input */
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.add-another-button:hover {
-    background-color: #e5e7eb;
-    border-color: #d0d2d5;
-}
-
-.add-another-button::before {
-    content: '+';
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-/* Styling for the copy button next to the website input */
-.input-with-copy {
-    display: flex;
-    gap: 5px; /* Space between input and button */
-}
-
-.input-with-copy input {
-    flex-grow: 1; /* Allow input to take available space */
-    border-top-right-radius: 0; /* Blend input with button */
-    border-bottom-right-radius: 0;
-}
-
-.copy-button {
-    background-color: #f0f2f5;
-    color: #555;
-    padding: 12px 15px;
-    border: 1px solid #e0e0e0;
-    border-left: none; /* Remove left border to blend with input */
-    border-radius: 10px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: background-color 0.2s ease;
-}
-
-.copy-button:hover {
-    background-color: #e5e7eb;
-}
-
-/* Add an icon for the copy button */
-.copy-button::before {
-    content: '📋'; /* Clipboard emoji or use an SVG icon */
+.form-child .event-card .btn-delete:hover {
+  background-color: rgba(248, 113, 113, 0.25);
 }

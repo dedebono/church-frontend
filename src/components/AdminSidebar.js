@@ -11,21 +11,23 @@ const tabs = [
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="w-64 bg-white shadow-md p-4 space-y-4">
-      <h2 className="text-xl font-bold mb-4">Admin Panel</h2>
-      {tabs.map((tab) => (
-        <button
-          key={tab.key}
-          onClick={() => setActiveTab(tab.key)}
-          className={`block w-full text-left px-4 py-2 rounded-md ${
-            activeTab === tab.key
-              ? 'bg-blue-600 text-white'
-              : 'hover:bg-blue-100'
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
+    <div className="w-64 bg-[#131318] border-r border-white/10 shadow-lg p-4 space-y-2 min-h-screen text-slate-100">
+      <h2 className="text-xl font-bold mb-6 text-slate-100 px-2 tracking-tight">Admin Panel</h2>
+      <div className="space-y-1">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              activeTab === tab.key
+                ? 'bg-[#d4a24e] text-[#171204] font-semibold shadow-sm'
+                : 'text-slate-300 hover:bg-[#1c1c24] hover:text-white'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,0 +1,6 @@
+{
+  "name": "MLB Church",
+  "description": "Church management system frontend for member directory, attendance, devotions, events, financial records, and service requests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

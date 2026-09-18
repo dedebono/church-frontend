@@ -7,69 +7,60 @@
 }
 
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f8fafc;
-  color: #2d3748;
-  line-height: 1.6;
-}
-
-/* Main container */
-.p-4 {
+/* Attendance Page Styles - Scoped */
+.attendance-page {
   max-width: 1400px;
   margin: 0 auto;
   padding: 32px 24px;
-  background-color: #f8fafc;
+  background-color: transparent;
   min-height: 100vh;
 }
 
 /* Header section */
-.h2 {
-  font-size: 2rem;
+.attendance-page .h2 {
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 32px;
+  color: var(--text-main, #f8fafc);
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 12px;
-  background: white;
-  padding: 24px 32px;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
-}
-
-.h2::before {
-  content: "📊";
-  font-size: 2rem;
+  background: var(--surface, #131318);
+  padding: 20px 28px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 /* Filter container */
-.filter-container {
-    background: white;
+.attendance-page .filter-container {
+    background: var(--surface, #131318);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.2));
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
     display: flex;
     gap: 16px;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.filter-input {
+.attendance-page .filter-input {
     padding: 10px 14px;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    background: var(--surface-2, #1c1c24);
+    color: var(--text-main, #f8fafc);
     font-size: 0.875rem;
     transition: box-shadow 0.2s, border-color 0.2s;
     flex-grow: 1;
 }
 
-.filter-input:focus {
+.attendance-page .filter-input:focus {
     outline: none;
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(0, 87, 146, 0.1);
+    border-color: var(--accent, #d4a24e);
+    box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
 }
 
 
@@ -251,56 +242,56 @@ tbody tr td:nth-child(4) {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .p-4 {
+  .attendance-page {
     padding: 16px;
   }
   
-  .filter-container {
+  .attendance-page .filter-container {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .h2 {
+  .attendance-page .h2 {
     font-size: 1.5rem;
     padding: 20px;
     text-align: center;
   }
 
   /* Stack table on mobile */
-  .min-w-full {
+  .attendance-page .min-w-full {
     border-radius: 12px;
   }
 
-  table.min-w-full,
-  thead,
-  tbody,
-  th,
-  td,
-  tr {
+  .attendance-page table.min-w-full,
+  .attendance-page thead,
+  .attendance-page tbody,
+  .attendance-page th,
+  .attendance-page td,
+  .attendance-page tr {
     display: block;
   }
 
-  thead tr {
+  .attendance-page thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
 
-  tbody tr {
-    background: white;
-    border: 1px solid #e2e8f0;
+  .attendance-page tbody tr {
+    background: var(--surface, #131318);
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     margin-bottom: 16px;
     padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
-  tbody tr:hover {
+  .attendance-page tbody tr:hover {
     transform: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  td.px-4.py-2 {
+  .attendance-page td.px-4.py-2 {
     border: none;
     padding: 8px 0;
     text-align: left;
@@ -308,7 +299,7 @@ tbody tr td:nth-child(4) {
     padding-left: 120px;
   }
 
-  td.px-4.py-2::before {
+  .attendance-page td.px-4.py-2::before {
     content: attr(data-label);
     position: absolute;
     left: 0;
@@ -316,64 +307,64 @@ tbody tr td:nth-child(4) {
     padding-right: 10px;
     white-space: nowrap;
     font-weight: 600;
-    color: #4a5568;
+    color: var(--text-muted, #b0b0bb);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   /* Mobile labels */
-  td.px-4.py-2:nth-child(1)::before {
+  .attendance-page td.px-4.py-2:nth-child(1)::before {
     content: "Member:";
   }
 
-  td.px-4.py-2:nth-child(2)::before {
+  .attendance-page td.px-4.py-2:nth-child(2)::before {
     content: "Date:";
   }
 
-  td.px-4.py-2:nth-child(3)::before {
+  .attendance-page td.px-4.py-2:nth-child(3)::before {
     content: "Status:";
   }
 
-  td.px-4.py-2:nth-child(4)::before {
+  .attendance-page td.px-4.py-2:nth-child(4)::before {
     content: "Notes:";
   }
 
   /* Mobile notes styling */
-  tbody tr td:nth-child(4) {
+  .attendance-page tbody tr td:nth-child(4) {
     max-width: none;
     white-space: normal;
   }
 }
 
 @media (max-width: 480px) {
-  .h2 {
+  .attendance-page .h2 {
     font-size: 1.25rem;
     padding: 16px;
   }
 
-  tbody tr {
+  .attendance-page tbody tr {
     padding: 12px;
   }
 
-  td.px-4.py-2 {
+  .attendance-page td.px-4.py-2 {
     padding-left: 100px;
     font-size: 0.8rem;
   }
 
-  td.px-4.py-2::before {
+  .attendance-page td.px-4.py-2::before {
     width: 90px;
     font-size: 0.7rem;
   }
 }
 
 /* Loading state */
-.loading {
+.attendance-page.loading {
   opacity: 0.6;
   pointer-events: none;
 }
 
-.loading tbody tr {
+.attendance-page .loading tbody tr {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -393,102 +384,89 @@ tbody tr td:nth-child(4) {
 }
 
 .min-w-full::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--surface-2, #1c1c24);
   border-radius: 4px;
 }
 
 .min-w-full::-webkit-scrollbar-thumb {
-  background: #cbd5e0;
+  background: var(--surface-3, #262632);
   border-radius: 4px;
 }
 
 .min-w-full::-webkit-scrollbar-thumb:hover {
-  background: #a0aec0;
+  background: var(--accent, #d4a24e);
 }
 
 /* Focus states for accessibility */
-tbody tr:focus {
-  outline: 2px solid #667eea;
+.attendance-page tbody tr:focus {
+  outline: 2px solid var(--accent, #d4a24e);
   outline-offset: 2px;
 }
 
-/* Animation for new rows */
-tbody tr {
-  animation: rowFadeIn 0.5s ease-out;
-}
-
-@keyframes rowFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Status-specific styling classes you can add to your JSX */
+/* Status-specific styling classes */
 .status-present {
-  color: #276749;
-  background-color: #c6f6d5;
-  padding: 4px 8px;
-  border-radius: 12px;
+  color: #34d399;
+  background-color: rgba(52, 211, 153, 0.15);
+  padding: 4px 10px;
+  border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-block;
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .status-absent {
-  color: #c53030;
-  background-color: #fed7d7;
-  padding: 4px 8px;
-  border-radius: 12px;
+  color: #f87171;
+  background-color: rgba(248, 113, 113, 0.15);
+  padding: 4px 10px;
+  border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-block;
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .status-late {
-  color: #c05621;
-  background-color: #feebc8;
-  padding: 4px 8px;
-  border-radius: 12px;
+  color: #fbbf24;
+  background-color: rgba(251, 191, 36, 0.15);
+  padding: 4px 10px;
+  border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   display: inline-block;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 /* Print styles */
 @media print {
-  .p-4 {
+  .attendance-page {
     padding: 0;
     background: white;
   }
 
-  .h2 {
+  .attendance-page .h2 {
     background: none;
     box-shadow: none;
     border: none;
     color: black;
   }
 
-  .min-w-full {
+  .attendance-page .min-w-full {
     box-shadow: none;
     border: 1px solid #000;
   }
 
-  thead tr {
+  .attendance-page thead tr {
     background: #f0f0f0 !important;
     color: black !important;
   }
 
-  tbody tr:hover {
+  .attendance-page tbody tr:hover {
     background: none !important;
     transform: none !important;
     box-shadow: none !important;
   }
-  .filter-container{
+  .attendance-page .filter-container{
     display: none;
   }
 }

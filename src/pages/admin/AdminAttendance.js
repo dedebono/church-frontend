@@ -96,7 +96,7 @@ const AdminAttendance = () => {
 
 
   return (
-    <div className="p-4">
+    <div className="attendance-page p-4">
       <h2 className="h2">Kehadiran Jemaat</h2>
 
       <div className="filter-container">

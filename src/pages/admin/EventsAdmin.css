@@ -1,76 +1,68 @@
-/* EventsAdmin.css - Refactored to match provided image aesthetics */
-
-/* Base & Typography */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f7f9fc; /* Lighter background matching image */
-  color: #333; /* Default text color */
-}
+/* EventsAdmin.css - Dark Theme with high contrast */
 
 /* Container and Layout */
-.event-cms-container { /* Renamed from events-admin-container for consistency with JS */
-  max-width: 1000px; /* Slightly wider to accommodate form layout */
+.event-cms-container {
+  max-width: 1000px;
   margin: 2rem auto;
-  padding: 0; /* Remove padding here, cards will have it */
-  background-color: transparent; /* Container itself is transparent */
+  padding: 0;
+  background-color: transparent;
   min-height: 100vh;
 }
 
-/* Header Styles (Matching the form card style) */
-.cms-header { /* Renamed from events-admin-header */
-  text-align: left; /* Aligned to left like the form header */
+/* Header Styles */
+.cms-header {
+  text-align: left;
   margin-bottom: 2rem;
-  background: white;
-  padding: 2rem 2.5rem; /* Adjusted padding */
-  border-radius: 0.5rem; /* Slightly smaller border-radius */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Softer shadow */
-  border: 1px solid #e0e0e0; /* Subtle border */
+  background: var(--surface, #131318);
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .cms-header h1 {
-  font-size: 1.8rem; /* Slightly smaller heading */
+  font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333; /* Darker text */
+  color: var(--text-main, #f8fafc);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  justify-content: flex-start; /* Aligned to left */
+  justify-content: flex-start;
 }
 
 .cms-header p {
-  color: #777; /* Softer text color */
+  color: var(--text-muted, #b0b0bb);
   font-size: 0.95rem;
   margin-bottom: 1rem;
 }
 
-/* API Test Button (Integrated into header area) */
+/* API Test Button */
 .btn-test-api {
-  padding: 0.6rem 1.2rem; /* Adjusted padding */
-  background-color: #f5a002; /* A bit more orange-yellow */
-  color: white;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--accent, #d4a24e);
+  color: #171204;
   border: none;
-  border-radius: 0.3rem; /* Slightly smaller radius */
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .btn-test-api:hover {
-  background-color: #d88e00;
+  background-color: var(--accent-hover, #e3b661);
+  transform: translateY(-1px);
 }
 
-/* Error Alert (subtly styled) */
+/* Error Alert */
 .error-alert {
-  background-color: #fff0f0; /* Very light red background */
-  border: 1px solid #ffcccc; /* Light red border */
-  color: #cc0000; /* Darker red text */
+  background-color: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: var(--danger, #f87171);
   padding: 1rem 1.5rem;
-  border-radius: 0.3rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -82,64 +74,64 @@ body {
   font-size: 1.3rem;
 }
 
-.error-alert button { /* Changed from .retry-btn to apply directly to button in .error-alert */
+.error-alert button {
   margin-left: auto;
   padding: 0.4rem 0.8rem;
-  background-color: #555; /* Darker gray for retry button */
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
+  background-color: var(--surface-3, #262632);
+  color: var(--text-main, #f8fafc);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.8rem;
   transition: background-color 0.2s ease;
 }
 
 .error-alert button:hover {
-  background-color: #333;
+  background-color: var(--surface, #131318);
 }
 
-/* Form Card - mimicking the modal/card in the image */
+/* Form Card */
 .form-card {
-  background: white;
-  border: 1px solid #e0e0e0; /* Subtle light gray border */
-  border-radius: 0.5rem; /* Consistent radius with image */
-  padding: 2rem 2.5rem; /* Generous padding */
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  padding: 2rem 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* Softer shadow */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
 .form-header {
-  margin-bottom: 2rem; /* More space below header */
-  border-bottom: 1px solid #eee; /* Subtle separator line */
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   padding-bottom: 1.5rem;
 }
 
 .form-header h2 {
-  font-size: 1.4rem; /* Adjusted size */
+  font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 0.4rem;
-  color: #333;
+  color: var(--text-main, #f8fafc);
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
 
 .form-header p {
-  color: #777;
+  color: var(--text-muted, #b0b0bb);
   font-size: 0.9rem;
 }
 
 /* Form Styles */
-.event-form { /* Renamed from events-form */
+.event-form {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem; /* Increased gap for more breathing room */
+  gap: 1.75rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem; /* Larger gap between columns */
+  gap: 2rem;
 }
 
 .form-row-triple {
@@ -157,39 +149,39 @@ body {
 }
 
 .form-group {
-  width: auto; /* Removed fixed width to allow filling grid column */
+  width: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem; /* Adjusted gap inside form group */
+  gap: 0.6rem;
 }
 
 .form-group label {
   font-weight: 500;
-  color: #555; /* Darker label color */
-  font-size: 0.9rem; /* Adjusted font size */
+  color: var(--text-muted, #b0b0bb);
+  font-size: 0.9rem;
   margin-bottom: 0.2rem;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-  padding: 0.75rem 1rem; /* More horizontal padding */
-  width: 100%; /* Fill the parent container */
-  border: 1px solid #dcdcdc; /* Lighter border */
-  border-radius: 0.3rem; /* Slightly smaller border-radius */
-  font-size: 0.9rem; /* Adjusted font size */
+  padding: 0.75rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  font-size: 0.9rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  width: 100%; /* Keep 100% on focus */
-  border-color: #66b3ff; /* Lighter blue focus border */
-  box-shadow: 0 0 0 3px rgba(102, 179, 255, 0.2); /* Softer blue glow */
+  border-color: var(--accent, #d4a24e);
+  box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
 }
 
 .form-group textarea {
@@ -197,11 +189,10 @@ body {
   min-height: 100px;
 }
 
-/* Date and Time Inputs (if needed for separate styling, otherwise use general input) */
 .datetime-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem; /* Gap between date and time */
+  gap: 1rem;
 }
 
 @media (max-width: 480px) {
@@ -211,74 +202,77 @@ body {
 }
 
 /* Image Upload Section */
-.upload-section { /* Renamed from .image-upload-section for generic use */
-  background: #fdfdfd; /* Very light background */
-  border: 1px solid #e9e9e9; /* Very subtle border */
-  border-radius: 0.4rem;
+.upload-section {
+  background: var(--surface-2, #1c1c24);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
   padding: 1.2rem;
   margin-top: 0.5rem;
-  display: flex; /* Using flex for layout inside upload section */
+  display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
 .upload-option {
-  margin-bottom: 0; /* Handled by gap in parent */
+  margin-bottom: 0;
 }
 
 .upload-option h4 {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted, #b0b0bb);
   margin-bottom: 0.6rem;
 }
 
 .file-input {
-  margin-bottom: 0.75rem !important; /* Retaining !important due to likely browser defaults, but preferred to be removed */
-  padding: 0.6rem !important; /* Retaining !important */
-  background: white;
-  border: 1px solid #dcdcdc; /* Match other inputs */
-  border-radius: 0.3rem;
+  margin-bottom: 0.75rem !important;
+  padding: 0.6rem !important;
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  color: var(--text-main, #f8fafc);
+  border-radius: 6px;
   font-size: 0.9rem;
   width: 100%;
-  box-sizing: border-box; /* Ensures padding doesn't push it wider */
+  box-sizing: border-box;
 }
 
-.url-input { /* Added style for URL input */
+.url-input {
   padding: 0.75rem 1rem;
   width: 100%;
-  border: 1px solid #dcdcdc;
-  border-radius: 0.3rem;
+  box-sizing: border-box;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 6px;
   font-size: 0.9rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--surface, #131318);
+  color: var(--text-main, #f8fafc);
 }
 
 .url-input:focus {
   outline: none;
-  border-color: #66b3ff;
-  box-shadow: 0 0 0 3px rgba(102, 179, 255, 0.2);
+  border-color: var(--accent, #d4a24e);
+  box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
 }
 
 .btn-upload {
-  background-color: #555; /* Gray button like in image */
-  color: white;
-  border: none;
+  background-color: var(--surface-3, #262632);
+  color: var(--text-main, #f8fafc);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   padding: 0.6rem 1.2rem;
-  border-radius: 0.3rem;
+  border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  display: inline-flex; /* For icon alignment */
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .btn-upload:hover:not(:disabled) {
-  background-color: #333;
+  background-color: var(--surface, #131318);
+  border-color: var(--accent, #d4a24e);
 }
 
 .btn-upload:disabled {
@@ -289,15 +283,15 @@ body {
 
 .upload-divider {
   text-align: center;
-  color: #888; /* Softer divider text color */
+  color: var(--text-muted, #b0b0bb);
   font-weight: 500;
-  margin: 0.75rem 0; /* Slightly less margin */
+  margin: 0.75rem 0;
   position: relative;
   font-size: 0.8rem;
-  background: #fdfdfd; /* Match upload section background */
+  background: var(--surface-2, #1c1c24);
   padding: 0 0.8rem;
   z-index: 2;
-  display: inline-block; /* To contain background to text */
+  display: inline-block;
 }
 
 .upload-divider::before {
@@ -307,7 +301,7 @@ body {
   left: 0;
   right: 0;
   height: 1px;
-  background: #e5e7eb; /* Keep the subtle line */
+  background: var(--border, rgba(255, 255, 255, 0.1));
   z-index: 1;
 }
 
@@ -316,47 +310,47 @@ body {
   margin-top: 1.2rem;
   text-align: center;
   padding: 1rem;
-  background: #fdfdfd;
-  border: 1px dashed #ddd; /* Dashed border for preview */
-  border-radius: 0.4rem;
+  background: var(--surface, #131318);
+  border: 1px dashed var(--border, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
 }
 
 .preview-image {
-  max-width: 250px; /* Smaller preview image */
+  max-width: 250px;
   max-height: 180px;
-  border-radius: 0.3rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  object-fit: contain; /* Ensure image fits without cropping */
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  object-fit: contain;
 }
 
 /* Form Actions (Buttons) */
 .form-actions {
   display: flex;
-  justify-content: flex-end; /* Align buttons to the right */
-  gap: 0.8rem; /* Adjusted gap */
-  margin-top: 2rem; /* More space above buttons */
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #eee; /* Separator line above buttons */
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .btn-primary {
-  background-color: #5bbd72; /* Green save button from image */
-  color: white;
+  background-color: var(--accent, #d4a24e);
+  color: #171204;
   border: none;
-  padding: 0.75rem 1.6rem; /* More padding */
-  border-radius: 0.3rem;
-  font-weight: 600; /* Bolder text */
+  padding: 0.75rem 1.6rem;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #4CAF50; /* Darker green on hover */
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  background-color: var(--accent-hover, #e3b661);
+  transform: translateY(-1px);
 }
 
 .btn-primary:disabled {
@@ -366,33 +360,31 @@ body {
 }
 
 .btn-secondary {
-  background-color: #e0e0e0; /* Light gray cancel button from image */
-  color: #555;
-  border: none; /* No border for secondary button */
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-muted, #b0b0bb);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   padding: 0.75rem 1.6rem;
-  border-radius: 0.3rem;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background-color: #ccc; /* Darker gray on hover */
-  color: #333;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  background-color: var(--surface-3, #262632);
+  color: var(--text-main, #f8fafc);
 }
 
-/* Separator - used between form and list */
+/* Separator */
 .separator {
   height: 1px;
-  background-color: #e0e0e0; /* Match new border color */
-  margin: 3rem 0; /* More spacing */
+  background-color: var(--border, rgba(255, 255, 255, 0.08));
+  margin: 3rem 0;
 }
 
-/* Events Section (List) */
-.event-section { /* Renamed from events-section */
-  margin-top: 0; /* Adjusted margin */
+/* Events Section */
+.event-section {
+  margin-top: 0;
 }
 
 .section-header {
@@ -400,25 +392,26 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
-  background: white;
-  padding: 1.5rem 2.5rem; /* Adjusted padding */
-  border-radius: 0.5rem; /* Consistent radius */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid #e0e0e0; /* Subtle border */
+  background: var(--surface, #131318);
+  padding: 1.5rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .section-header h2 {
-  font-size: 1.6rem; /* Adjusted size */
+  font-size: 1.6rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-main, #f8fafc);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.event-count { /* Renamed from events-count */
-  background-color: #e9e9e9; /* Lighter background */
-  color: #555;
+.event-count {
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   padding: 0.3rem 0.8rem;
   border-radius: 9999px;
   font-size: 0.8rem;
@@ -427,56 +420,55 @@ body {
 
 .btn-refresh {
   padding: 0.6rem 1.2rem;
-  background-color: #555; /* Consistent gray button */
-  color: white;
-  border: none;
-  border-radius: 0.3rem;
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
 }
 
 .btn-refresh:hover {
-  background-color: #333;
+  background-color: var(--surface-3, #262632);
 }
 
 /* Empty State */
 .empty-state {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.5rem;
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
   padding: 3rem;
   text-align: center;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  color: #777;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: var(--text-muted, #b0b0bb);
 }
 
 .empty-icon {
-  font-size: 3.5rem; /* Larger icon */
+  font-size: 3.5rem;
   margin-bottom: 1rem;
-  color: #aaa;
+  color: var(--border, rgba(255, 255, 255, 0.2));
 }
 
 .empty-state h3 {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #444;
+  color: var(--text-main, #f8fafc);
 }
 
 .empty-state p {
-  color: #777;
+  color: var(--text-muted, #b0b0bb);
 }
 
 /* Events Grid */
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Adjusted min-width for card size */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
@@ -488,16 +480,17 @@ body {
 
 /* Event Card */
 .event-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.5rem;
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 .event-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-color: var(--accent, #d4a24e);
   transform: translateY(-3px);
 }
 
@@ -505,11 +498,11 @@ body {
   aspect-ratio: 16 / 9;
   overflow: hidden;
   position: relative;
-  background-color: #f0f0f0; /* Placeholder background */
+  background-color: var(--surface-2, #1c1c24);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ccc;
+  color: var(--text-muted, #b0b0bb);
   font-size: 2rem;
 }
 
@@ -521,7 +514,7 @@ body {
 }
 
 .event-card:hover .event-image img {
-  transform: scale(1.03); /* Slightly less aggressive zoom */
+  transform: scale(1.03);
 }
 
 .event-content {
@@ -529,19 +522,19 @@ body {
 }
 
 .event-title {
-  font-size: 1.05rem; /* Slightly smaller title */
+  font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.6rem;
-  color: #333;
+  color: var(--text-main, #f8fafc);
 }
 
 .event-meta {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem; /* Reduced gap */
+  gap: 0.4rem;
   margin-bottom: 0.9rem;
   font-size: 0.85rem;
-  color: #777;
+  color: var(--text-muted, #b0b0bb);
 }
 
 .meta-item {
@@ -553,11 +546,11 @@ body {
 .meta-icon {
   font-size: 0.9rem;
   flex-shrink: 0;
-  color: #999;
+  color: var(--accent, #d4a24e);
 }
 
 .event-description {
-  color: #777;
+  color: var(--text-muted, #b0b0bb);
   font-size: 0.85rem;
   margin-bottom: 1.2rem;
   line-height: 1.5;
@@ -567,7 +560,7 @@ body {
   display: flex;
   gap: 0.6rem;
   padding-top: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .btn-view,
@@ -575,50 +568,46 @@ body {
 .btn-delete {
   flex: 1;
   padding: 0.6rem 1rem;
-  border-radius: 0.3rem;
+  border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: all 0.2s ease;
   border: 1px solid;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.3rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .btn-view {
-  background-color: #e6f0ff; /* Light blue */
-  color: #007bff; /* Blue text */
-  border-color: #cce0ff;
+  background-color: rgba(212, 162, 78, 0.15);
+  color: var(--accent, #d4a24e);
+  border-color: rgba(212, 162, 78, 0.3);
 }
 
 .btn-view:hover {
-  background-color: #cce0ff;
-  color: #0056b3;
+  background-color: rgba(212, 162, 78, 0.25);
 }
 
 .btn-edit {
-  background-color: #fff;
-  color: #555;
-  border-color: #ccc;
+  background-color: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
+  border-color: var(--border, rgba(255, 255, 255, 0.1));
 }
 
 .btn-edit:hover {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--surface-3, #262632);
 }
 
 .btn-delete {
-  background-color: #ffe6e6; /* Light red */
-  color: #cc0000; /* Red text */
-  border-color: #ffcccc;
+  background-color: rgba(248, 113, 113, 0.1);
+  color: var(--danger, #f87171);
+  border-color: rgba(248, 113, 113, 0.3);
 }
 
 .btn-delete:hover {
-  background-color: #ffcccc;
-  color: #990000;
+  background-color: rgba(248, 113, 113, 0.2);
 }
 
 /* Responsive adjustments */
@@ -676,37 +665,4 @@ body {
   .upload-section {
     padding: 0.8rem;
   }
-}
-
-/* SweetAlert2 Custom Styles */
-.swal2-popup.event-details-popup {
-  border-radius: 0.5rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-
-.swal2-title {
-  color: #333 !important;
-  font-size: 1.4rem !important;
-  font-weight: 600 !important;
-}
-
-.swal2-html-container {
-  color: #555 !important;
-  font-size: 0.95rem !important;
-  line-height: 1.6 !important;
-}
-
-.swal2-html-container strong {
-  color: #333 !important;
-}
-
-.swal2-confirm.swal2-styled {
-  background-color: #5bbd72 !important; /* Green like save button */
-  font-weight: 600 !important;
-}
-
-.swal2-cancel.swal2-styled {
-  background-color: #e0e0e0 !important; /* Gray like cancel button */
-  color: #555 !important;
-  font-weight: 600 !important;
 }

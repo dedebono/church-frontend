@@ -1,30 +1,31 @@
+/* AdminBirthdayReminder.css - Refactored for Dark Theme & High Contrast */
+
 .birthday-reminder-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 32, 74, 0.8);
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
 
 .birthday-reminder-modal {
-  background: var(--background-color);
-  border-radius: 20px;
-  box-shadow: 0 10px 2px rgba(0, 0, 0, 0.05);
-  border-style: inset;
-  border-color: var(--primary-color);
-  border-width: 1px;
-  max-width: 600px;
+  background: var(--surface, #131318);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  max-width: 580px;
   width: 90%;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow: hidden;
   animation: slideIn 0.3s ease-out;
-  font-family: 'Roboto', sans-serif;
+  font-family: inherit;
+  color: var(--text-main, #f8fafc);
 }
 
 @keyframes slideIn {
@@ -39,56 +40,59 @@
 }
 
 .birthday-reminder-header {
-  background: var(--primary-color);
-  color: white;
+  background: var(--surface-2, #1c1c24);
+  color: var(--text-main, #f8fafc);
   padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 20px 20px 0 0;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .birthday-reminder-header h2 {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
-  color: white !important;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-main, #f8fafc) !important;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .close-button {
   background: none;
   border: none;
-  color: white;
-  font-size: 18px;
+  color: var(--text-muted, #b0b0bb);
+  font-size: 20px;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
 .close-button:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--surface-3, #262632);
+  color: var(--text-main, #f8fafc);
 }
 
 .birthday-reminder-content {
   padding: 24px;
   max-height: 400px;
   overflow-y: auto;
-  background-color: var(--background-color);
+  background-color: var(--surface, #131318);
 }
 
 .loading-message {
   text-align: center;
   padding: 40px 20px;
-  font-family: 'Roboto', sans-serif;
+  color: var(--text-muted, #b0b0bb);
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid var(--background-color);
-  border-top: 4px solid var(--accent-color);
+  border: 4px solid var(--surface-3, #262632);
+  border-top: 4px solid var(--accent, #d4a24e);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 16px;
@@ -102,42 +106,39 @@
 .error-message {
   text-align: center;
   padding: 40px 20px;
-  color: var(--primary-color);
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+  color: var(--danger, #f87171);
+  font-weight: 500;
 }
 
 .retry-button {
-  background-color: var(--accent-color);
-  color: white;
+  background-color: var(--accent, #d4a24e);
+  color: #171204;
   border: none;
-  padding: 8px 16px;
-  border-radius: 18px;
+  padding: 8px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 12px;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
-  transition: background-color 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .retry-button:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-hover, #e3b661);
 }
 
 .birthday-intro {
   font-size: 1rem;
   margin-bottom: 20px;
-  color: black;
+  color: var(--text-muted, #b0b0bb);
   text-align: center;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .birthday-members {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .birthday-member {
@@ -145,19 +146,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: var(--background-color);
-  border-radius: 18px;
-  border-style: inset;
-  border-color: var(--text-color);
-  border-width: 1px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: var(--surface-2, #1c1c24);
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
 }
 
 .birthday-member:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  border-color: var(--accent, #d4a24e);
 }
 
 .member-info {
@@ -165,36 +164,30 @@
 }
 
 .member-info h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  font-family: 'Roboto', sans-serif;
+  margin: 0 0 6px 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-main, #f8fafc);
 }
 
 .member-details {
   margin: 4px 0;
   font-size: 0.9rem;
-  color: black;
+  color: var(--text-muted, #b0b0bb);
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
+  gap: 3px;
 }
 
 .age-info {
-  font-weight: 700;
-  color: var(--secondary-color);
-  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  color: var(--accent, #d4a24e);
 }
 
 .contact-info {
   margin: 8px 0 0 0;
-  font-size: 0.8rem;
-  color: var(--primary-color);
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-muted, #b0b0bb);
 }
 
 .birthday-icon {
@@ -216,29 +209,23 @@
 }
 
 .birthday-actions {
-  margin-top: 24px;
-  padding: 16px;
-  background: var(--accent-color);
-  border-radius: 18px;
-  border-style: inset;
-  border-color: var(--primary-color);
-  border-width: 1px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--surface-2, #1c1c24);
+  border-radius: 10px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .reminder-text {
   margin: 0;
   font-size: 0.9rem;
-  color: white;
+  color: var(--text-muted, #b0b0bb);
   text-align: center;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
 }
 
 .no-birthdays {
   text-align: center;
   padding: 40px 20px;
-  font-family: 'Roboto', sans-serif;
 }
 
 .no-birthday-icon {
@@ -247,47 +234,43 @@
 }
 
 .no-birthdays h3 {
-  margin: 0 0 12px 0;
+  margin: 0 0 8px 0;
   font-size: 1.2rem;
-  color: var(--primary-color);
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
+  color: var(--text-main, #f8fafc);
+  font-weight: 600;
 }
 
 .no-birthdays p {
   margin: 0;
-  color: black;
-  font-size: 1rem;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
+  color: var(--text-muted, #b0b0bb);
+  font-size: 0.95rem;
 }
 
 .birthday-reminder-footer {
   padding: 16px 24px;
-  background: var(--background-color);
-  border-top: 1px solid var(--primary-color);
+  background: var(--surface-2, #1c1c24);
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   display: flex;
   justify-content: flex-end;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 0 16px 16px;
 }
 
 .dismiss-button {
-  background-color: var(--text-color);
-  color: var(--primary-color);
+  background-color: var(--accent, #d4a24e);
+  color: #171204;
   border: none;
-  padding: 10px 20px;
-  border-radius: 18px;
+  padding: 10px 22px;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
-  font-family: 'Roboto', sans-serif;
-  transition: background-color 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .dismiss-button:hover {
-  background-color: var(--secondary-color);
-  color: white;
+  background-color: var(--accent-hover, #e3b661);
+  transform: translateY(-1px);
 }
 
 /* Mobile Responsive */
@@ -302,15 +285,15 @@
   }
   
   .birthday-reminder-header h2 {
-    font-size: 18px;
+    font-size: 1.1rem;
   }
   
   .birthday-reminder-content {
-    padding: 20px;
+    padding: 18px;
   }
   
   .birthday-member {
-    padding: 12px;
+    padding: 14px;
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
@@ -322,11 +305,11 @@
   }
   
   .member-info h3 {
-    font-size: 16px;
+    font-size: 1.05rem;
   }
   
   .member-details {
-    font-size: 13px;
+    font-size: 0.85rem;
   }
 }
 
@@ -341,7 +324,7 @@
   }
   
   .birthday-reminder-content {
-    padding: 16px;
+    padding: 14px;
   }
   
   .birthday-reminder-footer {

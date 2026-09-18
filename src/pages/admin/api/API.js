@@ -3,11 +3,20 @@ import axios from 'axios';
 
 const devBackends = process.env.REACT_APP_DEV_BACKENDS;
 const prodBackends = process.env.REACT_APP_PROD_BACKENDS;
+const defaultApiUrl = process.env.REACT_APP_API_URL;
 
-const backends =
+const rawBackends =
   process.env.NODE_ENV === 'production'
-    ? devBackends?.split(',') || []
-    : prodBackends?.split(',') || [];
+    ? (prodBackends || devBackends || defaultApiUrl)
+    : (devBackends || prodBackends || defaultApiUrl);
+
+const backends = (rawBackends ? rawBackends.split(',') : [])
+  .map((url) => url.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
+if (backends.length === 0) {
+  backends.push('https://server2.dedebono.uk');
+}
 
 let activeBackendIndex = 0;
 

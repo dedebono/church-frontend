@@ -72,23 +72,31 @@ const Dashboard = () => {
             family: 'Inter',
             size: 12
           },
-          color: '#64748b'
+          color: '#cbd5e1'
         }
       },
       title: {
         display: false,
       },
+      tooltip: {
+        backgroundColor: '#1c1c24',
+        titleColor: '#f8fafc',
+        bodyColor: '#e2e8f0',
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1,
+        padding: 10,
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
         grid: {
-          color: '#e2e8f0',
+          color: 'rgba(255, 255, 255, 0.08)',
           drawBorder: false,
         },
         ticks: {
           font: { family: 'Inter' },
-          color: '#64748b'
+          color: '#94a3b8'
         }
       },
       x: {
@@ -97,7 +105,7 @@ const Dashboard = () => {
         },
         ticks: {
           font: { family: 'Inter' },
-          color: '#64748b'
+          color: '#94a3b8'
         }
       }
     }
@@ -109,14 +117,15 @@ const Dashboard = () => {
       {
         label: 'Monthly Attendance (Total Visits)',
         data: attendanceData.map(d => d.count),
-        backgroundColor: 'rgba(59, 130, 246, 0.8)', // Blue 500
-        borderRadius: 4,
+        backgroundColor: 'rgba(212, 162, 78, 0.85)',
+        hoverBackgroundColor: '#e3b661',
+        borderRadius: 6,
       },
     ],
   };
 
-  if (loading) return <div className="text-center p-8 text-slate-500">Loading Dashboard...</div>;
-  if (error) return <div className="text-red-500 p-8">{error}</div>;
+  if (loading) return <div className="text-center p-8 text-slate-400 font-medium">Memuat Dashboard...</div>;
+  if (error) return <div className="text-red-400 p-8 font-medium">{error}</div>;
 
   return (
     <div className="dashboard-container">
