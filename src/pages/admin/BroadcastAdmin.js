@@ -1,8 +1,17 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Swal from "sweetalert2"
-import { getBroadcastMessages, deleteBroadcastMessage } from "./api/API" // adjust path if needed
+import { getBroadcastMessages, deleteBroadcastMessage } from "./api/API"
+import "./BroadcastAdmin.css"
+import {
+  Megaphone,
+  RotateCw,
+  Search,
+  Trash2,
+  Users,
+  X
+} from "lucide-react"
 
 export default function BroadcastMessagesAdmin() {
   const [messages, setMessages] = useState([])
@@ -22,12 +31,18 @@ export default function BroadcastMessagesAdmin() {
       const data = await getBroadcastMessages()
       setMessages(Array.isArray(data) ? data : [])
     } catch (err) {
-      // If API returns 404 when there are no messages, treat as empty state
       const status = err?.response?.status
       if (status === 404) {
         setMessages([])
       } else {
-        Swal.fire("Error", err.message || "Failed to fetch broadcast messages", "error")
+        Swal.fire({
+          title: "Gagal Mengambil Data",
+          text: err.message || "Gagal memuat daftar siaran broadcast",
+          icon: "error",
+          background: "#131318",
+          color: "#f8fafc",
+          confirmButtonColor: "#d4a24e"
+        })
       }
     } finally {
       setLoading(false)
@@ -36,12 +51,16 @@ export default function BroadcastMessagesAdmin() {
 
   async function handleDelete(id) {
     const confirm = await Swal.fire({
-      title: "Delete this broadcast?",
-      text: "This action cannot be undone.",
+      title: "Hapus broadcast ini?",
+      text: "Riwayat broadcast ini akan dihapus permanen.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#dc2626",
-      confirmButtonText: "Delete",
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#262632",
+      confirmButtonText: "Ya, Hapus",
+      cancelButtonText: "Batal",
+      background: "#131318",
+      color: "#f8fafc"
     })
     if (!confirm.isConfirmed) return
 
@@ -49,9 +68,26 @@ export default function BroadcastMessagesAdmin() {
     try {
       await deleteBroadcastMessage(id)
       setMessages((prev) => prev.filter((m) => m._id !== id))
-      Swal.fire("Deleted", "Broadcast removed successfully", "success")
+      Swal.fire({
+        title: "Terhapus",
+        text: "Pesan broadcast berhasil dihapus.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+        toast: true,
+        position: "top-end",
+        background: "#131318",
+        color: "#f8fafc"
+      })
     } catch (err) {
-      Swal.fire("Error", err.message || "Failed to delete broadcast message", "error")
+      Swal.fire({
+        title: "Gagal",
+        text: err.message || "Gagal menghapus pesan broadcast",
+        icon: "error",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
+      })
     } finally {
       setDeletingId(null)
     }
@@ -61,9 +97,9 @@ export default function BroadcastMessagesAdmin() {
     const q = search.trim().toLowerCase()
     if (!q) return messages
     return messages.filter((m) =>
-      [m.message, (m.targetGroups || []).map(g => g.name).join(","), m._id]
+      [m.message, (m.targetGroups || []).map((g) => g.name).join(","), m._id]
         .filter(Boolean)
-        .some((x) => String(x).toLowerCase().includes(q)),
+        .some((x) => String(x).toLowerCase().includes(q))
     )
   }, [messages, search])
 
@@ -78,79 +114,111 @@ export default function BroadcastMessagesAdmin() {
   }, [totalPages])
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold">Broadcast Messages</h1>
-          <p className="text-sm text-gray-500">View and manage sent broadcasts</p>
+    <div className="broadcast-admin-container">
+      {/* Modern Minimalist Header Card */}
+      <div className="broadcast-header-card">
+        <div className="broadcast-header-main">
+          <div className="broadcast-header-icon">
+            <Megaphone size={24} />
+          </div>
+          <div className="broadcast-header-text">
+            <h1>Broadcast Messages</h1>
+            <p>Kelola dan pantau seluruh riwayat siaran pesan broadcast jemaat</p>
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div>
           <button
+            type="button"
             onClick={fetchMessages}
-            className="px-3 py-2 rounded-xl border text-sm hover:bg-gray-50"
+            className="btn-broadcast-refresh"
             disabled={loading}
-            title="Refresh"
+            title="Muat ulang data"
           >
-            {loading ? "Refreshing…" : "↻ Refresh"}
+            <RotateCw size={14} className={loading ? "animate-spin" : ""} />
+            <span>{loading ? "Memuat…" : "Refresh"}</span>
           </button>
         </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
-        <div className="text-sm text-gray-600">
-          {loading ? "Loading…" : `${filtered.length} message(s)`}
+      {/* Toolbar & Search */}
+      <div className="broadcast-toolbar-card">
+        <div className="broadcast-count-badge">
+          <Megaphone size={13} />
+          <span>{loading ? "Memuat…" : `${filtered.length} Pesan Siaran`}</span>
         </div>
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search message, group, or ID…"
-          className="w-full sm:w-80 px-3 py-2 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500"
-        />
+
+        <div className="broadcast-search-box">
+          <Search size={14} className="broadcast-search-icon" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Cari pesan, komunitas, ID…"
+            className="broadcast-search-input"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="broadcast-search-clear"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Empty state */}
-      {!loading && filtered.length === 0 ? (
-        <div className="border rounded-2xl p-10 text-center text-gray-500">
-          <div className="text-5xl mb-2">📭</div>
-          <div className="font-medium">No broadcasts found</div>
-          <div className="text-sm">Try refreshing or clearing your search.</div>
-        </div>
-      ) : null}
-
-      {/* Table */}
-      {filtered.length > 0 && (
-        <div className="overflow-x-auto border rounded-2xl">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
+      {/* Table Card */}
+      <div className="broadcast-table-card">
+        <div className="overflow-x-auto">
+          <table className="broadcast-table">
+            <thead>
               <tr>
-                <th className="text-left px-4 py-3">Message</th>
-                <th className="text-left px-4 py-3">Groups</th>
-                <th className="text-left px-4 py-3">Created</th>
-                <th className="text-right px-4 py-3">Actions</th>
+                <th style={{ width: "50%" }}>Isi Pesan Siaran</th>
+                <th>Target Komunitas</th>
+                <th>Waktu Kirim</th>
+                <th style={{ textAlign: "right" }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
+              {!loading && filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={4}>
+                    <div className="broadcast-empty-wrap">
+                      <Megaphone size={36} className="text-slate-600" />
+                      <p className="font-semibold text-slate-300">Tidak ada broadcast ditemukan</p>
+                      <span className="text-xs text-slate-500">
+                        {search ? "Coba kata kunci pencarian yang lain." : "Belum ada siaran broadcast yang dikirimkan."}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
+
               {pageItems.map((m) => (
-                <tr key={m._id} className="border-t">
-                  <td className="px-4 py-3 align-top">
-                    <div className="font-medium break-words leading-5">{m.message}</div>
-                    <div className="text-xs text-gray-500 mt-1">ID: {m._id}</div>
+                <tr key={m._id}>
+                  <td>
+                    <div className="broadcast-message-text">{m.message}</div>
+                    <div className="broadcast-id-badge">ID: {m._id}</div>
                   </td>
-                  <td className="px-4 py-3 align-top">
-                    <BadgeList items={(m.targetGroups || []).map(g => g.name)} emptyLabel="All members" />
+                  <td>
+                    <BadgeList
+                      items={(m.targetGroups || []).map((g) => g.name || g)}
+                      emptyLabel="Semua Komunitas"
+                    />
                   </td>
-                  <td className="px-4 py-3 align-top whitespace-nowrap">
-                    {formatDate(m.createdAt)}
+                  <td>
+                    <span className="broadcast-date-text">{formatDate(m.createdAt)}</span>
                   </td>
-                  <td className="px-4 py-3 align-top text-right">
+                  <td style={{ textAlign: "right" }}>
                     <button
+                      type="button"
                       onClick={() => handleDelete(m._id)}
-                      className="px-3 py-1.5 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      className="btn-broadcast-delete"
                       disabled={deletingId === m._id}
+                      title="Hapus broadcast"
                     >
-                      {deletingId === m._id ? "Deleting…" : "Delete"}
+                      <Trash2 size={13} />
+                      <span>{deletingId === m._id ? "Menghapus…" : "Hapus"}</span>
                     </button>
                   </td>
                 </tr>
@@ -158,40 +226,51 @@ export default function BroadcastMessagesAdmin() {
             </tbody>
           </table>
         </div>
-      )}
 
-      {/* Pagination */}
-      {filtered.length > pageSize && (
-        <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-500">Page {page} of {totalPages}</div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-3 py-2 rounded-xl border text-sm disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="px-3 py-2 rounded-xl border text-sm disabled:opacity-50"
-            >
-              Next
-            </button>
+        {/* Modern Pagination */}
+        {filtered.length > pageSize && (
+          <div className="broadcast-pagination-bar">
+            <div className="text-xs text-slate-400 font-medium">
+              Halaman {page} dari {totalPages}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="btn-page-nav"
+              >
+                Sebelumnya
+              </button>
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="btn-page-nav"
+              >
+                Selanjutnya
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
 
-function BadgeList({ items = [], emptyLabel = "None" }) {
-  if (!items.length) return <span className="inline-flex px-2 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs">{emptyLabel}</span>
+function BadgeList({ items = [], emptyLabel = "Semua Komunitas" }) {
+  if (!items.length) {
+    return (
+      <span className="broadcast-all-pill flex items-center gap-1">
+        <Users size={12} className="text-slate-400" />
+        <span>{emptyLabel}</span>
+      </span>
+    )
+  }
   return (
-    <div className="flex flex-wrap gap-1.5 max-w-xs">
-      {items.map((it) => (
-        <span key={it} className="inline-flex px-2 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs border border-blue-100">
+    <div className="flex flex-wrap gap-1 max-w-xs">
+      {items.map((it, idx) => (
+        <span key={idx} className="broadcast-group-pill">
           {truncateMiddle(it, 20)}
         </span>
       ))}
@@ -200,7 +279,7 @@ function BadgeList({ items = [], emptyLabel = "None" }) {
 }
 
 function truncateMiddle(text, maxLen) {
-  const str = String(text)
+  const str = String(text || "")
   if (str.length <= maxLen) return str
   const half = Math.floor((maxLen - 3) / 2)
   return str.slice(0, half) + "…" + str.slice(-half)
@@ -210,7 +289,13 @@ function formatDate(d) {
   try {
     const date = new Date(d)
     if (Number.isNaN(date.getTime())) return "—"
-    return date.toLocaleString()
+    return date.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
   } catch {
     return "—"
   }

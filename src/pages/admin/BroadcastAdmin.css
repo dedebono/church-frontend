@@ -1,0 +1,285 @@
+/* BroadcastAdmin.css - Modern Minimalist Dark Table */
+
+.broadcast-admin-container {
+  max-width: 1200px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem;
+}
+
+/* Header Card */
+.broadcast-header-card {
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.broadcast-header-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.broadcast-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(212, 162, 78, 0.12);
+  border: 1px solid rgba(212, 162, 78, 0.25);
+  color: var(--accent, #d4a24e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.broadcast-header-text h1 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-main, #f8fafc);
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.broadcast-header-text p {
+  font-size: 0.88rem;
+  color: var(--text-muted, #94a3b8);
+  margin: 0;
+}
+
+.btn-broadcast-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  background: var(--surface-2, #1c1c24);
+  color: var(--text-muted, #94a3b8);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-broadcast-refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-main, #f8fafc);
+}
+
+/* Toolbar Card */
+.broadcast-toolbar-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.broadcast-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent, #d4a24e);
+}
+
+.broadcast-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 320px;
+}
+
+.broadcast-search-icon {
+  position: absolute;
+  left: 10px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.broadcast-search-input {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2.2rem;
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  color: var(--text-main, #f8fafc);
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.broadcast-search-input:focus {
+  outline: none;
+  border-color: var(--accent, #d4a24e);
+}
+
+.broadcast-search-clear {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Table Card */
+.broadcast-table-card {
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.broadcast-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.broadcast-table thead {
+  background: var(--surface-2, #1c1c24);
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+}
+
+.broadcast-table th {
+  padding: 0.85rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.broadcast-table tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background-color 0.15s ease;
+}
+
+.broadcast-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.broadcast-table td {
+  padding: 0.9rem 1rem;
+  font-size: 0.86rem;
+  vertical-align: top;
+}
+
+.broadcast-message-text {
+  color: var(--text-main, #f8fafc);
+  font-weight: 500;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.broadcast-id-badge {
+  font-family: monospace;
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.broadcast-group-pill {
+  display: inline-block;
+  background: rgba(212, 162, 78, 0.1);
+  color: var(--accent, #d4a24e);
+  border: 1px solid rgba(212, 162, 78, 0.2);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.broadcast-all-pill {
+  display: inline-block;
+  background: var(--surface-2, #1c1c24);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.broadcast-date-text {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.btn-broadcast-delete {
+  padding: 0.35rem 0.65rem;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-broadcast-delete:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.btn-broadcast-delete:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.broadcast-empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3.5rem 1rem;
+  text-align: center;
+  color: var(--text-muted, #94a3b8);
+}
+
+/* Pagination Bar */
+.broadcast-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: var(--surface-2, #1c1c24);
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+}
+
+@media (max-width: 768px) {
+  .broadcast-header-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .broadcast-search-box {
+    width: 100%;
+  }
+}

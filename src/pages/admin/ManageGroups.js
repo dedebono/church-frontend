@@ -1,11 +1,10 @@
 // src/components/ManageGroups.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import './ManageGroups.css';
-import api from './api/API'; // Keep this for general API calls like broadcast and messages
+import api from './api/API';
 
-// Import all group-related API functions from manageGroupsAPI.js
 import {
   getAllGroups,
   createGroup,
@@ -13,13 +12,10 @@ import {
   deleteGroup,
   removeMemberFromGroup,
   getGroupMembers,
-  searchMembersByName, // This one is also in API.js, but manageGroupsAPI.js is more specific for group context
+  searchMembersByName,
   addMemberToGroup,
-} from './api/manageGroupsAPI'; // Changed from './api/API' to './api/manageGroupsAPI'
+} from './api/manageGroupsAPI';
 import {
-  Mail,
-  Clock,
-  Globe,
   Users,
   RefreshCw,
   Plus,
@@ -28,9 +24,13 @@ import {
   Edit2,
   Trash2,
   MessageCircle,
+  Search,
+  X,
+  Radio,
+  Send,
+  UserPlus
 } from "lucide-react";
 
-// ⬇️ use the shared socket
 import { useSocket } from '../../socket/SocketContext';
 
 const ManageGroups = () => {
@@ -49,6 +49,7 @@ const ManageGroups = () => {
   const [showBroadcastModal_all, setShowBroadcastModal_all] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [selectedGroupIdForBroadcast, setSelectedGroupIdForBroadcast] = useState(null);
+  const [groupSearch, setGroupSearch] = useState('');
 
   // Chat UI state (modal uses shared socket)
   const [showChatModal, setShowChatModal] = useState(false);
@@ -61,8 +62,7 @@ const ManageGroups = () => {
   }, []);
 
   useEffect(() => {
-    // If userId is stored in your socket context or global state
-    const currentUserId = "user_id_from_context_or_local_storage"; // Replace with actual logic to get user ID
+    const currentUserId = "user_id_from_context_or_local_storage";
     setUserId(currentUserId);
   }, []);
 
@@ -71,7 +71,6 @@ const ManageGroups = () => {
       const membersByGroup = {};
       for (const group of groups) {
         try {
-          // Using getGroupMembers from manageGroupsAPI.js
           const res = await getGroupMembers(group._id);
           membersByGroup[group._id] = res.data;
         } catch (err) {
@@ -86,7 +85,6 @@ const ManageGroups = () => {
 
   const fetchGroups = async () => {
     try {
-      // Using getAllGroups from manageGroupsAPI.js
       const res = await getAllGroups();
       setGroups(res.data);
     } catch (err) {
@@ -97,260 +95,240 @@ const ManageGroups = () => {
 
   const fetchMessagesFromBackend = async (groupId) => {
     try {
-      // Using general api instance for messages
-      const response = await api.get('/api/admin/messages', {
-        params: { groupId: groupId, page: 1, limit: 50 }
-      });
-      const messages = (response.data.items || []).slice().reverse();  // Reverse to show most recent on top
-      setChatMessages(messages);
-    } catch (e) {
-      console.error('Failed to load history:', e);
+      const res = await api.get(`/api/groups/${groupId}/messages`);
+      setChatMessages(res.data);
+    } catch (err) {
+      console.error('Error fetching messages from backend:', err);
     }
   };
 
+  const openChat = async (group) => {
+    setChatGroup(group);
+    setShowChatModal(true);
+    joinGroup(group._id);
+    await fetchMessagesFromBackend(group._id);
+  };
+
+  const closeChat = () => {
+    if (chatGroup) leaveGroup(chatGroup._id);
+    setShowChatModal(false);
+    setChatGroup(null);
+    setChatMessages([]);
+  };
+
+  const sendChatMessage = () => {
+    if (!chatText.trim() || !chatGroup) return;
+    sendText(chatGroup._id, chatText.trim());
+    setChatText('');
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingGroup) {
+        await updateGroup(editingGroup._id, formData);
+        toast.success('Komunitas berhasil diperbarui!');
+      } else {
+        await createGroup(formData);
+        toast.success('Komunitas berhasil dibuat!');
+      }
+      setFormData({ name: '', description: '', rules: '' });
+      setEditingGroup(null);
+      setShowModal(false);
+      fetchGroups();
+    } catch (error) {
+      console.error('Error saving group:', error);
+      toast.error('Gagal menyimpan komunitas.');
+    }
+  };
 
   const handleEdit = (group) => {
-    setFormData({ name: group.name, description: group.description, rules: group.rules });
     setEditingGroup(group);
+    setFormData({
+      name: group.name,
+      description: group.description,
+      rules: group.rules,
+    });
     setShowModal(true);
   };
 
+  const handleDelete = async (groupId) => {
+    const result = await Swal.fire({
+      title: 'Hapus Komunitas?',
+      text: 'Semua data dan keanggotaan grup ini akan dihapus permanen!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#262632',
+      confirmButtonText: 'Ya, Hapus',
+      cancelButtonText: 'Batal',
+      background: '#131318',
+      color: '#f8fafc',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteGroup(groupId);
+        toast.success('Komunitas berhasil dihapus.');
+        fetchGroups();
+      } catch (error) {
+        console.error('Error deleting group:', error);
+        toast.error('Gagal menghapus komunitas.');
+      }
+    }
+  };
+
   const handleRemoveMember = async (groupId, memberId) => {
-    try {
-      // Using removeMemberFromGroup from manageGroupsAPI.js
-      await removeMemberFromGroup(groupId, memberId);
-      toast.success('Member removed!');
-      fetchGroups(); // Re-fetch groups to update member list
-    } catch (error) {
-      console.error('Failed to remove member:', error);
-      toast.error('Failed to remove member.');
+    const result = await Swal.fire({
+      title: 'Keluarkan Anggota?',
+      text: 'Anggota ini akan dikeluarkan dari komunitas.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#262632',
+      confirmButtonText: 'Ya, Keluarkan',
+      cancelButtonText: 'Batal',
+      background: '#131318',
+      color: '#f8fafc',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await removeMemberFromGroup(groupId, memberId);
+        toast.success('Anggota berhasil dikeluarkan.');
+        setGroupMembers((prev) => ({
+          ...prev,
+          [groupId]: prev[groupId].filter((member) => member._id !== memberId),
+        }));
+      } catch (error) {
+        console.error('Error removing member:', error);
+        toast.error('Gagal mengeluarkan anggota.');
+      }
     }
   };
 
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    setSelectedMember(null);
-
-    if (query.length > 2) {
-      try {
-        // Using searchMembersByName from manageGroupsAPI.js (or API.js, both are fine here)
-        const res = await searchMembersByName(query);
-        if (res.data.length === 0) {
-          setSearchResults([]);
-          Swal.fire({ icon: 'info', title: 'No results found', text: 'No members match the search query.' });
-        } else {
-          setSearchResults(res.data);
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setSearchResults([]);
-          Swal.fire({ icon: 'info', title: 'No members found', text: 'There are no members that match your search.' });
-        } else {
-          console.error('Error during search:', error);
-          Swal.fire({ icon: 'error', title: 'Search Error', text: error.response?.data?.message || 'gagal mencari' });
-        }
-      }
-    } else {
+    if (query.trim() === '') {
       setSearchResults([]);
+      return;
+    }
+    try {
+      const res = await searchMembersByName(query);
+      setSearchResults(res.data);
+    } catch (err) {
+      console.error('Error searching members:', err);
     }
   };
 
   const handleAddMemberToGroup = async () => {
-    if (!selectedMember) return;
+    if (!selectedMember || !editingGroup) return;
     try {
-      // Using addMemberToGroup from manageGroupsAPI.js
       await addMemberToGroup(editingGroup._id, selectedMember._id);
-      closeAddMembersModal();
-      fetchGroups(); // Re-fetch groups to update member list
-      Swal.fire('Success', 'Member added to group!', 'success');
+      toast.success('Anggota berhasil ditambahkan!');
+      setShowAddMembersModal(false);
+      setSelectedMember(null);
+      setSearchQuery('');
+      setSearchResults([]);
+      const res = await getGroupMembers(editingGroup._id);
+      setGroupMembers((prev) => ({
+        ...prev,
+        [editingGroup._id]: res.data,
+      }));
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        Swal.fire({ icon: 'warning', title: 'Already in Group', text: `${selectedMember.fullName} is already a member of this group.` });
-      } else {
-        Swal.fire({ icon: 'error', title: 'Error Adding Member', text: error.response?.data?.message || 'Something went wrong while adding the member.' });
-        console.error('Add member error:', error);
-      }
-    }
-  };
-
-  const handleInputChange = (e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const payload = { name: formData.name, description: formData.description, rules: formData.rules };
-    try {
-      if (editingGroup) {
-        // Using updateGroup from manageGroupsAPI.js
-        await updateGroup(editingGroup._id, payload);
-        toast.success('Group updated successfully!');
-      } else {
-        // Using createGroup from manageGroupsAPI.js
-        await createGroup(payload);
-        toast.success('Group created successfully!');
-      }
-      setFormData({ name: '', description: '', rules: '' });
-      setEditingGroup(null);
-      setShowModal(false);
-      fetchGroups(); // Re-fetch groups to update the list
-    } catch (error) {
-      console.error('Error saving group:', error);
-      toast.error(error.response?.data?.message || 'Failed to save group.');
-    }
-  };
-
-  const handleDelete = async (groupId) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: 'Yakin menghapus?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        // Using deleteGroup from manageGroupsAPI.js
-        await deleteGroup(groupId);
-        fetchGroups(); // Re-fetch groups to update the list
-        Swal.fire('Deleted!', 'Berhasil dihapus', 'success');
-      } catch (error) {
-        console.error('Error deleting group:', error);
-        Swal.fire({ icon: 'error', title: 'Error', text: error.response?.data?.message || 'Gagal menghapus grup.' });
-      }
+      console.error('Error adding member to group:', error);
+      toast.error('Gagal menambahkan anggota.');
     }
   };
 
   const handleSendBroadcast = async () => {
-    if (!broadcastMessage.trim()) return toast.error('Pesan broadcast tidak boleh kosong');
+    if (!broadcastMessage.trim() || !selectedGroupIdForBroadcast) return;
     try {
       const payload = { message: broadcastMessage, targetGroups: [selectedGroupIdForBroadcast] };
-      // Using general api instance for broadcast messages
       await api.post('/api/broadcast-messages', payload);
-      toast.success('Pesan Broadcast terkirim');
+      toast.success('Pesan broadcast berhasil dikirim');
       setBroadcastMessage('');
       setShowBroadcastModal(false);
     } catch (error) {
       console.error('Broadcast sending failed:', error);
-      toast.error(error.response?.data?.message || 'Pesan broadcast gagal');
+      toast.error('Gagal mengirim broadcast');
     }
   };
 
   const handleSendBroadcast_all = async () => {
-    if (!broadcastMessage.trim()) return toast.error('Broadcast message cannot be empty.');
+    if (!broadcastMessage.trim()) return toast.error('Pesan broadcast tidak boleh kosong.');
     try {
+      const allGroupIds = groups.map((g) => g._id);
       const payload = {
         message: broadcastMessage,
-        targetGroups: [], // Empty array for all groups
+        targetGroups: allGroupIds,
       };
-      // Using general api instance for broadcast messages
       await api.post('/api/broadcast-messages', payload);
-      toast.success('Broadcast sent successfully!');
+      toast.success('Broadcast berhasil dikirim ke semua komunitas!');
       setBroadcastMessage('');
       setShowBroadcastModal_all(false);
     } catch (error) {
       console.error('Broadcast sending failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to send broadcast.');
+      toast.error('Gagal mengirim broadcast');
     }
   };
 
   const fetchBroadcastLogs = async (groupId) => {
     try {
-      // Using general api instance for broadcast messages
-      const response = await api.get('/api/broadcast-messages');
-      if (response.data && response.data.length > 0) {
-        const filteredLogs = response.data.filter(
-          (log) => log.targetGroups.length === 0 || (Array.isArray(log.targetGroups) && log.targetGroups.includes(groupId))
-        );
+      const res = await api.get(`/api/broadcast-messages/group/${groupId}`);
+      const logs = res.data;
 
-        if (filteredLogs.length === 0) {
-          return Swal.fire({ icon: 'info', title: 'No Logs for Selected Group', text: 'There are no broadcast logs for this group yet.' });
-        }
-
-        const logsHtml = filteredLogs
+      if (logs && logs.length > 0) {
+        const logList = logs
           .map(
-            (log) => `
-          <li style="margin-bottom: 8px;">
-            <strong><Mail size={14} style={{ display: 'inline' }}/> ${log.message}</strong><br/>
-            <small><Clock size={12} style={{ display: 'inline' }}/> ${new Date(log.createdAt).toLocaleString()}</small><br/>
-            <span style="color: ${log.targetGroups.length === 0 ? 'green' : 'blue'};">
-              ${log.targetGroups.length === 0 ? '<Globe size={14} style={{ display: "inline" }}/> Terkirim ke semua komunitas' : '<Users size={14} style={{ display: "inline" }}/> Terkirim ke komunitas ini'}
-            </span>
-          </li>
-        `
+            (log) =>
+              `<div style="text-align: left; padding: 10px; background: #1c1c24; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="font-size: 0.78rem; color: #d4a24e; margin-bottom: 4px;">📅 ${new Date(log.createdAt).toLocaleString('id-ID')}</div>
+                <div style="font-size: 0.9rem; color: #f8fafc;">${log.message}</div>
+              </div>`
           )
           .join('');
 
         Swal.fire({
-          title: 'Broadcast Logs for Group',
-          html: `<ul style="text-align:left; padding-left: 20px;">${logsHtml}</ul>`,
-          width: 600,
+          title: 'Riwayat Broadcast Komunitas',
+          html: `<div style="max-height: 350px; overflow-y: auto;">${logList}</div>`,
+          width: '560px',
+          background: '#131318',
+          color: '#f8fafc',
           showCloseButton: true,
-          confirmButtonText: 'Close',
+          confirmButtonColor: '#d4a24e',
         });
       } else {
-        Swal.fire({ icon: 'info', title: 'No Broadcast Logs Found', text: 'There are no broadcast logs available at the moment.' });
+        Swal.fire({
+          icon: 'info',
+          title: 'Belum Ada Riwayat',
+          text: 'Tidak ada riwayat pesan broadcast untuk komunitas ini.',
+          background: '#131318',
+          color: '#f8fafc',
+          confirmButtonColor: '#d4a24e',
+        });
       }
-    } catch (error) {
-      console.error('Error fetching broadcast logs:', error);
-      Swal.fire({ icon: 'error', title: 'Error', text: error.response?.data?.message || 'An error occurred while fetching the broadcast logs.' });
+    } catch (err) {
+      console.error('Error fetching broadcast logs:', err);
+      toast.error('Gagal memuat log broadcast.');
     }
-  };
-
-  const closeAddMembersModal = () => {
-    setShowAddMembersModal(false);
-    setSearchQuery('');
-    setSearchResults([]);
-    setSelectedMember(null);
-  };
-
-  // ---- Chat modal helpers using shared socket ----
-  const openChat = async (group) => {
-    setChatGroup(group);
-    setShowChatModal(true);
-    fetchMessagesFromBackend(group._id);
-    try {
-      // Using general api instance for messages
-      const { data } = await api.get('/api/admin/messages', {
-        params: { groupId: group._id, page: 1, limit: 50 }
-      });
-      // admin API returns { items, total, ... } sorted DESC
-      const msgs = (data.items || []).slice().reverse();
-      setChatMessages(msgs);
-    } catch (e) {
-      console.error('Failed to load history:', e);
-    }
-
-    joinGroup(group._id);
-  };
-
-  const closeChat = () => {
-    if (chatGroup?._id) leaveGroup(chatGroup._id);
-    setChatMessages([]);
-    setChatText('');
-    setShowChatModal(false);
-    setChatGroup(null);
-  };
-
-  const sendChatMessage = () => {
-    const text = chatText.trim();
-    if (!text || !chatGroup) return;
-    sendText(chatGroup._id, text);
-    setChatText('');
   };
 
   useEffect(() => {
     if (!showChatModal || !chatGroup) return;
 
     const handleNew = (msg) => {
-      const gid = msg.group || msg.groupId;
-
-      if (String(gid) === String(chatGroup._id)) {
-        setChatMessages((prev) => [...prev, msg]);
-      } else {
-      }
+      if (msg.groupId !== chatGroup._id) return;
+      setChatMessages((prev) => [msg, ...prev]);
     };
 
     on('message:new', handleNew);
@@ -359,146 +337,286 @@ const ManageGroups = () => {
     };
   }, [showChatModal, chatGroup, on, off]);
 
+  const filteredGroups = useMemo(() => {
+    if (!groupSearch.trim()) return groups;
+    const term = groupSearch.toLowerCase().trim();
+    return groups.filter(
+      (g) =>
+        (g.name && g.name.toLowerCase().includes(term)) ||
+        (g.description && g.description.toLowerCase().includes(term)) ||
+        (g.rules && g.rules.toLowerCase().includes(term))
+    );
+  }, [groups, groupSearch]);
+
+  const totalMembersCount = useMemo(() => {
+    return Object.values(groupMembers).reduce((acc, mList) => acc + (mList?.length || 0), 0);
+  }, [groupMembers]);
+
   return (
     <div className="page-flow-manage-groups">
-      <div className="">
-        <h2 className="">📚 Admin Komunitas</h2>
+      {/* Modern Minimalist Header Card */}
+      <div className="groups-header-card">
+        <div className="groups-header-main">
+          <div className="groups-header-icon">
+            <Users size={24} />
+          </div>
+          <div className="groups-header-text">
+            <h1>Admin Komunitas</h1>
+            <p>Kelola grup komunitas, keanggotaan deepcell, dan siaran pesan</p>
+          </div>
+        </div>
 
-        {/* Socket status badge */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0 16px' }}>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '6px 10px',
-              borderRadius: 999,
-              fontWeight: 600,
-              background:
-                status === 'connected' ? '#e6ffed' :
-                  status === 'connecting' ? '#fff7e6' :
-                    status === 'error' ? '#ffecec' : '#f2f2f2',
-              border:
-                status === 'connected' ? '1px solid #b7eb8f' :
-                  status === 'connecting' ? '1px solid #ffe58f' :
-                    status === 'error' ? '1px solid #ffa39e' : '1px solid #ddd'
-            }}
-            title={error || ''}
-          >
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: '50%',
-                background:
-                  status === 'connected' ? '#52c41a' :
-                    status === 'connecting' ? '#faad14' :
-                      status === 'error' ? '#f5222d' : '#8c8c8c'
-              }}
-            />
-            {status.toUpperCase()}{status === 'connected' && transport ? ` (${transport})` : ''}
-          </span>
-          <button className="button-member-manage" onClick={reconnect}><RefreshCw size={14} className="inline-icon" /> Reconnect</button>
+        {/* Header Action Toolbar */}
+        <div className="groups-header-actions">
+          {/* High Contrast Status Indicator */}
+          <div className={`status-pill status-${status}`} title={error || ''}>
+            <span className="status-dot" />
+            <span className="status-label">
+              {status === 'connected' ? 'Online' : status === 'connecting' ? 'Menghubungkan...' : 'Offline'}
+            </span>
+            {status === 'connected' && transport && <span className="status-transport">({transport})</span>}
+          </div>
+
+          <button type="button" className="btn-header-action" onClick={reconnect} title="Hubungkan ulang socket">
+            <RefreshCw size={14} />
+            <span>Reconnect</span>
+          </button>
 
           <button
+            type="button"
+            onClick={() => setShowBroadcastModal_all(true)}
+            className="btn-header-action"
+            title="Kirim broadcast ke seluruh komunitas"
+          >
+            <Megaphone size={14} />
+            <span>Broadcast Semua</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => {
               setFormData({ name: '', description: '', rules: '' });
               setEditingGroup(null);
               setShowModal(true);
             }}
-            className="button-manage"
+            className="btn-header-primary"
           >
-            <Plus size={14} className="inline-icon" /> Buat Komunitas
-          </button>
-          <button onClick={() => setShowBroadcastModal_all(true)} className="button-member-manage">
-            <Megaphone size={14} className="inline-icon" /> Broadcast
+            <Plus size={15} />
+            <span>Buat Komunitas</span>
           </button>
         </div>
       </div>
 
-      {/* Group List */}
-      <div className="container-list-member">
-        {groups.map((group) => (
-          <div key={group._id} className="member-card-grup">
-            <div className="Member-text-top">{group.name}</div>
-            <p className="Member-text">{group.description}</p>
-            <p className="Member-text"><FileText size={14} className="inline-icon" /> Rules: {group.rules}</p>
-            <div className="Member-text">
-              <Users size={14} className="inline-icon" /> Members:
-              <ul>
-                {(groupMembers[group._id] || []).map((member) => (
-                  <li key={member._id}>
-                    {member.fullName} - ({member.phoneNumber})
-                    <button className="remove-member-group" onClick={() => handleRemoveMember(group._id, member._id)}>X</button>
-                  </li>
-                ))}
-                {groupMembers[group._id]?.length === 0 && <li>No members</li>}
-              </ul>
-            </div>
+      {/* Search & Stats Bar */}
+      <div className="groups-toolbar-card">
+        <div className="groups-stats-badges">
+          <span className="badge-stat">
+            <Users size={13} />
+            <span>{groups.length} Komunitas</span>
+          </span>
+          <span className="badge-stat">
+            <Radio size={13} />
+            <span>{totalMembersCount} Total Anggota</span>
+          </span>
+        </div>
 
-            <button
-              onClick={() => { setEditingGroup(group); setShowAddMembersModal(true); }}
-              className="button-member-manage"
-            >
-              <Plus size={14} className="inline-icon" /> Anggota
+        <div className="groups-search-box">
+          <Search size={15} className="groups-search-icon" />
+          <input
+            type="text"
+            placeholder="Cari nama komunitas, rules..."
+            value={groupSearch}
+            onChange={(e) => setGroupSearch(e.target.value)}
+            className="groups-search-input"
+          />
+          {groupSearch && (
+            <button onClick={() => setGroupSearch('')} className="groups-search-clear">
+              <X size={14} />
             </button>
-            <button
-              onClick={() => { setSelectedGroupIdForBroadcast(group._id); setShowBroadcastModal(true); }}
-              className="button-member-manage"
-            >
-              <Megaphone size={14} className="inline-icon" /> Broadcast
-            </button>
-            <button
-              type="button"
-              onClick={() => fetchBroadcastLogs(group._id)}
-              style={{ fontWeight: '650' }}
-              className="button-member-manage"
-            >
-              <FileText size={14} className="inline-icon" /> BC Log
-            </button>
-            <div>
-              <button onClick={() => handleEdit(group)} className="button-member-manage"><Edit2 size={14} className="inline-icon" /> Edit</button>
-              <button onClick={() => handleDelete(group._id)} className="button-member-manage"><Trash2 size={14} className="inline-icon" /> Hapus</button>
-              <button onClick={() => openChat(group)} className="button-member-manage" style={{ fontWeight: 650 }}>
-                <MessageCircle size={14} className="inline-icon" /> Chat
-              </button>
-            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Group Cards Grid */}
+      <div className="container-list-member">
+        {filteredGroups.length === 0 ? (
+          <div className="groups-empty-card">
+            <Users size={36} className="text-slate-500 mb-2" />
+            <h3>{groupSearch ? 'Tidak ada komunitas yang cocok' : 'Belum ada data komunitas'}</h3>
+            <p>
+              {groupSearch
+                ? 'Silakan coba kata kunci pencarian yang lain.'
+                : 'Mulai dengan menambahkan grup komunitas baru.'}
+            </p>
           </div>
-        ))}
+        ) : (
+          filteredGroups.map((group) => {
+            const members = groupMembers[group._id] || [];
+            return (
+              <div key={group._id} className="member-card-grup">
+                {/* Top Card Row */}
+                <div className="card-top-row">
+                  <div className="card-group-name">{group.name}</div>
+                  <span className="card-member-count">
+                    <Users size={12} />
+                    <span>{members.length} Anggota</span>
+                  </span>
+                </div>
+
+                {/* Description */}
+                {group.description && <p className="card-group-desc">{group.description}</p>}
+
+                {/* Rules */}
+                {group.rules && (
+                  <div className="card-rules-box">
+                    <FileText size={13} className="shrink-0 text-amber-400" />
+                    <span>Rules: {group.rules}</span>
+                  </div>
+                )}
+
+                {/* Members Section */}
+                <div className="card-members-section">
+                  <div className="card-members-header">
+                    <span>Anggota ({members.length})</span>
+                  </div>
+                  <ul className="card-members-list">
+                    {members.map((member) => (
+                      <li key={member._id} className="card-member-item">
+                        <div className="member-info">
+                          <span className="member-name">{member.fullName}</span>
+                          <span className="member-phone">{member.phoneNumber || '-'}</span>
+                        </div>
+                        <button
+                          type="button"
+                          className="btn-remove-member"
+                          onClick={() => handleRemoveMember(group._id, member._id)}
+                          title="Keluarkan anggota"
+                        >
+                          <X size={12} />
+                        </button>
+                      </li>
+                    ))}
+                    {members.length === 0 && <li className="card-member-empty">Belum ada anggota</li>}
+                  </ul>
+                </div>
+
+                {/* Card Primary Actions (Anggota, Broadcast, Log) */}
+                <div className="card-actions-row">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingGroup(group);
+                      setShowAddMembersModal(true);
+                    }}
+                    className="btn-card-action"
+                    title="Tambah anggota"
+                  >
+                    <UserPlus size={13} />
+                    <span>+ Anggota</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedGroupIdForBroadcast(group._id);
+                      setShowBroadcastModal(true);
+                    }}
+                    className="btn-card-action"
+                    title="Kirim pesan broadcast ke grup ini"
+                  >
+                    <Megaphone size={13} />
+                    <span>Broadcast</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fetchBroadcastLogs(group._id)}
+                    className="btn-card-action"
+                    title="Lihat riwayat broadcast"
+                  >
+                    <FileText size={13} />
+                    <span>Log BC</span>
+                  </button>
+                </div>
+
+                {/* Card Management Actions (Edit, Hapus, Chat) */}
+                <div className="card-footer-actions">
+                  <button type="button" onClick={() => handleEdit(group)} className="btn-footer-action btn-edit">
+                    <Edit2 size={13} />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(group._id)}
+                    className="btn-footer-action btn-delete"
+                  >
+                    <Trash2 size={13} />
+                    <span>Hapus</span>
+                  </button>
+                  <button type="button" onClick={() => openChat(group)} className="btn-footer-action btn-chat">
+                    <MessageCircle size={13} />
+                    <span>Chat</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* Add Members Modal */}
       {showAddMembersModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Add Members to {editingGroup?.name}</h3>
-            <input
-              type="text"
-              placeholder="Search member by name"
-              value={selectedMember ? selectedMember.fullName : searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setSelectedMember(null);
-                handleSearchChange(e);
-              }}
-            />
+        <div className="modal-backdrop-groups">
+          <div className="modal-container-groups">
+            <h3>Tambah Anggota ke {editingGroup?.name}</h3>
+            <div className="modal-form-group">
+              <label>Cari Nama Jemaat</label>
+              <input
+                type="text"
+                placeholder="Ketik nama jemaat..."
+                value={selectedMember ? selectedMember.fullName : searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setSelectedMember(null);
+                  handleSearchChange(e);
+                }}
+                className="modal-input"
+              />
+            </div>
+
             <div className="search-results-group">
               {searchResults.map((member, index) => {
                 if (!member || !member._id) return null;
+                const isSelected = selectedMember && selectedMember._id === member._id;
                 return (
                   <div
                     key={member._id || index}
-                    className={`search-result-group-item ${selectedMember && selectedMember._id === member._id ? 'selected-member' : ''}`}
-                    onClick={() => { setSelectedMember(member); setSearchQuery(member.fullName); }}
+                    className={`search-result-group-item ${isSelected ? 'selected-member' : ''}`}
+                    onClick={() => {
+                      setSelectedMember(member);
+                      setSearchQuery(member.fullName);
+                    }}
                   >
-                    <p>{member.fullName}</p>
+                    <span className="font-medium text-slate-100">{member.fullName}</span>
+                    <span className="text-xs text-slate-400">{member.phoneNumber || ''}</span>
                   </div>
                 );
               })}
+              {searchQuery && searchResults.length === 0 && (
+                <div className="p-3 text-center text-sm text-slate-400">Jemaat tidak ditemukan</div>
+              )}
             </div>
-            <div>
-              <button type="button" onClick={() => setShowAddMembersModal(false)} className="button-modal-groups">Cancel</button>
-              <button type="button" onClick={handleAddMemberToGroup} className="button-modal-groups" disabled={!selectedMember}>Add to Group</button>
+
+            <div className="modal-actions-row">
+              <button type="button" onClick={() => setShowAddMembersModal(false)} className="btn-modal-cancel">
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleAddMemberToGroup}
+                className="btn-modal-submit"
+                disabled={!selectedMember}
+              >
+                Tambahkan
+              </button>
             </div>
           </div>
         </div>
@@ -507,120 +625,103 @@ const ManageGroups = () => {
       {/* Chat Modal */}
       {showChatModal && chatGroup && (
         <div className="modal-backdrop-groups">
-          <div className="modal-container-groups" style={{ maxWidth: 640 }}>
-            <h3 className="text-xl font-semibold mb-2">Chat — {chatGroup.name}
-              <button onClick={() => fetchMessagesFromBackend(chatGroup._id)} style={{ margin: '10px' }}>
+          <div className="modal-container-groups modal-chat-container">
+            <div className="modal-chat-header">
+              <div className="flex items-center gap-2">
+                <MessageCircle size={18} className="text-amber-400" />
+                <h3>Live Chat — {chatGroup.name}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => fetchMessagesFromBackend(chatGroup._id)}
+                className="btn-chat-refresh"
+                title="Refresh obrolan"
+              >
                 <RefreshCw size={14} />
-              </button></h3>
-
+              </button>
+            </div>
 
             {/* Chat Messages Container */}
-            <div style={{
-              height: 300, overflowY: 'auto',
-              border: '1px solid #eee',
-              borderRadius: 8,
-              padding: 12,
-              marginBottom: 12,
-              background: '#fafafa',
-              display: 'flex',
-              flexDirection: 'column-reverse'
-            }}>
+            <div className="chat-messages-scroll">
               {chatMessages.length === 0 && (
-                <div style={{ opacity: 0.7, fontSize: 14 }}>
-                  No messages yet. Say hi 👋
-                </div>
+                <div className="chat-empty-hint">Belum ada pesan di komunitas ini. Mulailah mengobrol.</div>
               )}
 
-              {chatMessages.map((m) => (
-                <div
-                  key={m._id || Math.random()}
-                  style={{
-                    marginBottom: 8,
-                    display: 'flex',
-                    justifyContent: m.sender === userId ? 'flex-end' : 'flex-start',
-                  }}
-                >
-                  {/* Message Bubble */}
-                  <div
-                    style={{
-                      maxWidth: '70%', // Restrict bubble width
-                      padding: '8px 12px',
-                      borderRadius: 12,
-                      backgroundColor: m.sender === userId ? '#dcf8c6' : '#ddddddff', // Green for sender, white for receiver
-                      boxShadow: m.sender === userId ? '0 2px 5px rgba(0, 0, 0, 0.1)' : 'none', // Add shadow for sender
-                      fontWeight: 500,
-                      display: 'inline-block',
-                    }}
-                  >
-                    {/* Sender Full Name and Timestamp */}
-                    <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4, textAlign: m.sender === userId ? 'right' : 'left', }}>
-                      {m.fullName || 'Unknown'} •{' '}
-                      {m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}
-                    </div>
-
-                    {/* Message Content */}
-                    <div style={{ marginTop: 6 }}>
-                      {m.type === 'image' ? (
-                        <img
-                          src={m.image}
-                          alt="message-image"
-                          style={{ maxWidth: '100%', borderRadius: 8 }}
-                        />
-                      ) : (
-                        m.text || '(non-text message)'
-                      )}
+              {chatMessages.map((m) => {
+                const isMe = m.sender === userId;
+                return (
+                  <div key={m._id || Math.random()} className={`chat-message-row ${isMe ? 'is-me' : 'is-other'}`}>
+                    <div className="chat-bubble">
+                      <div className="chat-sender-info">
+                        <span>{m.fullName || 'User'}</span>
+                        <span>•</span>
+                        <span>{m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                      </div>
+                      <div className="chat-content">
+                        {m.type === 'image' ? (
+                          <img src={m.image} alt="lampiran" className="chat-image-preview" />
+                        ) : (
+                          m.text || ''
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Message Input */}
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div className="chat-input-row">
               <input
-                className="input-search"
-                placeholder="Type a message…"
+                className="chat-input-field"
+                placeholder="Ketik pesan..."
                 value={chatText}
                 onChange={(e) => setChatText(e.target.value)}
                 onKeyDown={(e) => (e.key === 'Enter' ? sendChatMessage() : null)}
-                style={{ flex: 1, padding: '8px 12px', borderRadius: 12, border: '1px solid #ccc' }}
               />
               <button
-                className="button-member-manage-modal"
+                type="button"
+                className="btn-chat-send"
                 onClick={sendChatMessage}
                 disabled={!chatText.trim()}
-                style={{ padding: '8px 12px', borderRadius: 12 }}
               >
-                Send
+                <Send size={15} />
+                <span>Kirim</span>
               </button>
-              <button
-                className="button-member-manage-modal"
-                onClick={closeChat}
-                style={{ padding: '8px 12px', borderRadius: 12 }}
-              >
-                Close
+              <button type="button" className="btn-chat-close" onClick={closeChat}>
+                Tutup
               </button>
             </div>
           </div>
         </div>
       )}
 
-
-      {/* Broadcast Modal */}
+      {/* Broadcast Modal (Single Group) */}
       {showBroadcastModal && (
         <div className="modal-backdrop-groups">
           <div className="modal-container-groups">
-            <h3 className="text-xl font-semibold mb-4">Kirim pesan broadcast</h3>
+            <h3>Kirim Broadcast Komunitas</h3>
+            <p className="text-xs text-slate-400 mb-3">
+              Pesan ini akan dikirimkan sebagai siaran ke anggota grup ini.
+            </p>
             <textarea
-              placeholder="Type your broadcast message here..."
+              placeholder="Tuliskan isi pesan broadcast di sini..."
               value={broadcastMessage}
               onChange={(e) => setBroadcastMessage(e.target.value)}
-              className="input-search"
+              className="modal-textarea"
+              rows={4}
             />
-            <div>
-              <button type="button" onClick={() => setShowBroadcastModal(false)} className="button-member-manage-modal">Cancel</button>
-              <button type="button" onClick={handleSendBroadcast} className="button-member-manage-modal" disabled={!broadcastMessage.trim()}>
-                Send Broadcast
+            <div className="modal-actions-row">
+              <button type="button" onClick={() => setShowBroadcastModal(false)} className="btn-modal-cancel">
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleSendBroadcast}
+                className="btn-modal-submit"
+                disabled={!broadcastMessage.trim()}
+              >
+                Kirim Broadcast
               </button>
             </div>
           </div>
@@ -631,17 +732,28 @@ const ManageGroups = () => {
       {showBroadcastModal_all && (
         <div className="modal-backdrop-groups">
           <div className="modal-container-groups">
-            <h3 className="text-xl font-semibold mb-4">Pesan broadcast ke semua komunitas</h3>
+            <h3>Broadcast ke Semua Komunitas</h3>
+            <p className="text-xs text-slate-400 mb-3">
+              Pesan ini akan dikirimkan secara serentak ke seluruh grup komunitas terdaftar.
+            </p>
             <textarea
-              placeholder="Type your broadcast message here..."
+              placeholder="Tuliskan pesan broadcast untuk semua grup..."
               value={broadcastMessage}
               onChange={(e) => setBroadcastMessage(e.target.value)}
-              className="input-search"
+              className="modal-textarea"
+              rows={4}
             />
-            <div>
-              <button type="button" onClick={() => setShowBroadcastModal_all(false)} className="button-member-manage-modal">Cancel</button>
-              <button type="button" onClick={handleSendBroadcast_all} className="button-member-manage-modal" disabled={!broadcastMessage.trim()}>
-                Send Broadcast
+            <div className="modal-actions-row">
+              <button type="button" onClick={() => setShowBroadcastModal_all(false)} className="btn-modal-cancel">
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleSendBroadcast_all}
+                className="btn-modal-submit"
+                disabled={!broadcastMessage.trim()}
+              >
+                Kirim ke Semua
               </button>
             </div>
           </div>
@@ -652,14 +764,59 @@ const ManageGroups = () => {
       {showModal && (
         <div className="modal-backdrop-groups">
           <div className="modal-container-groups">
-            <h3 className="text-xl font-semibold mb-4">{editingGroup ? 'Edit Group' : 'Create Group'}</h3>
+            <h3>{editingGroup ? 'Edit Komunitas' : 'Buat Komunitas Baru'}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input type="text" name="name" placeholder="Group Name" value={formData.name} onChange={handleInputChange} required />
-              <textarea name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} />
-              <textarea name="rules" placeholder="Group Rules" value={formData.rules} onChange={handleInputChange} />
-              <div>
-                <button type="button" onClick={() => { setShowModal(false); setEditingGroup(null); }} className="button-modal-groups">Cancel</button>
-                <button type="submit" className="button-modal-groups">{editingGroup ? 'Update' : 'Create'}</button>
+              <div className="modal-form-group">
+                <label>Nama Komunitas / Deepcell</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="cth: Deepcell Nazareth"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="modal-input"
+                  required
+                />
+              </div>
+
+              <div className="modal-form-group">
+                <label>Deskripsi</label>
+                <textarea
+                  name="description"
+                  placeholder="Keterangan atau visi kelompok..."
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="modal-textarea"
+                  rows={2}
+                />
+              </div>
+
+              <div className="modal-form-group">
+                <label>Rules / Ketentuan Komunitas</label>
+                <textarea
+                  name="rules"
+                  placeholder="Ketentuan kehadiran, jadwal pertemuan, dll..."
+                  value={formData.rules}
+                  onChange={handleInputChange}
+                  className="modal-textarea"
+                  rows={2}
+                />
+              </div>
+
+              <div className="modal-actions-row">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModal(false);
+                    setEditingGroup(null);
+                  }}
+                  className="btn-modal-cancel"
+                >
+                  Batal
+                </button>
+                <button type="submit" className="btn-modal-submit">
+                  {editingGroup ? 'Perbarui' : 'Simpan Komunitas'}
+                </button>
               </div>
             </form>
           </div>
