@@ -44,7 +44,7 @@
   "scripts": {
     "dev": "PORT=3000 HOST=0.0.0.0 BROWSER=none react-scripts start",
     "start": "PORT=3000 HOST=0.0.0.0 BROWSER=none react-scripts start",
-    "build": "BUILD_PATH=dist DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "build": "BUILD_PATH=dist DISABLE_ESLINT_PLUGIN=true react-scripts build && node -e \"const fs=require('fs'); fs.cpSync('dist', 'build', {recursive: true});\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
