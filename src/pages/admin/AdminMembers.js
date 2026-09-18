@@ -330,7 +330,7 @@ function AdminMembers() {
   )
 
   return (
-    <div className={isLoading ? "loading-container" : ""}>
+    <div className={`admin-members-wrapper ${isLoading ? "loading-container" : ""}`}>
       <div className="header-section">
         <h2 className="h2">
           Semua Jemaat

@@ -476,9 +476,9 @@ const SermonCMS = () => {
 
         <button
           onClick={testApiConnection}
-          style={{ marginTop: '12px', fontSize: '12px', opacity: 0.7 }}
+          className="btn-test-api"
         >
-          Test API
+          ⚡ Test API Connection
         </button>
       </div>
 
