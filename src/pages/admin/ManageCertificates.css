@@ -1,35 +1,309 @@
-.certificate-admin-container{
-    display: flex;
+/* Modern Minimalist ManageCertificates.css */
+
+.certificate-page-wrapper {
+  max-width: 1100px;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem;
+}
+
+/* Header Card */
+.cert-header-card {
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cert-header-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cert-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(212, 162, 78, 0.12);
+  border: 1px solid rgba(212, 162, 78, 0.25);
+  color: var(--accent, #d4a24e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cert-header-text h1 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-main, #f8fafc);
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
+}
+
+.cert-header-text p {
+  font-size: 0.88rem;
+  color: var(--text-muted, #94a3b8);
+  margin: 0;
+}
+
+/* Minimalist Segmented Tabs */
+.cert-tabs-bar {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface-2, #1c1c24);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  gap: 4px;
+}
+
+.cert-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted, #94a3b8);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.cert-tab-btn:hover {
+  color: var(--text-main, #f8fafc);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cert-tab-btn.active {
+  background: var(--surface-3, #262632);
+  color: var(--accent, #d4a24e);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(212, 162, 78, 0.25);
+}
+
+/* Sub-indicator banner */
+.cert-active-indicator {
+  margin: 1.25rem 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  background: rgba(212, 162, 78, 0.05);
+  border: 1px solid rgba(212, 162, 78, 0.15);
+  font-size: 0.82rem;
+  color: #e2e8f0;
+}
+
+.cert-active-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, #d4a24e);
+  display: inline-block;
+}
+
+.cert-active-text {
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+/* Refine child form integration */
+.certificate-form-content .event-cms-container {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Hide duplicate redundant headers in child forms */
+.certificate-form-content .cms-header {
+  display: none !important;
+}
+
+.certificate-form-content .form-card {
+  background: var(--surface, #131318) !important;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
+  border-radius: 14px !important;
+  padding: 1.75rem 2rem !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  margin-bottom: 2rem !important;
+}
+
+.certificate-form-content .form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.4rem;
+}
+
+.certificate-form-content .form-group input,
+.certificate-form-content .form-group select {
+  background: var(--surface-2, #1c1c24) !important;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08)) !important;
+  border-radius: 8px !important;
+  color: var(--text-main, #f8fafc) !important;
+  padding: 0.65rem 0.9rem !important;
+  font-size: 0.9rem !important;
+}
+
+.certificate-form-content .form-group input:focus,
+.certificate-form-content .form-group select:focus {
+  outline: none;
+  border-color: var(--accent, #d4a24e) !important;
+  box-shadow: 0 0 0 2px rgba(212, 162, 78, 0.2) !important;
+}
+
+.certificate-form-content .btn-primary {
+  padding: 0.7rem 1.5rem;
+  background: var(--accent, #d4a24e);
+  color: #171204;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.certificate-form-content .btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover, #e3b661);
+  transform: translateY(-1px);
+}
+
+/* Certificate Cards Grid */
+.certificate-form-content .event-section {
+  margin-top: 1.5rem;
+}
+
+.certificate-form-content .section-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main, #f8fafc);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.certificate-form-content .events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.certificate-form-content .event-card {
+  background: var(--surface, #131318);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.certificate-form-content .event-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.certificate-form-content .event-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main, #f8fafc);
+  margin: 0 0 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.5rem;
+}
+
+.certificate-form-content .event-meta p {
+  font-size: 0.83rem;
+  color: #cbd5e1;
+  margin: 0.35rem 0;
+  line-height: 1.45;
+}
+
+.certificate-form-content .event-meta strong {
+  color: var(--text-muted, #94a3b8);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-right: 0.3rem;
+}
+
+.certificate-form-content .event-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.75rem;
+}
+
+.certificate-form-content .btn-view,
+.certificate-form-content .btn-delete {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.certificate-form-content .btn-view {
+  background: var(--surface-2, #1c1c24);
+  color: var(--accent, #d4a24e);
+  border: 1px solid rgba(212, 162, 78, 0.25);
+}
+
+.certificate-form-content .btn-view:hover {
+  background: rgba(212, 162, 78, 0.15);
+}
+
+.certificate-form-content .btn-delete {
+  background: var(--surface-2, #1c1c24);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.certificate-form-content .btn-delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+@media (max-width: 768px) {
+  .cert-header-card {
     flex-direction: column;
-    align-items: center;
-    background-color: var(--surface, #131318);
-    color: var(--text-main, #f8fafc);
-    padding: 2rem;
-    margin: 20px auto;
-    max-width: 900px;
-    border-radius: 14px;
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-}
+    align-items: flex-start;
+  }
 
-.select-icon{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-main, #f8fafc);
-}
+  .cert-tabs-bar {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
 
-.form-dropdown{
-    min-width: 250px;
-    padding: 10px 14px;
-    background-color: var(--surface-2, #1c1c24);
-    color: var(--text-main, #f8fafc);
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-    border-radius: 8px;
-    font-size: 0.95rem;
-}
+  .cert-tab-btn {
+    flex: 1;
+    justify-content: center;
+  }
 
-.form-dropdown:hover{
-    background-color: var(--surface-3, #262632);
-    border-color: var(--accent, #d4a24e);
+  .certificate-form-content .events-grid {
+    grid-template-columns: 1fr;
+  }
 }

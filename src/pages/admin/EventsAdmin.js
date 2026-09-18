@@ -1,17 +1,39 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import "./EventsAdmin.css"
 import { getEvents, createEvent, updateEvent, deleteEvent, healthCheck } from "../admin/api/API"
 import Swal from "sweetalert2"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { storage } from "../admin/firebase" // your Firebase config
+import { storage } from "../admin/firebase"
+import {
+  Calendar,
+  Clock,
+  User,
+  Plus,
+  Edit3,
+  Trash2,
+  Eye,
+  RotateCw,
+  UploadCloud,
+  Link as LinkIcon,
+  Search,
+  X,
+  Radio,
+  FileText,
+  Activity,
+  CheckCircle2
+} from "lucide-react"
 
 const EventCMS = () => {
   const [events, setEvents] = useState([])
   const [editing, setEditing] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [uploadTab, setUploadTab] = useState("file") // 'file' or 'url'
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
   const [formData, setFormData] = useState({
     title: "",
     preacher: "",
@@ -31,6 +53,9 @@ const EventCMS = () => {
     if (editing) {
       setFormData(editing)
       setImagePreview(editing.imageUrl)
+      if (editing.imageUrl) {
+        setUploadTab("url")
+      }
     } else {
       setFormData({
         title: "",
@@ -41,45 +66,40 @@ const EventCMS = () => {
         imageUrl: "",
       })
       setImagePreview(null)
+      setUploadTab("file")
     }
-    // Reset file selections
     setSelectedImageFile(null)
   }, [editing])
 
   const fetchEvent = async () => {
+    setIsRefreshing(true)
     try {
       const data = await getEvents()
-
-      // Ensure data is an array
       const eventsArray = Array.isArray(data) ? data : []
       setEvents(eventsArray)
       setError(null)
     } catch (err) {
-      console.error("🚨 Fetch error:", err)
-      const errorMessage = err.response?.data?.message || err.message || "Failed to fetch events"
+      console.error("Fetch error:", err)
+      const errorMessage = err.response?.data?.message || err.message || "Gagal mengambil data event"
       setError(errorMessage)
 
-      // Only show error alert if it's not a network issue during initial load
       if (events.length === 0) {
         Swal.fire({
           icon: "error",
-          title: "Connection Error",
+          title: "Gangguan Koneksi",
           html: `
-            <div style="text-align: left;">
+            <div style="text-align: left; color: #cbd5e1;">
               <p><strong>Error:</strong> ${errorMessage}</p>
-              <p><strong>This could be due to:</strong></p>
-              <ul style="text-align: left; margin: 1rem 0;">
-                <li>Server is temporarily unavailable</li>
-                <li>Network connectivity issues</li>
-                <li>API endpoint changes</li>
-              </ul>
-              <p>The system will automatically try the backup server if available.</p>
+              <p style="margin-top: 8px;">Periksa kembali koneksi jaringan atau hubungi administrator.</p>
             </div>
           `,
-          confirmButtonColor: "#dc2626",
-          width: "500px",
+          background: "#131318",
+          color: "#f8fafc",
+          confirmButtonColor: "#d4a24e",
         })
       }
+    } finally {
+      setIsRefreshing(false)
     }
   }
 
@@ -96,31 +116,33 @@ const EventCMS = () => {
     const file = e.target.files[0]
     if (!file) return
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       Swal.fire({
         icon: "error",
-        title: "Invalid File Type",
-        text: "Only image files are allowed.",
+        title: "Tipe File Tidak Valid",
+        text: "Hanya file gambar yang diizinkan.",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
       e.target.value = ""
       return
     }
 
-    // Validate file size (5MB limit)
     if (file.size > 2 * 1024 * 1024) {
       Swal.fire({
         icon: "error",
-        title: "File Too Large",
-        text: "Image file size must be under 2MB.",
+        title: "Ukuran Terlalu Besar",
+        text: "Ukuran file gambar maksimal 2MB.",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
       e.target.value = ""
       return
     }
 
     setSelectedImageFile(file)
-
-    // Create preview
     const reader = new FileReader()
     reader.onload = (e) => setImagePreview(e.target.result)
     reader.readAsDataURL(file)
@@ -131,15 +153,17 @@ const EventCMS = () => {
     if (!selectedImageFile) {
       Swal.fire({
         icon: "warning",
-        title: "No File Selected",
-        text: "Please select an image file first.",
+        title: "Pilih File",
+        text: "Silakan pilih file gambar terlebih dahulu.",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
       return
     }
 
     try {
       setUploadingImage(true)
-
       const timestamp = Date.now()
       const fileName = `event_images/${timestamp}_${selectedImageFile.name}`
       const fileRef = ref(storage, fileName)
@@ -147,31 +171,32 @@ const EventCMS = () => {
       await uploadBytes(fileRef, selectedImageFile)
       const downloadURL = await getDownloadURL(fileRef)
 
-      // Update form data with the uploaded image URL
       setFormData((prev) => ({ ...prev, imageUrl: downloadURL }))
       setImagePreview(downloadURL)
 
       Swal.fire({
         icon: "success",
-        title: "Image Uploaded!",
-        text: "Image uploaded successfully!",
+        title: "Gambar Berhasil Diunggah",
         timer: 2000,
-        timerProgressBar: true,
         showConfirmButton: false,
         toast: true,
         position: "top-end",
+        background: "#131318",
+        color: "#f8fafc"
       })
 
       setSelectedImageFile(null)
-      // Clear the file input
       const fileInput = document.getElementById("imageFile")
       if (fileInput) fileInput.value = ""
     } catch (error) {
       console.error("Image upload error:", error)
       Swal.fire({
         icon: "error",
-        title: "Upload Failed",
-        text: "An error occurred while uploading the image.",
+        title: "Gagal Mengunggah",
+        text: "Terjadi kesalahan saat mengunggah gambar.",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
     } finally {
       setUploadingImage(false)
@@ -183,54 +208,39 @@ const EventCMS = () => {
     setLoading(true)
 
     try {
-      let saved
       if (editing) {
-        console.log("🔄 Updating event:", editing._id)
-        saved = await updateEvent(editing._id, formData)
+        await updateEvent(editing._id, formData)
       } else {
-        console.log("🔄 Creating new event")
-        saved = await createEvent(formData)
+        await createEvent(formData)
       }
-
-      console.log(`✅ Event ${editing ? "updated" : "added"}:`, saved)
 
       setEditing(null)
       setError(null)
       await fetchEvent()
 
-      // Success notification
       Swal.fire({
         icon: "success",
-        title: editing ? "Event Updated!" : "Event Added!",
-        text: `${formData.title} has been ${editing ? "updated" : "added"} successfully.`,
-        timer: 3000,
-        timerProgressBar: true,
+        title: editing ? "Ibadah Diperbarui" : "Ibadah Ditambahkan",
+        text: `${formData.title} berhasil disimpan.`,
+        timer: 2500,
         showConfirmButton: false,
         toast: true,
         position: "top-end",
+        background: "#131318",
+        color: "#f8fafc"
       })
     } catch (err) {
-      console.error("🚨 Save error:", err)
-      const errorMessage = err.response?.data?.message || err.message || "Failed to save event"
+      console.error("Save error:", err)
+      const errorMessage = err.response?.data?.message || err.message || "Gagal menyimpan jadwal ibadah"
       setError(errorMessage)
 
-      // Error notification
       Swal.fire({
         icon: "error",
-        title: "Save Failed",
-        html: `
-          <div style="text-align: left;">
-            <p><strong>Error:</strong> ${errorMessage}</p>
-            <p><strong>Please check:</strong></p>
-            <ul style="text-align: left; margin: 1rem 0;">
-              <li>All required fields are filled correctly</li>
-              <li>URLs are valid and accessible</li>
-              <li>Your internet connection</li>
-            </ul>
-          </div>
-        `,
-        confirmButtonColor: "#dc2626",
-        width: "500px",
+        title: "Gagal Menyimpan",
+        text: errorMessage,
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
     } finally {
       setLoading(false)
@@ -239,7 +249,6 @@ const EventCMS = () => {
 
   const handleEdit = (event) => {
     setEditing(event)
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
@@ -247,47 +256,49 @@ const EventCMS = () => {
     const event = events.find((s) => s._id === id)
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      html: `You are about to delete:<br><strong>"${event?.title}"</strong><br><br>This action cannot be undone!`,
+      title: "Hapus Jadwal Ibadah?",
+      html: `<span style="color: #cbd5e1;">Anda akan menghapus ibadah <strong>"${event?.title}"</strong>.<br>Tindakan ini tidak dapat dibatalkan.</span>`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#dc2626",
-      cancelButtonColor: "#6b7280",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#262632",
+      confirmButtonText: "Ya, Hapus",
+      cancelButtonText: "Batal",
+      background: "#131318",
+      color: "#f8fafc",
       reverseButtons: true,
     })
 
     if (!result.isConfirmed) return
 
     try {
-      console.log("🔄 Deleting event:", id)
       await deleteEvent(id)
       await fetchEvent()
       setError(null)
 
-      // Success notification
       Swal.fire({
         icon: "success",
-        title: "Deleted!",
-        text: `"${event?.title}" has been deleted successfully.`,
-        timer: 3000,
-        timerProgressBar: true,
+        title: "Terhapus",
+        text: `"${event?.title}" berhasil dihapus.`,
+        timer: 2500,
         showConfirmButton: false,
         toast: true,
         position: "top-end",
+        background: "#131318",
+        color: "#f8fafc"
       })
     } catch (err) {
-      console.error("🚨 Delete error:", err)
-      const errorMessage = err.response?.data?.message || err.message || "Failed to delete event"
+      console.error("Delete error:", err)
+      const errorMessage = err.response?.data?.message || err.message || "Gagal menghapus ibadah"
       setError(errorMessage)
 
-      // Error notification
       Swal.fire({
         icon: "error",
-        title: "Delete Failed",
+        title: "Gagal Menghapus",
         text: errorMessage,
-        confirmButtonColor: "#dc2626",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
     }
   }
@@ -297,145 +308,183 @@ const EventCMS = () => {
   }
 
   const showEventDetails = (event) => {
+    const formattedDate = event.date
+      ? new Date(event.date).toLocaleDateString("id-ID", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "-"
+
     Swal.fire({
-      title: event.title,
-      html: `
-        <div style="text-align: left; margin: 1rem 0;">
-          <p><strong>Preacher:</strong> ${event.preacher}</p>
-          <p><strong>Date:</strong> ${new Date(event.date).toLocaleDateString()}</p>
-          <p><strong>Time:</strong> ${event.time}</p>
-          <p><strong>Description:</strong></p>
-          <p style="margin-top: 0.5rem; color: #666;">${event.description}</p>
-          ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" style="width: 100%; max-width: 300px; margin: 1rem 0; border-radius: 8px;">` : ""}
+      title: `
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 1.2rem; font-weight: 700; color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; text-align: left;">
+          <span>${event.title}</span>
         </div>
       `,
-      width: "600px",
+      html: `
+        <div style="text-align: left; font-size: 0.9rem; color: #cbd5e1; margin-top: 14px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #1c1c24; padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 14px;">
+            <div>
+              <span style="display: block; font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Pelayan Firman</span>
+              <span style="font-weight: 600; color: #f8fafc;">${event.preacher || "-"}</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Waktu / Jam</span>
+              <span style="font-weight: 600; color: #d4a24e;">${event.time || "-"} WIB</span>
+            </div>
+            <div style="grid-column: span 2;">
+              <span style="display: block; font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Hari & Tanggal</span>
+              <span style="color: #f8fafc;">${formattedDate}</span>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 14px;">
+            <span style="display: block; font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Deskripsi:</span>
+            <p style="margin: 0; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap;">${event.description || "Tidak ada deskripsi."}</p>
+          </div>
+
+          ${
+            event.imageUrl
+              ? `<div style="text-align: center; margin-top: 12px;">
+                  <img src="${event.imageUrl}" alt="${event.title}" style="width: 100%; max-height: 280px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);" />
+                </div>`
+              : ""
+          }
+        </div>
+      `,
+      width: "560px",
+      background: "#131318",
+      color: "#f8fafc",
       showCloseButton: true,
       showConfirmButton: false,
-      customClass: {
-        popup: "event-details-popup",
-      },
-    })
-  }
-
-  const refreshEvent = async () => {
-    await fetchEvent()
-    Swal.fire({
-      icon: "success",
-      title: "Refreshed!",
-      text: "Events list has been updated.",
-      timer: 2000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-      toast: true,
-      position: "top-end",
     })
   }
 
   const testApiConnection = async () => {
     try {
-      console.log("🧪 Testing API connection...")
       const health = await healthCheck()
-
       Swal.fire({
         icon: health.ok ? "success" : "error",
-        title: "API Connection Test",
+        title: "Uji Koneksi API",
         html: `
-          <div style="text-align: left; font-family: monospace; font-size: 12px;">
+          <div style="text-align: left; font-family: monospace; font-size: 0.85rem; background: #1c1c24; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); color: #cbd5e1;">
             <p><strong>Status:</strong> ${health.status}</p>
-            <p><strong>OK:</strong> ${health.ok}</p>
-            <p><strong>Backend:</strong> ${health.backend}</p>
-            <p><strong>Active Backend Index:</strong> ${health.activeBackendIndex}</p>
-            ${health.error ? `<p><strong>Error:</strong> ${health.error}</p>` : ""}
+            <p><strong>Koneksi OK:</strong> ${health.ok ? "Ya" : "Tidak"}</p>
+            <p><strong>Backend:</strong> ${health.backend || "Default"}</p>
           </div>
         `,
-        width: "600px",
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
     } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "API Test Failed",
+        title: "Uji Koneksi Gagal",
         text: error.message,
+        background: "#131318",
+        color: "#f8fafc",
+        confirmButtonColor: "#d4a24e"
       })
     }
   }
 
+  // Filter events by search term
+  const filteredEvents = useMemo(() => {
+    if (!searchTerm.trim()) return events
+    const term = searchTerm.toLowerCase().trim()
+    return events.filter(
+      (ev) =>
+        (ev.title && ev.title.toLowerCase().includes(term)) ||
+        (ev.preacher && ev.preacher.toLowerCase().includes(term)) ||
+        (ev.description && ev.description.toLowerCase().includes(term)) ||
+        (ev.date && ev.date.toLowerCase().includes(term))
+    )
+  }, [events, searchTerm])
+
   return (
     <div className="event-cms-container">
-      {/* Header */}
-      <div className="cms-header">
-        <h1>🎤 Event Management System</h1>
-        <p>Manage your church Event with ease</p>
+      {/* Modern Minimalist Header */}
+      <div className="event-header-card">
+        <div className="event-header-title-group">
+          <div className="event-header-icon-badge">
+            <Radio size={22} />
+          </div>
+          <div className="event-header-text">
+            <h1>Event Management System</h1>
+            <p>Kelola jadwal ibadah raya, pelayan firman, dan agenda gereja</p>
+          </div>
+        </div>
 
-        {/* API Test Button */}
-        <button
-          onClick={testApiConnection}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#f59e0b",
-            color: "white",
-            border: "none",
-            borderRadius: "0.375rem",
-            cursor: "pointer",
-            fontSize: "0.875rem",
-          }}
-        >
-          🧪 Test API Connection
-        </button>
+        <div className="event-header-actions">
+          <button
+            type="button"
+            onClick={testApiConnection}
+            className="btn-header-secondary"
+            title="Uji status endpoint backend"
+          >
+            <Activity size={14} />
+            <span>Tes API</span>
+          </button>
+          <button
+            type="button"
+            onClick={fetchEvent}
+            disabled={isRefreshing}
+            className="btn-header-secondary"
+            title="Muat ulang data"
+          >
+            <RotateCw size={14} className={isRefreshing ? "animate-spin" : ""} />
+            <span>{isRefreshing ? "Memuat..." : "Refresh"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Error Alert */}
       {error && (
-        <div className="error-alert">
-          <span className="error-icon">⚠️</span>
+        <div className="event-error-alert">
           <span>{error}</span>
-          <button
-            onClick={refreshEvent}
-            style={{
-              marginLeft: "auto",
-              padding: "0.25rem 0.75rem",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "0.25rem",
-              cursor: "pointer",
-              fontSize: "0.75rem",
-            }}
-          >
-            Retry
+          <button onClick={fetchEvent} className="btn-retry-alert">
+            Coba Lagi
           </button>
         </div>
       )}
 
-      {/* event Form */}
-      <div className="form-card">
-        <div className="form-header">
-          <h2>{editing ? "✏️ Edit event" : "➕ Tambahkan Ibadah"}</h2>
-          <p>{editing ? "Update the event details below" : "Isi data ibadah dengan lengkap"}</p>
+      {/* Minimalist Form Card */}
+      <div className="event-form-card">
+        <div className="event-form-card-header">
+          <div className="flex items-center gap-2">
+            {editing ? <Edit3 size={18} className="text-amber-400" /> : <Plus size={18} className="text-amber-400" />}
+            <h2>{editing ? "Perbarui Jadwal Ibadah" : "Tambahkan Jadwal Ibadah Baru"}</h2>
+          </div>
+          <span className="text-xs text-slate-400">
+            {editing ? "Ubah detail informasi ibadah di bawah" : "Isi rincian ibadah dengan lengkap"}
+          </span>
         </div>
 
-        <form onSubmit={handleSubmit} className="event-form">
-          <div className="form-row">
-            <div className="form-group">
+        <form onSubmit={handleSubmit} className="event-form-body">
+          {/* Row 1: Title & Preacher */}
+          <div className="event-form-grid-2">
+            <div className="event-form-group">
               <label htmlFor="title">Nama Ibadah</label>
               <input
                 id="title"
                 name="title"
                 type="text"
-                placeholder="Enter event title"
+                placeholder="cth: Ibadah Raya Minggu Pagi"
                 value={formData.title}
                 onChange={handleChange}
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="event-form-group">
               <label htmlFor="preacher">Pelayan Firman</label>
               <input
                 id="preacher"
                 name="preacher"
                 type="text"
-                placeholder="Enter preacher name"
+                placeholder="cth: Pdt. Dr. John Doe"
                 value={formData.preacher}
                 onChange={handleChange}
                 required
@@ -443,168 +492,255 @@ const EventCMS = () => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="date">Tanggal</label>
-            <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+          {/* Row 2: Date & Time */}
+          <div className="event-form-grid-2">
+            <div className="event-form-group">
+              <label htmlFor="date">Tanggal</label>
+              <input id="date" name="date" type="date" value={formData.date} onChange={handleChange} required />
+            </div>
+
+            <div className="event-form-group">
+              <label htmlFor="time">Waktu / Jam</label>
+              <input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="time">Waktu</label>
-            <input id="time" name="time" type="time" value={formData.time} onChange={handleChange} required />
-          </div>
-
-
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
+          {/* Row 3: Description */}
+          <div className="event-form-group">
+            <label htmlFor="description">Deskripsi / Tema Firman</label>
             <textarea
               id="description"
               name="description"
-              placeholder="Enter event description"
+              placeholder="Tuliskan ringkasan tema, ayat pokok, atau keterangan ibadah..."
               value={formData.description}
               onChange={handleChange}
-              rows={4}
+              rows={3}
               required
             />
           </div>
 
-          {/* Image Upload Section */}
-          <div className="form-group">
-            <label>Event Image</label>
-            <div className="upload-section">
-              <div className="upload-option">
-                <h4>📁 Upload Image File</h4>
-                <input
-                  id="imageFile"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageFileChange}
-                  className="file-input"
-                />
+          {/* Row 4: Image Upload Section with Minimalist Tabs */}
+          <div className="event-media-section">
+            <div className="event-media-tabs-header">
+              <label className="text-sm font-semibold text-slate-200">Poster / Banner Ibadah</label>
+              <div className="event-upload-tabs">
                 <button
                   type="button"
-                  onClick={handleImageUpload}
-                  disabled={!selectedImageFile || uploadingImage}
-                  className="btn-upload"
+                  className={`event-upload-tab ${uploadTab === "file" ? "active" : ""}`}
+                  onClick={() => setUploadTab("file")}
                 >
-                  {uploadingImage ? "⏳ Uploading..." : "📤 Upload Image"}
+                  <UploadCloud size={14} />
+                  <span>Unggah File</span>
                 </button>
-              </div>
-
-              <div className="upload-divider">OR</div>
-
-              <div className="upload-option">
-                <h4>🔗 Image URL</h4>
-                <input
-                  name="imageUrl"
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  className="url-input"
-                />
+                <button
+                  type="button"
+                  className={`event-upload-tab ${uploadTab === "url" ? "active" : ""}`}
+                  onClick={() => setUploadTab("url")}
+                >
+                  <LinkIcon size={14} />
+                  <span>Tautan URL</span>
+                </button>
               </div>
             </div>
 
-            {/* Image Preview */}
-            {imagePreview && (
-              <div className="image-preview">
-                <img src={imagePreview || "/placeholder.svg"} alt="Preview" className="preview-image" />
-              </div>
-            )}
+            <div className="event-upload-body">
+              {uploadTab === "file" ? (
+                <div className="event-dropzone-row">
+                  <input
+                    id="imageFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    className="event-file-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleImageUpload}
+                    disabled={!selectedImageFile || uploadingImage}
+                    className="btn-upload-action"
+                  >
+                    <UploadCloud size={15} />
+                    <span>{uploadingImage ? "Mengunggah..." : "Unggah Gambar"}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="event-url-row">
+                  <input
+                    name="imageUrl"
+                    type="url"
+                    placeholder="https://images.unsplash.com/... atau URL gambar langsung"
+                    value={formData.imageUrl}
+                    onChange={(e) => {
+                      handleChange(e)
+                      setImagePreview(e.target.value)
+                    }}
+                    className="event-input"
+                  />
+                </div>
+              )}
+
+              {/* Image Preview */}
+              {imagePreview && (
+                <div className="event-preview-container">
+                  <img src={imagePreview} alt="Pratinjau poster" className="event-preview-img" />
+                  <button
+                    type="button"
+                    className="btn-remove-preview"
+                    onClick={() => {
+                      setImagePreview(null)
+                      setFormData((p) => ({ ...p, imageUrl: "" }))
+                      setSelectedImageFile(null)
+                    }}
+                    title="Hapus gambar"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="form-actions">
-            <button type="submit" disabled={loading} className="btn-primary">
-              {loading ? "⏳ Saving..." : editing ? "Update Event" : "Add Event"}
+          {/* Actions */}
+          <div className="event-form-actions">
+            <button type="submit" disabled={loading} className="btn-event-submit">
+              {loading ? (
+                <span>Menyimpan...</span>
+              ) : editing ? (
+                <>
+                  <CheckCircle2 size={16} />
+                  <span>Perbarui Ibadah</span>
+                </>
+              ) : (
+                <>
+                  <Plus size={16} />
+                  <span>Tambah Ibadah</span>
+                </>
+              )}
             </button>
             {editing && (
-              <button type="button" className="btn-secondary" onClick={cancelEdit}>
-                Cancel
+              <button type="button" className="btn-event-cancel" onClick={cancelEdit}>
+                Batal
               </button>
             )}
           </div>
         </form>
       </div>
 
-      <div className="separator"></div>
+      {/* Events List Section */}
+      <div className="event-list-section">
+        <div className="event-list-header">
+          <div className="event-list-title-group">
+            <h2>Daftar Jadwal Ibadah</h2>
+            <span className="event-badge-count">{filteredEvents.length} Event</span>
+          </div>
 
-      {/* Event List */}
-      <div className="event-section">
-        <div className="section-header">
-          <h2>📚 All Event</h2>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span className="event-count">{events.length} Event</span>
-            <button
-              onClick={refreshEvent}
-              className="btn-refresh"
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#10b981",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              🔄 Refresh
-            </button>
+          {/* Quick Search */}
+          <div className="event-search-wrapper">
+            <Search size={15} className="event-search-icon" />
+            <input
+              type="text"
+              placeholder="Cari judul, pelayan, tanggal..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="event-search-input"
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm("")} className="event-search-clear">
+                <X size={14} />
+              </button>
+            )}
           </div>
         </div>
 
-        {events.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🎵</div>
-            <h3>No Event yet</h3>
-            <p>Get started by adding your first event using the form above.</p>
+        {filteredEvents.length === 0 ? (
+          <div className="event-empty-state">
+            <div className="event-empty-icon">
+              <Calendar size={28} />
+            </div>
+            <h3>{searchTerm ? "Tidak ada jadwal yang cocok" : "Belum ada jadwal ibadah"}</h3>
+            <p>
+              {searchTerm
+                ? "Silakan coba kata kunci pencarian yang lain."
+                : "Mulai dengan menambahkan agenda ibadah baru menggunakan formulir di atas."}
+            </p>
           </div>
         ) : (
-          <div className="events-grid">
-            {events.map((event) => (
-              <div key={event._id} className="event-card">
-                <div className="event-image">
-                  <img
-                    src={event.imageUrl || "/placeholder.svg?height=200&width=300"}
-                    alt={event.title}
-                    onError={(e) => {
-                      e.target.src = "/placeholder.svg?height=200&width=300"
-                    }}
-                  />
-                </div>
-                <div className="event-content">
-                  <h3 className="event-title">{event.title}</h3>
-                  <div className="event-meta">
-                    <div className="meta-item">
-                      <span className="meta-icon">👤</span>
-                      <span>{event.preacher}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-icon">📅</span>
-                      <span>{new Date(event.date).toLocaleDateString()}</span>
-                    </div>
-                    <div className="meta-item">
-                      <span className="meta-icon">⏲️</span>
-                      <span>{event.time}</span>
+          <div className="events-cards-grid">
+            {filteredEvents.map((event) => {
+              const formattedDate = event.date
+                ? new Date(event.date).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "-"
+
+              return (
+                <div key={event._id} className="event-card-modern">
+                  <div className="event-card-media">
+                    <img
+                      src={event.imageUrl || "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=600&q=80"}
+                      alt={event.title}
+                      onError={(e) => {
+                        e.target.src = "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=600&q=80"
+                      }}
+                    />
+                    <div className="event-card-badges">
+                      <span className="event-time-pill">
+                        <Clock size={12} />
+                        <span>{event.time || "-"}</span>
+                      </span>
                     </div>
                   </div>
-                  <p className="event-description">{event.description}</p>
-                  <div className="event-actions">
-                    <button className="btn-view" onClick={() => showEventDetails(event)}>
-                      👁️ View
-                    </button>
-                    <button className="btn-edit" onClick={() => handleEdit(event)}>
-                      ✏️ Edit
-                    </button>
-                    <button className="btn-delete" onClick={() => event._id && handleDelete(event._id)}>
-                      🗑️ Delete
-                    </button>
+
+                  <div className="event-card-body">
+                    <div className="event-card-meta-top">
+                      <span className="event-date-text">
+                        <Calendar size={13} />
+                        <span>{formattedDate}</span>
+                      </span>
+                      <span className="event-preacher-text">
+                        <User size={13} />
+                        <span>{event.preacher || "Pembicara"}</span>
+                      </span>
+                    </div>
+
+                    <h3 className="event-card-title">{event.title}</h3>
+                    <p className="event-card-desc">{event.description}</p>
+
+                    <div className="event-card-actions">
+                      <button
+                        type="button"
+                        className="btn-card-action btn-card-view"
+                        onClick={() => showEventDetails(event)}
+                        title="Lihat Rincian"
+                      >
+                        <Eye size={14} />
+                        <span>Detail</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-card-action btn-card-edit"
+                        onClick={() => handleEdit(event)}
+                        title="Edit Ibadah"
+                      >
+                        <Edit3 size={14} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-card-action btn-card-delete"
+                        onClick={() => event._id && handleDelete(event._id)}
+                        title="Hapus Ibadah"
+                      >
+                        <Trash2 size={14} />
+                        <span>Hapus</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
