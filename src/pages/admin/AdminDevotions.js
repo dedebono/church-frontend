@@ -6,25 +6,6 @@ import "react-calendar/dist/Calendar.css"
 import "./DevotionCalendar.css"
 import api from "../admin/api/API"
 import Swal from "sweetalert2"
-import {
-  BookOpen,
-  Calendar as CalendarIcon,
-  Clock,
-  Zap,
-  CheckCircle2,
-  RotateCw,
-  Search,
-  Trash2,
-  X,
-  Eye,
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  FileText,
-  Quote,
-  AlertCircle
-} from "lucide-react"
 
 function DevotionCalendar() {
   const [selectedDate, setSelectedDate] = useState(null)
@@ -38,11 +19,8 @@ function DevotionCalendar() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState(null)
   const [search, setSearch] = useState("")
-  const [modeFilter, setModeFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [detailDevotion, setDetailDevotion] = useState(null)
+  const pageSize = 10
 
   const devotionTemplates = [
     { value: "", label: "Select predefined template" },
@@ -156,14 +134,7 @@ function DevotionCalendar() {
 
     // Success UX + reset (message may be 'Queued for immediate send' or 'Devotion scheduled')
     const serverMsg = resp?.data?.message || "Devotion saved"
-    Swal.fire({
-      title: "Berhasil",
-      text: serverMsg,
-      icon: "success",
-      background: "#131318",
-      color: "#f8fafc",
-      confirmButtonColor: "#d4a24e",
-    })
+    Swal.fire("Success", serverMsg, "success")
     setFormData({ title: "", content: "", sendMode: "now", sendTime: "" })
     setSelectedTemplate("")
     setShowModal(false)
@@ -175,27 +146,15 @@ function DevotionCalendar() {
     } catch {}
   }
 
-  // ---- Open create modal helper
-  function handleOpenCreateModal() {
-    if (!selectedDate) {
-      setSelectedDate(new Date())
-    }
-    setShowModal(true)
-  }
-
   // ---- Delete devotion
   async function handleDelete(id) {
     const confirm = await Swal.fire({
-      title: "Hapus Renungan Ini?",
-      text: "Renungan ini akan dihapus secara permanen dari sistem.",
+      title: "Delete this devotion?",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ef4444",
-      cancelButtonColor: "#262632",
-      confirmButtonText: "Ya, Hapus",
-      cancelButtonText: "Batal",
-      background: "#131318",
-      color: "#f8fafc",
+      confirmButtonColor: "#dc2626",
+      confirmButtonText: "Delete",
     })
     if (!confirm.isConfirmed) return
 
@@ -203,28 +162,11 @@ function DevotionCalendar() {
     try {
       await api.delete(`/api/devotions/${id}`)
       setDevotions((prev) => prev.filter((d) => d._id !== id))
-      if (detailDevotion?._id === id) {
-        setDetailDevotion(null)
-      }
-      Swal.fire({
-        title: "Berhasil",
-        text: "Konten renungan telah dihapus.",
-        icon: "success",
-        background: "#131318",
-        color: "#f8fafc",
-        confirmButtonColor: "#d4a24e",
-      })
+      Swal.fire("Deleted", "Devotion removed successfully", "success")
     } catch (err) {
       console.error(err)
-      const msg = err?.response?.data?.message || err.message || "Gagal menghapus renungan"
-      Swal.fire({
-        title: "Error",
-        text: msg,
-        icon: "error",
-        background: "#131318",
-        color: "#f8fafc",
-        confirmButtonColor: "#d4a24e",
-      })
+      const msg = err?.response?.data?.message || err.message || "Failed to delete devotion"
+      Swal.fire("Error", msg, "error")
     } finally {
       setDeletingId(null)
     }
@@ -233,38 +175,19 @@ function DevotionCalendar() {
   // ---- Table filtering & pagination
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return devotions.filter((d) => {
-      // Search matching
-      if (q) {
-        const match = [d.title, d.content, d.sendMode, d._id]
-          .filter(Boolean)
-          .some((x) => String(x).toLowerCase().includes(q))
-        if (!match) return false
-      }
-
-      // Mode filter
-      if (modeFilter !== "all" && d.sendMode !== modeFilter) {
-        return false
-      }
-
-      // Status filter
-      let statusLabel = "Pending"
-      if (d.sendMode === "now") statusLabel = d.isSent ? "Sent" : "Queued"
-      else statusLabel = d.isSent ? "Sent" : "Pending"
-
-      if (statusFilter !== "all" && statusLabel !== statusFilter) {
-        return false
-      }
-
-      return true
-    })
-  }, [devotions, search, modeFilter, statusFilter])
+    if (!q) return devotions
+    return devotions.filter((d) =>
+      [d.title, d.content, d.sendMode, d._id]
+        .filter(Boolean)
+        .some((x) => String(x).toLowerCase().includes(q)),
+    )
+  }, [devotions, search])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const pageItems = useMemo(() => {
     const start = (page - 1) * pageSize
     return filtered.slice(start, start + pageSize)
-  }, [filtered, page, pageSize])
+  }, [filtered, page])
 
   useEffect(() => {
     setPage((p) => (p > totalPages ? totalPages : p))
@@ -285,294 +208,125 @@ function DevotionCalendar() {
         <div className="legend-item"><div className="legend-dot selected"></div><span>Selected</span></div>
       </div>
 
-      {/* Devotions Log Section */}
-      <div className="devotions-log-section">
-        {/* Header Toolbar */}
-        <div className="devotions-header-card">
-          <div className="devotions-header-info">
-            <div className="devotions-header-icon">
-              <BookOpen size={22} />
-            </div>
-            <div className="devotions-header-text">
-              <h3>Konten Renungan</h3>
-              <p>Kelola jadwal publikasi, pencarian, dan arsip renungan harian</p>
-            </div>
-          </div>
-
-          <div className="devotions-header-actions">
-            <div className="devotions-count-badge">
-              <FileText size={14} />
-              <span>{loading ? "Memuat..." : `${filtered.length} Renungan`}</span>
-            </div>
-            <button
-              onClick={fetchDevotions}
-              className="btn-devotions-refresh"
-              disabled={loading}
-              title="Refresh data renungan"
-            >
-              <RotateCw size={14} className={loading ? "animate-spin" : ""} />
-              <span>{loading ? "Memuat..." : "Refresh"}</span>
-            </button>
-            <button
-              onClick={handleOpenCreateModal}
-              className="btn-devotions-create"
-              title="Buat Renungan Baru"
-            >
-              <Plus size={15} />
-              <span>Buat Renungan</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Filter & Search Bar */}
-        <div className="devotions-filter-bar">
-          <div className="devotions-search-box">
-            <Search size={15} className="devotions-search-icon" />
+      {/* Devotions Log */}
+      <div className="devotions-log mt-8">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm text-gray-600">{loading ? "Loading…" : `${filtered.length} devotion(s)`}</div>
+          <div className="flex gap-2">
             <input
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value)
-                setPage(1)
-              }}
-              placeholder="Cari judul, konten, atau ID renungan..."
-              className="devotions-search-input"
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search title, content, or ID…"
+              className="w-64 px-3 py-2 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="devotions-search-clear"
-                title="Hapus pencarian"
-              >
-                <X size={14} />
-              </button>
-            )}
-          </div>
-
-          <div className="devotions-filter-options">
-            <select
-              value={modeFilter}
-              onChange={(e) => {
-                setModeFilter(e.target.value)
-                setPage(1)
-              }}
-              className="devotions-filter-select"
-              title="Filter Mode Pengiriman"
+            <button
+              onClick={fetchDevotions}
+              className="px-3 py-2 rounded-xl border text-sm hover:bg-gray-50"
+              disabled={loading}
+              title="Refresh"
             >
-              <option value="all">Semua Mode</option>
-              <option value="now">Immediate (Kirim Sekarang)</option>
-              <option value="later">Scheduled (Terjadwal)</option>
-            </select>
-
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value)
-                setPage(1)
-              }}
-              className="devotions-filter-select"
-              title="Filter Status"
-            >
-              <option value="all">Semua Status</option>
-              <option value="Sent">Sent (Terkirim)</option>
-              <option value="Queued">Queued (Antrean)</option>
-              <option value="Pending">Pending (Menunggu)</option>
-            </select>
-
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value))
-                setPage(1)
-              }}
-              className="devotions-filter-select"
-              title="Baris per halaman"
-            >
-              <option value={5}>5 baris</option>
-              <option value={10}>10 baris</option>
-              <option value={20}>20 baris</option>
-              <option value={50}>50 baris</option>
-            </select>
-
-            {(search || modeFilter !== "all" || statusFilter !== "all") && (
-              <button
-                onClick={() => {
-                  setSearch("")
-                  setModeFilter("all")
-                  setStatusFilter("all")
-                  setPage(1)
-                }}
-                className="btn-filter-clear"
-              >
-                Reset Filter
-              </button>
-            )}
+              {loading ? "Refreshing…" : "↻ Refresh"}
+            </button>
           </div>
         </div>
 
-        {/* Table Card */}
-        <div className="devotions-table-card">
-          {!loading && filtered.length === 0 ? (
-            <div className="devotions-empty-card">
-              <div className="devotions-empty-icon">
-                <BookOpen size={26} />
-              </div>
-              <h4 className="devotions-empty-title">Tidak Ada Renungan Ditemukan</h4>
-              <p className="devotions-empty-subtitle">
-                {search || modeFilter !== "all" || statusFilter !== "all"
-                  ? "Tidak ada data renungan yang sesuai dengan kriteria filter saat ini."
-                  : "Belum ada renungan yang tersimpan. Klik tombol \"Buat Renungan\" di atas untuk mulai membuat."}
-              </p>
-              {(search || modeFilter !== "all" || statusFilter !== "all") && (
-                <button
-                  onClick={() => {
-                    setSearch("")
-                    setModeFilter("all")
-                    setStatusFilter("all")
-                    setPage(1)
-                  }}
-                  className="btn-devotions-refresh mt-2"
-                >
-                  Bersihkan Filter
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="devotions-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: "42%" }}>Judul & Ringkasan</th>
-                    <th style={{ width: "16%" }}>Mode</th>
-                    <th style={{ width: "20%" }}>Waktu Kirim / Dibuat</th>
-                    <th style={{ width: "12%" }}>Status</th>
-                    <th style={{ width: "10%", textAlign: "right" }}>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pageItems.map((d) => {
-                    const when = d.sendMode === "later" ? d.sendDate : d.createdAt
-                    let statusLabel = "Pending"
-                    if (d.sendMode === "now") statusLabel = d.isSent ? "Sent" : "Queued"
-                    else statusLabel = d.isSent ? "Sent" : "Pending"
+        {!loading && filtered.length === 0 ? (
+          <div className="border rounded-2xl p-8 text-center text-gray-500">
+            <div className="text-4xl mb-2">📝</div>
+            <div className="font-medium">No devotions found</div>
+            <div className="text-sm">Try refreshing or clearing your search.</div>
+          </div>
+        ) : null}
 
-                    return (
-                      <tr key={d._id}>
-                        <td>
-                          <div className="devotion-title-wrap">
-                            <span className="devotion-title-text">{d.title || "Tanpa Judul"}</span>
-                            <div className="devotion-meta-row">
-                              <span className="devotion-id-badge">ID: {d._id}</span>
-                            </div>
-                            {d.content && (
-                              <p className="devotion-snippet-text">
-                                {d.content.slice(0, 110)}
-                                {d.content.length > 110 ? "..." : ""}
-                              </p>
-                            )}
-                          </div>
-                        </td>
-                        <td>
-                          {d.sendMode === "now" ? (
-                            <span className="badge-mode-immediate">
-                              <Zap size={12} />
-                              Immediate
-                            </span>
-                          ) : (
-                            <span className="badge-mode-scheduled">
-                              <Clock size={12} />
-                              Scheduled
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <div className="devotion-date-cell">
-                            <span className="devotion-date-primary">
-                              <CalendarIcon size={12} className="text-slate-400" />
-                              {formatDate(when)}
-                            </span>
-                            <span className="devotion-date-label">
-                              {d.sendMode === "later" ? "Jadwal Kirim" : "Dibuat / Terkirim"}
-                            </span>
-                          </div>
-                        </td>
-                        <td>
-                          {statusLabel === "Sent" ? (
-                            <span className="badge-status-sent">
-                              <CheckCircle2 size={12} />
-                              Sent
-                            </span>
-                          ) : statusLabel === "Queued" ? (
-                            <span className="badge-status-queued">
-                              <Clock size={12} />
-                              Queued
-                            </span>
-                          ) : (
-                            <span className="badge-status-pending">
-                              <Clock size={12} />
-                              Pending
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <div className="devotion-actions-group">
-                            <button
-                              onClick={() => setDetailDevotion(d)}
-                              className="btn-devotion-view"
-                              title="Lihat isi lengkap renungan"
-                            >
-                              <Eye size={13} />
-                              <span>Lihat</span>
-                            </button>
-                            <button
-                              onClick={() => handleDelete(d._id)}
-                              className="btn-devotion-delete"
-                              disabled={deletingId === d._id}
-                              title="Hapus renungan"
-                            >
-                              <Trash2 size={13} />
-                              <span>{deletingId === d._id ? "..." : "Hapus"}</span>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+        {filtered.length > 0 && (
+          <div className="overflow-x-auto border rounded-2xl">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="text-left px-4 py-3">Title</th>
+                  <th className="text-left px-4 py-3">Mode</th>
+                  <th className="text-left px-4 py-3">Send / Created</th>
+                  <th className="text-left px-4 py-3">Status</th>
+                  <th className="text-right px-4 py-3">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageItems.map((d) => {
+                  const when = d.sendMode === "later" ? d.sendDate : d.createdAt
+                  // Status: handle async push semantics gracefully
+                  let statusLabel = "Pending"
+                  if (d.sendMode === "now") statusLabel = d.isSent ? "Sent" : "Queued"
+                  else statusLabel = d.isSent ? "Sent" : "Pending"
 
-          {/* Pagination Footer */}
-          {filtered.length > 0 && (
-            <div className="devotions-pagination-bar">
-              <div className="devotions-pagination-info">
-                Menampilkan {Math.min((page - 1) * pageSize + 1, filtered.length)} -{" "}
-                {Math.min(page * pageSize, filtered.length)} dari {filtered.length} renungan
-              </div>
-              <div className="devotions-pagination-controls">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="btn-page-step"
-                >
-                  <ChevronLeft size={14} />
-                  Prev
-                </button>
-                <span className="devotions-page-counter">
-                  {page} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                  className="btn-page-step"
-                >
-                  Next
-                  <ChevronRight size={14} />
-                </button>
-              </div>
+                  return (
+                    <tr key={d._id} className="border-t">
+                      <td className="px-4 py-3 align-top">
+                        <div className="font-medium leading-5 break-words">{d.title}</div>
+                        <div className="text-xs text-gray-500 mt-1">ID: {d._id}</div>
+                      </td>
+                      <td className="px-4 py-3 align-top">
+                        <span
+                          className={`inline-flex px-2 py-1 rounded-lg text-xs ${
+                            d.sendMode === "now"
+                              ? "bg-green-50 text-green-700 border border-green-100"
+                              : "bg-amber-50 text-amber-700 border border-amber-100"
+                          }`}
+                        >
+                          {d.sendMode === "now" ? "Immediate" : "Scheduled"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 align-top whitespace-nowrap">{formatDate(when)}</td>
+                      <td className="px-4 py-3 align-top">
+                        <span
+                          className={`inline-flex px-2 py-1 rounded-lg text-xs ${
+                            statusLabel === "Sent"
+                              ? "bg-blue-50 text-blue-700 border border-blue-100"
+                              : statusLabel === "Queued"
+                              ? "bg-purple-50 text-purple-700 border border-purple-100"
+                              : "bg-gray-100 text-gray-700 border border-gray-200"
+                          }`}
+                        >
+                          {statusLabel}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 align-top text-right">
+                        <button
+                          onClick={() => handleDelete(d._id)}
+                          className="px-3 py-1.5 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                          disabled={deletingId === d._id}
+                        >
+                          {deletingId === d._id ? "Deleting…" : "Delete"}
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {filtered.length > pageSize && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-gray-500">Page {page} of {totalPages}</div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-3 py-2 rounded-xl border text-sm disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="px-3 py-2 rounded-xl border text-sm disabled:opacity-50"
+              >
+                Next
+              </button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
@@ -701,70 +455,6 @@ function DevotionCalendar() {
           </div>
         </div>
       )}
-
-      {/* Devotion Detail Modal */}
-      {detailDevotion && (
-        <div className="modal-overlay" onClick={() => setDetailDevotion(null)}>
-          <div className="modal-content modal-detail-container" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <div className="flex items-center gap-2">
-                <BookOpen size={20} className="text-amber-400" />
-                <h3>Pratinjau Renungan</h3>
-              </div>
-              <button
-                className="modal-close"
-                onClick={() => setDetailDevotion(null)}
-                aria-label="Tutup modal"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="modal-body space-y-4">
-              <div>
-                <h2 className="text-xl font-bold text-slate-100 mb-2">{detailDevotion.title || "Tanpa Judul"}</h2>
-                <div className="devotion-detail-badge-row">
-                  <span className="devotion-id-badge">ID: {detailDevotion._id}</span>
-                  {detailDevotion.sendMode === "now" ? (
-                    <span className="badge-mode-immediate">
-                      <Zap size={12} /> Immediate
-                    </span>
-                  ) : (
-                    <span className="badge-mode-scheduled">
-                      <Clock size={12} /> Scheduled ({formatDate(detailDevotion.sendDate)})
-                    </span>
-                  )}
-                  <span className="devotion-date-primary text-xs">
-                    <CalendarIcon size={12} className="text-slate-400 inline mr-1" />
-                    Dibuat: {formatDate(detailDevotion.createdAt)}
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="section-label mb-2 block font-semibold text-slate-300">Isi Lengkap Renungan</label>
-                <div className="devotion-detail-content-box">
-                  {detailDevotion.content || "Tidak ada isi konten."}
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-actions flex justify-between items-center">
-              <button
-                onClick={() => handleDelete(detailDevotion._id)}
-                className="btn-devotion-delete px-3 py-2"
-                disabled={deletingId === detailDevotion._id}
-              >
-                <Trash2 size={14} />
-                <span>Hapus Renungan Ini</span>
-              </button>
-              <button onClick={() => setDetailDevotion(null)} className="btn-secondary">
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -776,15 +466,8 @@ function formatDate(d) {
   try {
     const date = new Date(d)
     if (Number.isNaN(date.getTime())) return "—"
-    return date.toLocaleString("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+    return date.toLocaleString()
   } catch {
     return "—"
   }
 }
-

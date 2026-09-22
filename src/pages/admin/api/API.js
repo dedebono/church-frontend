@@ -17,19 +17,34 @@ const rawBackends =
     ? (prodBackends || devBackends || defaultApiUrl)
     : (devBackends || prodBackends || defaultApiUrl);
 
-// Always prefer relative URL '' so requests route through setupProxy (avoiding browser CORS blocks).
-// Remote endpoints are included as secondary fallbacks.
-let backends = [''];
-if (rawBackends) {
-  const configured = rawBackends
+// Resolve backends list based on environment
+const resolveBackends = () => {
+  const isBrowser = typeof window !== 'undefined';
+  const hostname = isBrowser ? window.location.hostname : '';
+  const isDevPreview = hostname.includes('run.app') || hostname === 'localhost' || hostname === '127.0.0.1';
+
+  // Remote production backend
+  const defaultRemote = 'https://server2.dedebono.uk';
+
+  const configuredList = (rawBackends || '')
     .split(',')
     .map((url) => url.trim().replace(/\/+$/, ''))
     .filter((url) => Boolean(url) && !url.includes('localhost:5000') && !url.includes('127.0.0.1:5000'));
-  backends = ['', ...configured];
-} else {
-  backends = ['', 'https://server2.dedebono.uk'];
-}
 
+  if (isDevPreview) {
+    // In dev container / AI Studio preview (run.app / localhost), requests route through setupProxy.js
+    // to bypass browser CORS limitations on run.app.
+    return ['', ...configuredList, defaultRemote].filter((v, i, a) => a.indexOf(v) === i);
+  }
+
+  // On production (e.g. https://mlbchurch.dedebono.uk), server2.dedebono.uk is directly
+  // accessible and explicitly permits mlbchurch.dedebono.uk in its CORS whitelist.
+  // The primary backend MUST be https://server2.dedebono.uk.
+  const primaryRemotes = configuredList.length > 0 ? configuredList : [defaultRemote];
+  return [...primaryRemotes, defaultRemote, ''].filter((v, i, a) => a.indexOf(v) === i);
+};
+
+let backends = resolveBackends();
 let activeBackendIndex = 0;
 
 
@@ -54,9 +69,37 @@ api.interceptors.request.use((config) => {
   return config;
 }, (error) => Promise.reject(error));
 
+// Helper to check for invalid HTML responses on API endpoints
+const isHtmlResponse = (response) => {
+  const contentType = response?.headers?.['content-type'] || '';
+  if (contentType.includes('text/html')) return true;
+  if (typeof response?.data === 'string') {
+    const trimmed = response.data.trim();
+    if (trimmed.startsWith('<!doctype') || trimmed.startsWith('<!DOCTYPE') || trimmed.startsWith('<html')) {
+      return true;
+    }
+  }
+  return false;
+};
+
 // ---- Response interceptor: fallback + 401 one-time replay
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If an API request received an HTML page (static host SPA rewrite of missing /api route),
+    // treat it as an invalid response and switch to remote backend
+    if (isHtmlResponse(response) && response.config?.url?.startsWith('/api') && activeBackendIndex < backends.length - 1) {
+      console.warn('[API] Received HTML instead of JSON for API route, switching to fallback backend...');
+      activeBackendIndex++;
+      api.defaults.baseURL = backends[activeBackendIndex];
+      const newConfig = {
+        ...response.config,
+        baseURL: backends[activeBackendIndex],
+        _switchedToFallback: true
+      };
+      return api.request(newConfig);
+    }
+    return response;
+  },
   async (error) => {
     const config = error.config || {};
     const rsp = error.response;
@@ -64,14 +107,13 @@ api.interceptors.response.use(
     const isServerError = rsp?.status >= 500;
     const isUnauthorized = rsp?.status === 401;
 
-    // 1) Switch to fallback on network/5xx (only from primary; avoid loops)
+    // 1) Switch to fallback on network/5xx (avoid loops)
     if ((isNetworkError || isServerError)
-      && activeBackendIndex === 0
-      && backends.length > 1
+      && activeBackendIndex < backends.length - 1
       && !config._switchedToFallback) {
 
-      console.warn('Primary backend failed, switching to fallback…');
-      activeBackendIndex = 1;
+      console.warn(`[API] Backend ${backends[activeBackendIndex]} failed, switching to ${backends[activeBackendIndex + 1]}…`);
+      activeBackendIndex++;
       api.defaults.baseURL = backends[activeBackendIndex];
 
       // mark and replay against fallback
@@ -110,16 +152,20 @@ api.interceptors.response.use(
   }
 );
 
+const ensureValidArray = (data, cacheKey, fallback) => {
+  if (Array.isArray(data)) {
+    if (data.length > 0) setCacheData(cacheKey, data);
+    return data;
+  }
+  return getCachedOrFallback(cacheKey, fallback);
+};
+
 //API SERMONS
 
 export const getSermons = async () => {
   try {
     const response = await api.get("/api/sermons");
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      setCacheData('sermons', response.data);
-      return response.data;
-    }
-    return response.data || getCachedOrFallback('sermons', initialSermons);
+    return ensureValidArray(response.data, 'sermons', initialSermons);
   } catch (error) {
     console.warn("Could not fetch live sermons, using cached/fallback data:", error?.message);
     return getCachedOrFallback('sermons', initialSermons);
@@ -183,11 +229,7 @@ export const deleteBroadcastMessage = async (id) => {
 export const getEvents = async () => {
   try {
     const response = await api.get("/api/events/");
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      setCacheData('events', response.data);
-      return response.data;
-    }
-    return response.data || getCachedOrFallback('events', initialEvents);
+    return ensureValidArray(response.data, 'events', initialEvents);
   } catch (error) {
     console.warn("Could not fetch live events, using cached/fallback data:", error?.message);
     return getCachedOrFallback('events', initialEvents);
@@ -230,11 +272,7 @@ export const deleteEvent = async (id) => {
 export const getGalleryPhotos = async () => {
   try {
     const response = await api.get("/api/gallery");
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      setCacheData('gallery', response.data);
-      return response.data;
-    }
-    return response.data || getCachedOrFallback('gallery', initialGallery);
+    return ensureValidArray(response.data, 'gallery', initialGallery);
   } catch (error) {
     console.warn("Could not fetch live gallery photos, using cached/fallback data:", error?.message);
     return getCachedOrFallback('gallery', initialGallery);
