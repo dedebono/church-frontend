@@ -1,5 +1,12 @@
 // API.js
 import axios from 'axios';
+import {
+  initialEvents,
+  initialSermons,
+  initialGallery,
+  getCachedOrFallback,
+  setCacheData
+} from './fallbackData';
 
 const devBackends = process.env.REACT_APP_DEV_BACKENDS;
 const prodBackends = process.env.REACT_APP_PROD_BACKENDS;
@@ -10,12 +17,17 @@ const rawBackends =
     ? (prodBackends || devBackends || defaultApiUrl)
     : (devBackends || prodBackends || defaultApiUrl);
 
-const backends = (rawBackends ? rawBackends.split(',') : [])
-  .map((url) => url.trim().replace(/\/+$/, ''))
-  .filter(Boolean);
-
-if (backends.length === 0) {
-  backends.push('https://server2.dedebono.uk');
+// Always prefer relative URL '' so requests route through setupProxy (avoiding browser CORS blocks).
+// Remote endpoints are included as secondary fallbacks.
+let backends = [''];
+if (rawBackends) {
+  const configured = rawBackends
+    .split(',')
+    .map((url) => url.trim().replace(/\/+$/, ''))
+    .filter((url) => Boolean(url) && !url.includes('localhost:5000') && !url.includes('127.0.0.1:5000'));
+  backends = ['', ...configured];
+} else {
+  backends = ['', 'https://server2.dedebono.uk'];
 }
 
 let activeBackendIndex = 0;
@@ -102,13 +114,17 @@ api.interceptors.response.use(
 
 export const getSermons = async () => {
   try {
-    const response = await api.get("/api/sermons")
-    return response.data
+    const response = await api.get("/api/sermons");
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      setCacheData('sermons', response.data);
+      return response.data;
+    }
+    return response.data || getCachedOrFallback('sermons', initialSermons);
   } catch (error) {
-    console.error("Error fetching sermons:", error)
-    throw error
+    console.warn("Could not fetch live sermons, using cached/fallback data:", error?.message);
+    return getCachedOrFallback('sermons', initialSermons);
   }
-}
+};
 
 export const createSermon = async (sermonData) => {
   try {
@@ -147,8 +163,8 @@ export const getBroadcastMessages = async () => {
     const response = await api.get("/api/broadcast-messages");
     return response.data;
   } catch (error) {
-    console.error("Error fetching broadcast messages:", error);
-    throw error;
+    console.warn("Could not fetch live broadcast messages:", error?.message);
+    return [];
   }
 };
 
@@ -166,13 +182,17 @@ export const deleteBroadcastMessage = async (id) => {
 //events API
 export const getEvents = async () => {
   try {
-    const response = await api.get("/api/events/")
-    return response.data
+    const response = await api.get("/api/events/");
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      setCacheData('events', response.data);
+      return response.data;
+    }
+    return response.data || getCachedOrFallback('events', initialEvents);
   } catch (error) {
-    console.error("Error fetching events:", error)
-    throw error
+    console.warn("Could not fetch live events, using cached/fallback data:", error?.message);
+    return getCachedOrFallback('events', initialEvents);
   }
-}
+};
 
 export const createEvent = async (eventData) => {
   try {
@@ -210,10 +230,14 @@ export const deleteEvent = async (id) => {
 export const getGalleryPhotos = async () => {
   try {
     const response = await api.get("/api/gallery");
-    return response.data;
+    if (Array.isArray(response.data) && response.data.length > 0) {
+      setCacheData('gallery', response.data);
+      return response.data;
+    }
+    return response.data || getCachedOrFallback('gallery', initialGallery);
   } catch (error) {
-    console.error("Error fetching gallery photos:", error);
-    throw error;
+    console.warn("Could not fetch live gallery photos, using cached/fallback data:", error?.message);
+    return getCachedOrFallback('gallery', initialGallery);
   }
 };
 

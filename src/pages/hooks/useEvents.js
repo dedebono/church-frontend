@@ -24,10 +24,9 @@ export const useEvents = (limit = null) => {
       setEvents(sortedEvents)
       setError(null)
     } catch (err) {
-      console.error("🚨 Fetch error:", err)
+      console.warn("Warning fetching events:", err?.message || err)
       const errorMessage = err.response?.data?.message || err.message || "Failed to fetch events"
       setError(errorMessage)
-      setEvents([]) // Set empty array on error
     } finally {
       setLoading(false)
     }

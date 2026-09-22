@@ -24,10 +24,9 @@ export const useGalleryPhotos = (limit = null) => {
       setGalleryPhotos(sortedGalleryPhotos)
       setError(null)
     } catch (err) {
-      console.error("🚨 Fetch error:", err)
+      console.warn("Warning fetching gallery photos:", err?.message || err)
       const errorMessage = err.response?.data?.message || err.message || "Failed to fetch GalleryPhotos"
       setError(errorMessage)
-      setGalleryPhotos([]) // Set empty array on error
     } finally {
       setLoading(false)
     }

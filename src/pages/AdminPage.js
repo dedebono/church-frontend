@@ -55,6 +55,39 @@ const AdminPage = () => {
   const [showBirthdayReminder, setShowBirthdayReminder] = useState(false)
   const navigate = useNavigate()
 
+  const menuGroups = [
+    {
+      header: "Admin Jemaat",
+      items: [
+        ["dashboard", "Dashboard", <LayoutDashboard size={18} />],
+        ["viewFamily", "Admin Keluarga", <Users size={18} />],
+        ["viewMember", "Admin Jemaat", <Users size={18} />],
+        ["uploadCSV", "Unggah CSV", <Upload size={18} />],
+        ["adminMembers", "Semua Jemaat", <ClipboardList size={18} />],
+      ],
+    },
+    {
+      header: "Komunitas",
+      items: [
+        ["manageGroups", "Admin Komunitas", <Users size={18} />],
+        ["adminMessages", "Pesan Komunitas", <MessageSquare size={18} />],
+        ["broadcastMessagesAdmin", "Broadcast Komunitas", <Radio size={18} />]
+      ],
+    },
+    {
+      header: "Sekretariat",
+      items: [
+        ["adminKonten", "Atur Ibadah", <Mic2 size={18} />],
+        ["eventsAdmin", "Atur Acara", <Calendar size={18} />],
+        ["adminAttendance", "Kehadiran Jemaat", <ClipboardList size={18} />],
+        ["adminDevotions", "Konten Renungan", <FileText size={18} />],
+        ["galleryAdmin", "Upload Foto", <ImageIcon size={18} />],
+        ["serviceRequest", "Permintaan Pelayanan", <Mail size={18} />],
+        ["ManageCertificates", "Sertifikat", <Award size={18} />]
+      ],
+    },
+  ];
+
   // Derive breadcrumb info
   const getCurrentTabInfo = () => {
     for (const group of menuGroups) {
@@ -112,39 +145,6 @@ const AdminPage = () => {
       default: return <div>Select a tab</div>
     }
   }
-
-  const menuGroups = [
-    {
-      header: "Admin Jemaat",
-      items: [
-        ["dashboard", "Dashboard", <LayoutDashboard size={18} />],
-        ["viewFamily", "Admin Keluarga", <Users size={18} />],
-        ["viewMember", "Admin Jemaat", <Users size={18} />],
-        ["uploadCSV", "Unggah CSV", <Upload size={18} />],
-        ["adminMembers", "Semua Jemaat", <ClipboardList size={18} />],
-      ],
-    },
-    {
-      header: "Komunitas",
-      items: [
-        ["manageGroups", "Admin Komunitas", <Users size={18} />],
-        ["adminMessages", "Pesan Komunitas", <MessageSquare size={18} />],
-        ["broadcastMessagesAdmin", "Broadcast Komunitas", <Radio size={18} />]
-      ],
-    },
-    {
-      header: "Sekretariat",
-      items: [
-        ["adminKonten", "Atur Ibadah", <Mic2 size={18} />],
-        ["eventsAdmin", "Atur Acara", <Calendar size={18} />],
-        ["adminAttendance", "Kehadiran Jemaat", <ClipboardList size={18} />],
-        ["adminDevotions", "Konten Renungan", <FileText size={18} />],
-        ["galleryAdmin", "Upload Foto", <ImageIcon size={18} />],
-        ["serviceRequest", "Permintaan Pelayanan", <Mail size={18} />],
-        ["ManageCertificates", "Sertifikat", <Award size={18} />]
-      ],
-    },
-  ]
 
   const toggleGroup = (groupHeader) => {
     setOpenGroups(prev => ({

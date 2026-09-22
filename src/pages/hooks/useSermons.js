@@ -24,10 +24,9 @@ export const useSermons = (limit = null) => {
       setSermons(sortedSermons)
       setError(null)
     } catch (err) {
-      console.error("🚨 Fetch error:", err)
+      console.warn("Warning fetching sermons:", err?.message || err)
       const errorMessage = err.response?.data?.message || err.message || "Failed to fetch sermons"
       setError(errorMessage)
-      setSermons([]) // Set empty array on error
     } finally {
       setLoading(false)
     }
