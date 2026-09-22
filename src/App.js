@@ -10,33 +10,37 @@ import FinanceAdmin from './pages/FinanceDashboard';
 import ProtectedRoute from './pages/ProtectedRoute';
 import BirthdayReminderTest from './components/BirthdayReminderTest';
 import { SocketProvider } from './socket/SocketContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
-    <SocketProvider>
-    <Router>
-      <Routes> {/* Use Routes instead of Switch */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/login" element={<AdminLogin />} />
-        <Route path="/reset-password/:type/:resetToken" element={<ResetPasswordPage />} />
-        <Route path="/admin" element={
-        <ProtectedRoute allowedRoles={['regular_admin']}>
-        <AdminPage />
-        </ProtectedRoute>}/>
-        <Route path="/form" element={<FormulirJemaat/>}/>
-        <Route
-          path="/finance"
-          element={
-            <ProtectedRoute allowedRoles={['finance_admin']}>
-              <FinanceAdmin />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/test-birthday" element={<BirthdayReminderTest />} />
-      </Routes>
-    </Router>
-    </SocketProvider>
+    <ThemeProvider>
+      <SocketProvider>
+        <Router>
+          <Routes> {/* Use Routes instead of Switch */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegistrationForm />} />
+            <Route path="/login" element={<AdminLogin />} />
+            <Route path="/reset-password/:type/:resetToken" element={<ResetPasswordPage />} />
+            <Route path="/admin" element={
+              <ProtectedRoute allowedRoles={['regular_admin']}>
+                <AdminPage />
+              </ProtectedRoute>
+            }/>
+            <Route path="/form" element={<FormulirJemaat/>}/>
+            <Route
+              path="/finance"
+              element={
+                <ProtectedRoute allowedRoles={['finance_admin']}>
+                  <FinanceAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/test-birthday" element={<BirthdayReminderTest />} />
+          </Routes>
+        </Router>
+      </SocketProvider>
+    </ThemeProvider>
   );
 }
 

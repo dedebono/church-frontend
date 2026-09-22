@@ -197,15 +197,36 @@
   width: 100%;
 }
 
+  .home .nav-desktop-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .home .mobile-nav-theme-item {
+    display: none;
+    padding-top: 8px;
+  }
+
   .home .mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: #f4f4f6;
-  cursor: pointer;
-}
+    display: none;
+    background: none;
+    border: none;
+    color: #f4f4f6;
+    cursor: pointer;
+  }
 
 @media (max-width: 768px) {
+  .home .mobile-nav-theme-item {
+    display: block;
+    border-bottom: none !important;
+  }
+
+  .home .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .home .nav-content {
     position: relative;
   }
@@ -1350,3 +1371,83 @@
     display: none;
   }
 }
+
+/* ===================================== */
+/* LIGHT THEME FOR HOMEPAGE             */
+/* ===================================== */
+[data-theme="light"] .home,
+body.light-theme .home {
+  --color-primary: #b8860b;
+  --color-secondary: #b8860b;
+  --color-dark: #0f172a;
+  --color-light-text: #475569;
+  --color-background-light: #f8fafc;
+  --color-background-dark: #f1f5f9;
+  --color-border: rgba(0, 0, 0, 0.09);
+  background: var(--color-background-light);
+  color: #0f172a;
+}
+
+[data-theme="light"] .home .main-nav,
+body.light-theme .home .main-nav {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .home .logo .logo-link,
+body.light-theme .home .logo .logo-link {
+  color: #0f172a;
+}
+
+[data-theme="light"] .home .nav-menu a,
+body.light-theme .home .nav-menu a {
+  color: #334155;
+}
+
+[data-theme="light"] .home .nav-menu a:hover,
+body.light-theme .home .nav-menu a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="light"] .home .mobile-menu-toggle,
+body.light-theme .home .mobile-menu-toggle {
+  color: #0f172a;
+}
+
+[data-theme="light"] .home h1,
+[data-theme="light"] .home h2,
+[data-theme="light"] .home h3,
+[data-theme="light"] .home h4,
+[data-theme="light"] .home h5,
+[data-theme="light"] .home h6,
+body.light-theme .home h1,
+body.light-theme .home h2,
+body.light-theme .home h3,
+body.light-theme .home h4,
+body.light-theme .home h5,
+body.light-theme .home h6 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .home .sermons-section,
+[data-theme="light"] .home .events-section,
+[data-theme="light"] .home .gallery-section,
+[data-theme="light"] .home .about-section,
+body.light-theme .home .sermons-section,
+body.light-theme .home .events-section,
+body.light-theme .home .gallery-section,
+body.light-theme .home .about-section {
+  background: #ffffff;
+}
+
+[data-theme="light"] .home .sermon-card,
+[data-theme="light"] .home .event-card,
+[data-theme="light"] .home .gallery-item,
+body.light-theme .home .sermon-card,
+body.light-theme .home .event-card,
+body.light-theme .home .gallery-item {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+

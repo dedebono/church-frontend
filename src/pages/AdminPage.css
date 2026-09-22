@@ -101,7 +101,7 @@
   border-radius: 10px;
   background: transparent;
   border: none;
-  color: #c9c9d1;
+  color: var(--text-muted, #c9c9d1);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -112,7 +112,13 @@
 
 .nav-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  color: var(--text-main, #fff);
+}
+
+[data-theme="light"] .nav-item:hover,
+body.light-theme .nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-main, #0f172a);
 }
 
 .nav-item.active {
@@ -125,9 +131,19 @@
 .sidebar-bottom {
   margin-top: auto;
   flex-shrink: 0;
-  padding: 16px 24px;
+  padding: 16px 20px;
   border-top: 1px solid var(--border);
   background: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="light"] .sidebar-bottom,
+body.light-theme .sidebar-bottom {
+  background: var(--surface-2, #f8fafc);
+  border-top-color: var(--border);
+}
+
+.theme-toggle-sidebar-box {
+  margin-bottom: 12px;
 }
 
 .bottom-header {
@@ -136,7 +152,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-muted);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .bottom-description {
@@ -168,16 +184,28 @@
   background: rgba(212, 162, 78, 0.22);
 }
 
+[data-theme="light"] .birthday-reminder-btn,
+body.light-theme .birthday-reminder-btn {
+  background: rgba(184, 134, 11, 0.1);
+  color: #b8860b;
+  border-color: rgba(184, 134, 11, 0.25);
+}
+
+[data-theme="light"] .birthday-reminder-btn:hover,
+body.light-theme .birthday-reminder-btn:hover {
+  background: rgba(184, 134, 11, 0.18);
+}
+
 .logout-btn {
   background-color: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  color: var(--text-main, #fff);
   border: 1px solid var(--border);
   padding: 10px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -185,10 +213,17 @@
   gap: 8px;
 }
 
+[data-theme="light"] .logout-btn,
+body.light-theme .logout-btn {
+  background-color: var(--surface-2, #f1f5f9);
+  color: var(--text-main, #0f172a);
+  border-color: var(--border);
+}
+
 .logout-btn:hover {
-  background-color: rgba(248, 113, 113, 0.15);
-  border-color: rgba(248, 113, 113, 0.4);
-  color: var(--danger);
+  background-color: rgba(248, 113, 113, 0.15) !important;
+  border-color: rgba(248, 113, 113, 0.4) !important;
+  color: var(--danger) !important;
 }
 
 /* Mobile Overlay */
@@ -249,6 +284,56 @@
   overflow: hidden;
 }
 
+/* Admin Top Bar */
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  min-height: 58px;
+  gap: 16px;
+  z-index: 20;
+  box-sizing: border-box;
+}
+
+.admin-topbar-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.breadcrumb-section {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.breadcrumb-separator {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.breadcrumb-current {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.admin-topbar .toggle-button {
+  display: none;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 13px;
+}
+
 .admin-main {
   flex: 1;
   padding: 32px;
@@ -288,11 +373,47 @@
     width: 100%;
   }
 
-  .toggle-button {
-    display: flex;
+  .admin-topbar {
+    padding: 10px 16px;
+  }
+
+  .admin-topbar .toggle-button {
+    display: inline-flex;
   }
 
   .admin-main {
     padding: 16px;
   }
+}
+
+/* Light theme overrides for sidebar elements */
+[data-theme="light"] .admin-sidebar-desktop,
+body.light-theme .admin-sidebar-desktop {
+  background: #ffffff;
+  color: #0f172a;
+  border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .admin-sidebar-overlay .admin-sidebar,
+body.light-theme .admin-sidebar-overlay .admin-sidebar {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-sidebar-overlay .close-btn,
+body.light-theme .admin-sidebar-overlay .close-btn {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-sidebar-desktop .sidebar-logo,
+[data-theme="light"] .admin-sidebar-overlay .sidebar-logo,
+body.light-theme .admin-sidebar-desktop .sidebar-logo,
+body.light-theme .admin-sidebar-overlay .sidebar-logo {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .logo-text,
+body.light-theme .logo-text {
+  color: #0f172a;
 }

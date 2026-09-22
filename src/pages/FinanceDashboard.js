@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom'; // Add this import
+import ThemeToggle from '../components/ThemeToggle';
 
 const FinanceDashboard = () => {
   const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
@@ -277,8 +278,9 @@ const FinanceDashboard = () => {
       {error && <p className="error">{error}</p>}
       {loading && <p>Loading...</p>}
 
-      {/* Add logout button at the top */}
-      <div className="logout-container">
+      {/* Add logout button and theme toggle at the top */}
+      <div className="logout-container flex items-center justify-between gap-3 mb-4">
+        <ThemeToggle variant="pill" id="finance-theme-toggle" />
         <button onClick={handleLogout} className="logout-button">
           Logout
         </button>

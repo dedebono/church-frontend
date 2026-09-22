@@ -14,6 +14,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import ChurchInfoCard from './ChurchInfoCard';
 import FooterPage from './footerPage'; // Changed to uppercase 'FooterPage'
+import ThemeToggle from '../components/ThemeToggle';
 
 const HomePage = () => {
   // Use a single state for the YouTube modal
@@ -132,11 +133,18 @@ const HomePage = () => {
               <li>
                 <a href="#about" onClick={closeMobileMenu}>Tentang</a>
               </li>
+              <li className="mobile-nav-theme-item">
+                <ThemeToggle variant="segmented" id="home-mobile-theme-toggle" />
+              </li>
             </ul>
-            <button className="mobile-menu-toggle"
-              onClick={toggleMobileMenu}>
-              <Menu size={24} />
-            </button>
+            <div className="nav-desktop-actions">
+              <ThemeToggle variant="compact" id="home-header-theme-toggle" />
+              <button className="mobile-menu-toggle"
+                onClick={toggleMobileMenu}
+                aria-label="Buka Menu Navigasi">
+                <Menu size={24} />
+              </button>
+            </div>
           </div>
         </nav>
       </header>

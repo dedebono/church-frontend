@@ -42,6 +42,7 @@ import ManageCertificates from "./admin/ManageCertificates"
 import BroadcastMessagesAdmin from "./admin/BroadcastAdmin"
 import MessageAdmin from "./admin/AdminMessages"
 import AdminBirthdayReminder from "../components/AdminBirthdayReminder"
+import ThemeToggle from "../components/ThemeToggle"
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -53,6 +54,19 @@ const AdminPage = () => {
   });
   const [showBirthdayReminder, setShowBirthdayReminder] = useState(false)
   const navigate = useNavigate()
+
+  // Derive breadcrumb info
+  const getCurrentTabInfo = () => {
+    for (const group of menuGroups) {
+      for (const [tab, label] of group.items) {
+        if (tab === activeTab) {
+          return { group: group.header, label };
+        }
+      }
+    }
+    return { group: "Admin", label: "Dashboard" };
+  };
+  const currentTabInfo = getCurrentTabInfo();
 
   // Check if birthday reminder should be shown on component mount
   useEffect(() => {
@@ -196,7 +210,11 @@ const AdminPage = () => {
           </nav>
 
           <div className="sidebar-bottom">
-            <div className="bottom-header">SISTEM ADMIN</div>
+            <div className="bottom-header">TEMA TAMPILAN</div>
+            <div className="theme-toggle-sidebar-box">
+              <ThemeToggle variant="segmented" id="admin-mobile-theme-toggle" />
+            </div>
+            <div className="bottom-header mt-3">SISTEM ADMIN</div>
             <button className="birthday-reminder-btn" onClick={handleShowBirthdayReminder}>
               <Cake size={16} /> Ulang Tahun
             </button>
@@ -240,7 +258,11 @@ const AdminPage = () => {
         </nav>
 
         <div className="sidebar-bottom">
-          <div className="bottom-header">SISTEM ADMIN</div>
+          <div className="bottom-header">TEMA TAMPILAN</div>
+          <div className="theme-toggle-sidebar-box">
+            <ThemeToggle variant="segmented" id="admin-desktop-theme-toggle" />
+          </div>
+          <div className="bottom-header mt-3">SISTEM ADMIN</div>
           <button className="birthday-reminder-btn" onClick={handleShowBirthdayReminder}>
             <Cake size={16} /> Ulang Tahun
           </button>
@@ -251,9 +273,19 @@ const AdminPage = () => {
 
       {/* Main Content */}
       <div className="admin-content">
-        <button className="toggle-button" onClick={() => setSidebarOpen(true)}>
-          <Menu size={20} /> Open Menu
-        </button>
+        <header className="admin-topbar" id="admin-topbar">
+          <button className="toggle-button" onClick={() => setSidebarOpen(true)} id="btn-open-sidebar">
+            <Menu size={18} /> Menu
+          </button>
+          <div className="admin-topbar-breadcrumb">
+            <span className="breadcrumb-section">{currentTabInfo.group}</span>
+            <span className="breadcrumb-separator">/</span>
+            <span className="breadcrumb-current">{currentTabInfo.label}</span>
+          </div>
+          <div className="admin-topbar-actions">
+            <ThemeToggle variant="compact" id="admin-topbar-theme-toggle" />
+          </div>
+        </header>
         <div className="admin-main">{renderContent()}</div>
       </div>
     </div>
