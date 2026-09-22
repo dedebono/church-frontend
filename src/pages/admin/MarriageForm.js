@@ -3,6 +3,7 @@ import api from "./api/API"
 import Swal from "sweetalert2"
 import "./marriageForm.css"
 import { HeartHandshake, Heart, CheckCircle, FileText, Printer, Trash2 } from "lucide-react";
+import CertificatePrintModal from "./CertificatePrintModal";
 
 function MarriageForm() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ function MarriageForm() {
   const [resultsWife, setResultsWife] = useState([])
   const [records, setRecords] = useState([])
   const [loading, setLoading] = useState(false)
+  const [selectedRecordForPrint, setSelectedRecordForPrint] = useState(null)
 
   useEffect(() => {
     fetchServices()
@@ -143,34 +145,7 @@ function MarriageForm() {
   }
 
   const handlePrint = (svc) => {
-    const husband = svc.husband?.fullName || "Suami"
-    const wife = svc.wife?.fullName || "Istri"
-    const date = new Date(svc.date).toLocaleDateString("id-ID", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-    const content = `
-      <html><head><title>Sertifikat Pernikahan</title></head>
-      <body style="font-family: sans-serif; text-align: center;">
-        <h1>💍 Sertifikat Pernikahan</h1>
-        <p>Menyatakan bahwa:</p>
-        <h2>${husband} ❤️ ${wife}</h2>
-        <p>Telah menikah pada:</p>
-        <h3>${date}</h3>
-        <p>No. Sertifikat: ${svc.certificateNumber}</p>
-        <p>Tempat: ${svc.placeOfMarriage}</p>
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() { window.close(); }
-          }
-        </script>
-      </body></html>
-    `
-    const win = window.open("", "_blank")
-    win.document.write(content)
-    win.document.close()
+    setSelectedRecordForPrint(svc)
   }
 
   return (
@@ -271,6 +246,15 @@ function MarriageForm() {
           </div>
         ))}
       </div>
+
+      {selectedRecordForPrint && (
+        <CertificatePrintModal
+          isOpen={Boolean(selectedRecordForPrint)}
+          onClose={() => setSelectedRecordForPrint(null)}
+          type="marriage"
+          record={selectedRecordForPrint}
+        />
+      )}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import api from "./api/API"
 import Swal from "sweetalert2"
 import "./ChildForm.css"
+import CertificatePrintModal from "./CertificatePrintModal"
 
 function ChildForm() {
   const [formData, setFormData] = useState({
@@ -28,6 +29,7 @@ function ChildForm() {
 
   const [records, setRecords] = useState([])
   const [loading, setLoading] = useState(false)
+  const [selectedRecordForPrint, setSelectedRecordForPrint] = useState(null)
 
   useEffect(() => {
     fetchServices()
@@ -171,52 +173,7 @@ function ChildForm() {
   }
 
   const handlePrint = (svc) => {
-    const memberName = svc.member?.fullName || "Anak"
-    const date = new Date(svc.date).toLocaleDateString("id-ID", {
-      weekday:"long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-
-    const dateonly = new Date(svc.date).toLocaleDateString("id-ID", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-
-    const dateofbirth = new Date(svc.dateofbirth).toLocaleDateString("id-ID", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-
-
-    const content = `
-      <html><head><title>Sertifikat Penyerahan Anak</title></head>
-
-        <p>${svc.certificateNumber}</p>
-        <p>${memberName}</p>
-        <p>${svc.gender}</p>
-        <p>${svc.placeofbirth},${dateofbirth}</p>
-        <p>${svc.fatherName || "-"}</p>
-        <p>${svc.motherName || "-"}</p>
-        <p>${date}</p>
-        <p>${svc.place}</p>
-        <p>${svc.pastorName}</p>
-        <p>Balikpapan, ${dateonly}</p>
-        <p>Pdt. Ronny Runtukahu S.E., M.Th.</p>
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() { window.close(); }
-          }
-        </script>
-      </body></html>
-    `
-    const win = window.open("", "_blank")
-    win.document.write(content)
-    win.document.close()
+    setSelectedRecordForPrint(svc)
   }
 
   return (
@@ -352,6 +309,15 @@ function ChildForm() {
           </div>
         ))}
       </div>
+
+      {selectedRecordForPrint && (
+        <CertificatePrintModal
+          isOpen={Boolean(selectedRecordForPrint)}
+          onClose={() => setSelectedRecordForPrint(null)}
+          type="child"
+          record={selectedRecordForPrint}
+        />
+      )}
     </div>
   )
 }

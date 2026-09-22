@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Award, Droplets, Heart, Baby } from "lucide-react";
+import { Award, Droplets, Heart, Baby, Printer } from "lucide-react";
 import BaptismForm from "./sertificate";
 import MarriageForm from "./MarriageForm";
 import ChildForm from "./ChildForm";
+import CertificatePrintModal from "./CertificatePrintModal";
 import "./ManageCertificates.css";
 
 const ManageCertificates = () => {
   const [type, setType] = useState("baptism");
+  const [sampleModalOpen, setSampleModalOpen] = useState(false);
 
   const certificateTypes = [
     { id: "baptism", label: "Baptisan", icon: Droplets, desc: "Penerbitan & cetak sertifikat baptisan kudus" },
@@ -52,8 +54,19 @@ const ManageCertificates = () => {
 
       {/* Active Form Indicator Bar */}
       <div className="cert-active-indicator">
-        <span className="cert-active-dot"></span>
-        <span className="cert-active-text">{currentTypeInfo?.desc}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <span className="cert-active-dot"></span>
+          <span className="cert-active-text">{currentTypeInfo?.desc}</span>
+        </div>
+        <button
+          type="button"
+          className="btn-cert-sample-trigger"
+          onClick={() => setSampleModalOpen(true)}
+          title={`Lihat & cetak sampel layout sertifikat ${currentTypeInfo?.label}`}
+        >
+          <Printer size={14} />
+          <span>Cetak Sampel {currentTypeInfo?.label}</span>
+        </button>
       </div>
 
       {/* Child Forms */}
@@ -62,6 +75,15 @@ const ManageCertificates = () => {
         {type === "marriage" && <MarriageForm />}
         {type === "child" && <ChildForm />}
       </div>
+
+      {sampleModalOpen && (
+        <CertificatePrintModal
+          isOpen={sampleModalOpen}
+          onClose={() => setSampleModalOpen(false)}
+          type={type}
+          record={{}}
+        />
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import api from "./api/API"
 import Swal from "sweetalert2"
 import "./sertificate.css"
 import { Award, CheckCircle, FileText, Printer, Trash2 } from "lucide-react";
+import CertificatePrintModal from "./CertificatePrintModal";
 
 
 function BaptismSertificate() {
@@ -30,6 +31,7 @@ function BaptismSertificate() {
     pastorname: ""
   })
   const [loading, setLoading] = useState(false)
+  const [selectedRecordForPrint, setSelectedRecordForPrint] = useState(null)
 
   useEffect(() => {
     fetchServices()
@@ -179,55 +181,7 @@ function BaptismSertificate() {
   }
 
   const handlePrint = (svc) => {
-    const memberName = svc.member?.name || svc.member?.fullName || "N/A"
-    const date = new Date(svc.date).toLocaleDateString("id-ID", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-
-    const content = `
-      <html>
-      <head>
-        <title>Sertifikat Baptisan</title>
-        <style>
-        body {
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        }
-
-        .nosertificate {
-        font-weight:700;
-        margin-top:345px
-        }
-
-        .membername {
-        margin-top:113px;
-        color:blue;
-        }
-
-        p{
-        margin:0;
-        }
-
-        </style>
-      </head>
-      <body>
-        <p class="nosertificate">${svc.certificateNumber}</p>
-        <p class="membername">${memberName}</p>
-        <p>${date}</p>
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() { window.close(); }
-          }
-        </script>
-      </body></html>
-    `
-    const printWindow = window.open("", "_blank")
-    printWindow.document.write(content)
-    printWindow.document.close()
+    setSelectedRecordForPrint(svc)
   }
 
   return (
@@ -434,6 +388,15 @@ function BaptismSertificate() {
           </div>
         )}
       </div>
+
+      {selectedRecordForPrint && (
+        <CertificatePrintModal
+          isOpen={Boolean(selectedRecordForPrint)}
+          onClose={() => setSelectedRecordForPrint(null)}
+          type="baptism"
+          record={selectedRecordForPrint}
+        />
+      )}
     </div>
   )
 }

@@ -97,13 +97,36 @@
   margin: 1.25rem 0 1.5rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 0.75rem;
   padding: 0.65rem 1rem;
   border-radius: 10px;
   background: rgba(212, 162, 78, 0.05);
   border: 1px solid rgba(212, 162, 78, 0.15);
   font-size: 0.82rem;
   color: #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.btn-cert-sample-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(212, 162, 78, 0.15);
+  color: var(--accent, #d4a24e);
+  border: 1px solid rgba(212, 162, 78, 0.3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cert-sample-trigger:hover {
+  background: var(--accent, #d4a24e);
+  color: #1a1204;
+  transform: translateY(-1px);
 }
 
 .cert-active-dot {

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 250" width="100%" height="100%">
+  <!-- MAKING LIFE BETTER CHURCH OFFICIAL LOGO -->
+  <!-- Hand forming left lobe of heart in Royal Blue -->
+  <g fill="#00188f">
+    <!-- Main Heart Silhouette Outer Contour -->
+    <path d="M120,208 C115,202 32,146 32,86 C32,50 58,32 90,32 C103,32 113,38 120,46 C127,38 137,32 150,32 C182,32 208,50 208,86 C208,146 125,202 120,208 Z" />
+  </g>
+
+  <!-- Golden Latin Cross situated in right cavity of the heart -->
+  <g fill="#b98d1d">
+    <!-- Vertical Cross Beam -->
+    <rect x="138" y="52" width="14" height="66" rx="1.5" />
+    <!-- Horizontal Cross Beam -->
+    <rect x="120" y="68" width="50" height="13.5" rx="1.5" />
+  </g>
+
+  <!-- Negative space cutout defining the cupped hand on the left lobe -->
+  <g fill="#ffffff">
+    <!-- Inner heart hollow / hand contour -->
+    <path d="M120,52 C116,42 106,38 92,38 C65,38 42,54 42,86 C42,132 108,184 120,196 C123,193 148,168 168,142 C162,140 155,134 153,124 C148,124 142,120 140,112 C135,112 130,108 128,100 L128,86 C124,84 121,80 120,74 C117,66 118,58 120,52 Z" />
+  </g>
+
+  <!-- Blue Hand Palm and Fingers inside the white hollow -->
+  <g fill="#00188f">
+    <!-- Palm reaching up -->
+    <path d="M120,196 C110,186 52,138 52,90 C52,66 68,50 88,50 C94,50 100,53 104,58 C100,64 94,74 92,86 C89,102 96,118 106,132 C97,125 87,114 82,102 C79,94 80,84 84,76 C76,82 72,92 72,104 C72,126 94,156 120,182 Z" />
+    <!-- Finger 1 (Index) -->
+    <path d="M104,58 C102,68 98,82 96,96 C102,86 108,74 112,64 C110,61 107,59 104,58 Z" />
+    <!-- Finger 2 (Middle) -->
+    <path d="M112,68 C110,76 106,88 104,98 C110,90 114,80 118,72 Z" />
+  </g>
+
+  <!-- Text: MAKING LIFE BETTER CHURCH -->
+  <text
+    x="120"
+    y="238"
+    text-anchor="middle"
+    fill="#00188f"
+    font-size="13.5"
+    font-weight="800"
+    letter-spacing="0.9"
+    font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif"
+  >MAKING LIFE BETTER CHURCH</text>
+</svg>
