@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
+import api from './api/API';
 
 const DownloadBirthdayIcs = () => {
   const handleDownload = () => {
     // Make an API call to the backend to download the ICS file
-    axios.get('http://localhost:5000/api/download-birthday-ics', { responseType: 'blob' })
+    api.get('/api/download-birthday-ics', { responseType: 'blob' })
       .then((response) => {
         // Create a URL for the blob and trigger the download
         const url = window.URL.createObjectURL(new Blob([response.data]));

@@ -27,6 +27,43 @@ const setToken = (token) => {
   localStorage.setItem('adminToken', token);
 };
 
+// Resolve the correct socket server origin, ensuring we never try to connect to localhost:5000 on production
+const resolveSocketOrigin = () => {
+  // 1. Explicit socket URL if configured
+  const explicit = process.env.REACT_APP_SOCKET_URL;
+  if (explicit && !explicit.includes('localhost:5000') && !explicit.includes('127.0.0.1:5000')) {
+    return explicit.trim().replace(/\/+$/, '');
+  }
+
+  // 2. Production or dev backends
+  const backendsStr =
+    process.env.NODE_ENV === 'production'
+      ? (process.env.REACT_APP_PROD_BACKENDS || process.env.REACT_APP_DEV_BACKENDS)
+      : (process.env.REACT_APP_DEV_BACKENDS || process.env.REACT_APP_PROD_BACKENDS);
+
+  if (backendsStr) {
+    const list = backendsStr
+      .split(',')
+      .map((s) => s.trim().replace(/\/+$/, ''))
+      .filter((s) => Boolean(s) && !s.includes('localhost:5000') && !s.includes('127.0.0.1:5000'));
+    if (list.length > 0) {
+      return list[0];
+    }
+  }
+
+  // 3. API URL if valid remote URL (never localhost:5000)
+  const apiUrl = process.env.REACT_APP_API_URL;
+  if (apiUrl && !apiUrl.includes('localhost:5000') && !apiUrl.includes('127.0.0.1:5000')) {
+    try {
+      const u = new URL(apiUrl, typeof window !== 'undefined' ? window.location.origin : 'http://localhost');
+      return `${u.protocol}//${u.host}`;
+    } catch {}
+  }
+
+  // 4. Default to live remote backend server
+  return 'https://server2.dedebono.uk';
+};
+
 export function SocketProvider({ children }) {
   const socketRef = useRef(null);
   const [status, setStatus] = useState('disconnected');
@@ -34,9 +71,7 @@ export function SocketProvider({ children }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const raw = (api?.defaults?.baseURL) || process.env.REACT_APP_API_URL || window.location.origin;
-    const u = new URL(raw, window.location.origin);
-    const ORIGIN = `${u.protocol}//${u.host}`;
+    const ORIGIN = resolveSocketOrigin();
 
     const s = io(ORIGIN, {
       path: '/socket.io',
@@ -44,22 +79,30 @@ export function SocketProvider({ children }) {
       withCredentials: true,
       auth: { token: getToken() },
       reconnection: true,
-      reconnectionAttempts: 10,
-      reconnectionDelay: 1000,
-      timeout: 20000,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      timeout: 10000,
     });
     socketRef.current = s;
 
     s.on('connect', () => {
       setStatus('connected');
-      setTransport(s.io.engine.transport.name || '');
+      setTransport(s.io?.engine?.transport?.name || '');
       setError('');
     });
     s.on('disconnect', () => setStatus('disconnected'));
     s.on('reconnect_attempt', () => setStatus('connecting'));
     s.on('reconnect', () => setStatus('connected'));
-    s.on('connect_error', (e) => { setStatus('error'); setError(e?.message || 'connect_error'); });
-    s.on('error', (e) => { setStatus('error'); setError(e?.message || 'error'); });
+    s.on('connect_error', (e) => {
+      setStatus('error');
+      setError(e?.message || 'connect_error');
+      console.warn('[Socket] Connection attempt issue:', e?.message || e);
+    });
+    s.on('error', (e) => {
+      setStatus('error');
+      setError(e?.message || 'error');
+      console.warn('[Socket] Socket issue:', e?.message || e);
+    });
 
     return () => {
       try { s.disconnect(); } catch {}
