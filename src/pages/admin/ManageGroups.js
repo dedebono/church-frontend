@@ -314,8 +314,17 @@ const ManageGroups = () => {
 
   const fetchBroadcastLogs = async (groupId) => {
     try {
-      const res = await api.get(`/api/broadcast-messages/group/${groupId}`);
-      const logs = res.data;
+      const res = await api.get('/api/broadcast-messages');
+      const allLogs = Array.isArray(res.data) ? res.data : [];
+      const logs = allLogs.filter((log) => {
+        if (!Array.isArray(log.targetGroups)) return false;
+        return log.targetGroups.some((targetGroup) => {
+          const targetId = typeof targetGroup === 'object'
+            ? targetGroup?._id
+            : targetGroup;
+          return String(targetId) === String(groupId);
+        });
+      });
 
       if (logs && logs.length > 0) {
         const logList = logs
