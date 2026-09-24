@@ -6,6 +6,7 @@ import { getEvents, createEvent, updateEvent, deleteEvent, healthCheck } from ".
 import Swal from "sweetalert2"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "../admin/firebase"
+import { convertImageToWebp } from "../../utils/imageCompression"
 import {
   Calendar,
   Clock,
@@ -165,10 +166,11 @@ const EventCMS = () => {
     try {
       setUploadingImage(true)
       const timestamp = Date.now()
-      const fileName = `event_images/${timestamp}_${selectedImageFile.name}`
+      const webpFile = await convertImageToWebp(selectedImageFile)
+      const fileName = `event_images/${timestamp}_${webpFile.name}`
       const fileRef = ref(storage, fileName)
 
-      await uploadBytes(fileRef, selectedImageFile)
+      await uploadBytes(fileRef, webpFile)
       const downloadURL = await getDownloadURL(fileRef)
 
       setFormData((prev) => ({ ...prev, imageUrl: downloadURL }))

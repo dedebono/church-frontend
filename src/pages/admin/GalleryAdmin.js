@@ -5,6 +5,7 @@ import "./GalleryAdmin.css"
 import Swal from "sweetalert2"
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
 import { storage } from "../admin/firebase"
+import { convertImageToWebp } from "../../utils/imageCompression"
 import { getGalleryPhotos, createGalleryPhoto, deleteGalleryPhoto } from "../admin/api/API"
 import {
   Camera,
@@ -69,8 +70,9 @@ const GalleryAdmin = () => {
     setUploadProgress(0)
 
     try {
-      const fileRef = ref(storage, `gallery/${Date.now()}_${selectedFile.name}`)
-      const uploadTask = uploadBytesResumable(fileRef, selectedFile)
+      const webpFile = await convertImageToWebp(selectedFile)
+      const fileRef = ref(storage, `gallery/${Date.now()}_${webpFile.name}`)
+      const uploadTask = uploadBytesResumable(fileRef, webpFile)
 
       uploadTask.on(
         "state_changed",

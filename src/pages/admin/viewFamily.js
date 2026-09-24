@@ -5,6 +5,7 @@ import api, { getFamilies } from "./api/API"
 import "./viewFamily.css"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "./firebase" // your Firebase config
+import { convertImageToWebp } from '../../utils/imageCompression'
 import { isoToInputDateMakassar, inputDateToIsoMakassar, formatDateToMakassar } from '../../utils/dateHelpers'
 import { Eye, EyeOff, X, Users, Heart, Mail } from "lucide-react";
 
@@ -85,9 +86,10 @@ function ViewFamily() {
     try {
       setUploadingForFamily(familyId) // Set uploading status for the family
 
-      const fileName = `family_profile_photos/${familyId}_${selectedFamilyFile.name}`
+      const webpFile = await convertImageToWebp(selectedFamilyFile)
+      const fileName = `family_profile_photos/${familyId}_${webpFile.name}`
       const fileRef = ref(storage, fileName)
-      await uploadBytes(fileRef, selectedFamilyFile)
+      await uploadBytes(fileRef, webpFile)
       const downloadURL = await getDownloadURL(fileRef)
 
       // Use the API endpoint for updating family photo
@@ -240,9 +242,10 @@ function ViewFamily() {
     try {
       setUploadingFor(memberId)
 
-      const fileName = `profile_photos/${memberId}_${selectedFile.name}`
+      const webpFile = await convertImageToWebp(selectedFile)
+      const fileName = `profile_photos/${memberId}_${webpFile.name}`
       const fileRef = ref(storage, fileName)
-      await uploadBytes(fileRef, selectedFile)
+      await uploadBytes(fileRef, webpFile)
       const downloadURL = await getDownloadURL(fileRef)
 
       await api.put(`/api/members/${memberId}/photo`, { photoUrl: downloadURL })

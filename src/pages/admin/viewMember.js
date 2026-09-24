@@ -6,6 +6,7 @@ import Swal from "sweetalert2"
 import api from "./api/API"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { storage } from "./firebase" // your Firebase config
+import { convertImageToWebp } from '../../utils/imageCompression'
 import { isoToInputDateMakassar, inputDateToIsoMakassar, formatDateToMakassar } from '../../utils/dateHelpers'
 import "./viewMember.css"
 
@@ -95,9 +96,10 @@ if (confirm.isConfirmed) {
     try {
       setUploadingFor(memberId)
 
-      const fileName = `profile_photos/${memberId}/${Date.now()}-${selectedFile.name}`;
+      const webpFile = await convertImageToWebp(selectedFile)
+      const fileName = `profile_photos/${memberId}/${Date.now()}-${webpFile.name}`;
       const fileRef = ref(storage, fileName)
-      await uploadBytes(fileRef, selectedFile, { contentType: selectedFile.type });
+      await uploadBytes(fileRef, webpFile, { contentType: 'image/webp' });
       const downloadURL = await getDownloadURL(fileRef)
 
       await api.put(`/api/members/${memberId}/photo`, { photoUrl: downloadURL })
