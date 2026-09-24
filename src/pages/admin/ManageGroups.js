@@ -95,8 +95,38 @@ const ManageGroups = () => {
 
   const fetchMessagesFromBackend = async (groupId) => {
     try {
-      const res = await api.get(`/api/groups/${groupId}/messages`);
-      setChatMessages(res.data);
+      const res = await api.get('/api/admin/messages', {
+        params: {
+          groupId,
+          page: 1,
+          limit: 100,
+        },
+      });
+      const rawMessages = Array.isArray(res.data)
+        ? res.data
+        : res.data?.items || res.data?.messages || [];
+      const messages = rawMessages.map((message) => {
+        const sender = message.sender;
+        const senderId = typeof sender === 'object'
+          ? sender?._id || sender?.id
+          : sender;
+        const senderName = message.fullName ||
+          (typeof sender === 'object'
+            ? sender?.fullName || sender?.name ||
+              [sender?.firstName, sender?.lastName].filter(Boolean).join(' ')
+            : null);
+        const image = typeof message.image === 'object'
+          ? message.image?.url
+          : message.image;
+
+        return {
+          ...message,
+          sender: senderId,
+          fullName: senderName || 'User',
+          image,
+        };
+      });
+      setChatMessages(messages);
     } catch (err) {
       console.error('Error fetching messages from backend:', err);
     }
