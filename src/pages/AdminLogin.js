@@ -44,7 +44,7 @@ const AdminLogin = () => {
     setLoading(true);
     try {
       const res = await api.post('/api/admin/verify-login', { email, code });
-      const { token } = res.data;
+      const { token, refreshToken } = res.data;
 
       if (!token) {
         throw new Error('No token returned from server');
@@ -52,6 +52,7 @@ const AdminLogin = () => {
 
       // 🔑 Save token for socket + API
       setToken(token);   // updates axios headers + localStorage
+      if (refreshToken) localStorage.setItem('adminRefreshToken', refreshToken);
       reconnect();       // force socket to reconnect with new token
 
       if (res.data.success) {

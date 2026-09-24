@@ -146,6 +146,30 @@ api.interceptors.response.use(
           return api.request(config);
         }
       }
+
+      const refreshToken = (localStorage.getItem('adminRefreshToken') || '')
+        .replace(/^"|"$/g, '');
+      if (refreshToken && !config._retriedWithRefreshToken) {
+        try {
+          const refreshResponse = await axios.post(
+            `${api.defaults.baseURL}/api/admin/refresh-token`,
+            { refreshToken },
+            { timeout: 20000 },
+          );
+          const newToken = refreshResponse.data?.token;
+          if (newToken) {
+            localStorage.setItem('adminToken', newToken);
+            api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+            config._retriedWithRefreshToken = true;
+            config.headers = config.headers || {};
+            config.headers.Authorization = `Bearer ${newToken}`;
+            return api.request(config);
+          }
+        } catch (refreshError) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminRefreshToken');
+        }
+      }
     }
 
     return Promise.reject(error);
