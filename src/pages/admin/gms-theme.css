@@ -1,0 +1,383 @@
+/* ============================================================= */
+/* GMS-INSPIRED CINEMATIC RESTYLE  (overrides HomePageNot.css)    */
+/* Pure-black, monochrome, editorial, large elegant script hero.  */
+/* Scoped to .home so it never leaks into admin/finance views.    */
+/* ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+/* ---- Palette ------------------------------------------------- */
+.home {
+  --gms-black: #000000;
+  --gms-ink: #0a0a0a;
+  --gms-panel: #101012;
+  --gms-line: rgba(255, 255, 255, 0.12);
+  --gms-line-soft: rgba(255, 255, 255, 0.07);
+  --gms-white: #ffffff;
+  --gms-grey: #b5b5b8;
+  --gms-grey-dim: #7c7c82;
+  --gms-sans: "Montserrat", system-ui, sans-serif;
+  --gms-serif: "Cormorant Garamond", Georgia, serif;
+  --gms-script: "Great Vibes", cursive;
+
+  background: var(--gms-black) !important;
+  font-family: var(--gms-sans);
+  overflow-x: hidden;
+}
+
+.home,
+.home p,
+.home li,
+.home span,
+.home a {
+  font-family: var(--gms-sans);
+}
+
+.home h1, .home h2, .home h3, .home h4, .home h5, .home h6 {
+  font-family: var(--gms-sans);
+  color: var(--gms-white);
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.home a { color: var(--gms-grey); }
+.home a:hover { color: var(--gms-white); }
+
+/* ---- Buttons: monochrome pills ------------------------------- */
+.home .btn {
+  border-radius: 999px;
+  font-family: var(--gms-sans);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding: 15px 34px;
+  transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .3s ease;
+}
+.home .btn-primary {
+  background: var(--gms-white);
+  color: #000;
+}
+.home .btn-primary:hover {
+  background: #dcdcdc;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+.home .btn-secondary {
+  background: transparent;
+  color: var(--gms-white);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.home .btn-secondary:hover {
+  background: var(--gms-white);
+  color: #000;
+  border-color: var(--gms-white);
+  transform: translateY(-2px);
+}
+
+/* ============================================================= */
+/* HEADER / NAV  — transparent, floating over the hero            */
+/* ============================================================= */
+.home .pagelayer-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.home .main-nav {
+  position: static;
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+  padding: 30px 0;
+}
+.home .nav-content {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+.home .logo .logo-link {
+  font-family: var(--gms-serif);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.9rem;
+  letter-spacing: 0.02em;
+  color: var(--gms-white);
+}
+.home .nav-menu { gap: 38px; }
+.home .nav-menu a {
+  color: rgba(255, 255, 255, 0.85);
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+.home .nav-menu a:hover { color: var(--gms-white); }
+.home .nav-menu a::after { background: var(--gms-white); height: 1px; }
+
+/* ============================================================= */
+/* HERO — fullscreen, grayscale imagery, giant script welcome     */
+/* ============================================================= */
+.home .hero-section {
+  height: 100vh;
+  min-height: 640px;
+  background: var(--gms-black);
+  background-image: url(../../IMG_8425.JPG);
+  background-size: cover;
+  background-position: center;
+}
+.home .hero-swiper,
+.home .hero-slide { height: 100vh; }
+
+/* Grayscale, darkened event/hero imagery like GMS */
+.home .hero-background-image {
+  filter: grayscale(100%) contrast(1.06) brightness(0.62);
+}
+
+/* Layered dark gradient for legibility + cinematic vignette */
+.home .hero-overlay {
+  background:
+    radial-gradient(120% 90% at 50% 30%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.85) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.55) 100%);
+  z-index: 3;
+}
+
+/* Hide the busy event/empty/loading cards — keep the hero clean */
+.home .hero-section > .hero-content,
+.home .hero-slide .hero-content {
+  display: none !important;
+}
+
+/* The centered signature-script welcome */
+.home .gms-welcome {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 24px;
+}
+.home .gms-welcome-script {
+  font-family: var(--gms-script);
+  color: var(--gms-white);
+  font-size: clamp(4.5rem, 15vw, 14rem);
+  line-height: 0.9;
+  font-weight: 400;
+  text-shadow: 0 8px 60px rgba(0, 0, 0, 0.6);
+  animation: gmsFade 1.4s ease-out both;
+}
+.home .gms-welcome-sub {
+  margin-top: 26px;
+  font-family: var(--gms-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  font-size: clamp(10px, 1vw, 13px);
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 500;
+  padding-left: 0.5em;
+  animation: gmsFade 1.6s ease-out 0.3s both;
+}
+.home .gms-scroll-cue {
+  position: absolute;
+  bottom: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  padding-left: 0.35em;
+}
+.home .gms-scroll-cue::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 46px;
+  margin: 14px auto 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0));
+  animation: gmsCue 2.2s ease-in-out infinite;
+}
+@keyframes gmsCue {
+  0%, 100% { transform: scaleY(0.4); transform-origin: top; opacity: 0.4; }
+  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+}
+@keyframes gmsFade {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Keep swiper arrows/bullets, restyle monochrome */
+.home .hero-swiper .swiper-button-next,
+.home .hero-swiper .swiper-button-prev {
+  color: #000;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 6;
+}
+.home .hero-swiper .swiper-pagination-bullet-active { background: var(--gms-white); }
+
+/* ============================================================= */
+/* MARQUEE BAND                                                   */
+/* ============================================================= */
+.home .gms-marquee {
+  background: var(--gms-black);
+  border-top: 1px solid var(--gms-line-soft);
+  border-bottom: 1px solid var(--gms-line-soft);
+  overflow: hidden;
+  padding: 26px 0;
+  white-space: nowrap;
+}
+.home .gms-marquee-track {
+  display: inline-flex;
+  animation: gmsMarquee 24s linear infinite;
+}
+.home .gms-marquee-track span {
+  font-family: var(--gms-serif);
+  font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2.6rem);
+  color: rgba(255, 255, 255, 0.16);
+  padding-right: 8px;
+  letter-spacing: 0.02em;
+}
+@keyframes gmsMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.34%); }
+}
+
+/* ============================================================= */
+/* SECTIONS — black, generous spacing, editorial titles           */
+/* ============================================================= */
+.home .section-padding { padding: 120px 0; }
+.home .container { max-width: 1360px; padding: 0 48px; }
+
+.home .quote-section,
+.home .sermons-section,
+.home .events-section,
+.home .about-section,
+.home .gallery-section,
+.home .confession-section {
+  background: var(--gms-black) !important;
+  border-color: var(--gms-line-soft) !important;
+}
+
+.home .confession-title {
+  font-family: var(--gms-sans);
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.02em;
+  text-transform: none;
+  padding-bottom: 22px;
+}
+.home .confession-title::after {
+  width: 46px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ---- Quote ---- */
+.home .quote-icon svg { color: rgba(255, 255, 255, 0.35); }
+.home .quote-text {
+  font-family: var(--gms-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  color: var(--gms-white);
+  line-height: 1.35;
+}
+.home .quote-author {
+  color: var(--gms-grey-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 11px;
+}
+
+/* ---- Cards (sermons / events) : monochrome, thin border ---- */
+.home .sermon-card,
+.home .event-card {
+  background: var(--gms-ink) !important;
+  border: 1px solid var(--gms-line-soft) !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+  transition: border-color .4s ease, transform .4s ease;
+  box-shadow: none !important;
+}
+.home .sermon-card:hover,
+.home .event-card:hover {
+  border-color: var(--gms-line) !important;
+  transform: translateY(-6px);
+}
+.home .sermon-card img,
+.home .event-card img {
+  filter: grayscale(100%) brightness(0.85);
+  transition: filter .5s ease, transform .6s ease;
+  border-radius: 0 !important;
+}
+.home .sermon-card:hover img,
+.home .event-card:hover img {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.04);
+}
+.home .sermon-card h3,
+.home .event-card h3 {
+  font-family: var(--gms-sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.home .sermon-meta,
+.home .event-meta { color: var(--gms-grey-dim); }
+
+/* ---- About ---- */
+.home .about-section h2 {
+  font-family: var(--gms-sans);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.home .about-image img {
+  filter: grayscale(100%) contrast(1.05);
+  border-radius: 4px;
+  transition: filter .6s ease;
+}
+.home .about-image img:hover { filter: grayscale(0%); }
+
+/* ---- Gallery ---- */
+.home .gallery-item img { filter: grayscale(100%); transition: filter .5s ease, transform .6s ease; }
+.home .gallery-item:hover img { filter: grayscale(0%); }
+
+/* ---- Section titles left-aligned like GMS "Acara Kita" ---- */
+.home .events-section .container > .confession-title,
+.home .sermons-section .container > .confession-title {
+  display: block;
+  text-align: left;
+}
+.home .events-section .container > .confession-title::after,
+.home .sermons-section .container > .confession-title::after {
+  left: 0;
+  transform: none;
+}
+
+/* ============================================================= */
+/* RESPONSIVE                                                     */
+/* ============================================================= */
+@media (max-width: 900px) {
+  .home .nav-content { padding: 0 22px; }
+  .home .main-nav { padding: 20px 0; }
+  .home .section-padding { padding: 76px 0; }
+  .home .container { padding: 0 22px; }
+  .home .gms-welcome-sub { letter-spacing: 0.32em; }
+}
+
+/* Keep the mobile menu readable on the transparent nav */
+@media (max-width: 768px) {
+  .home .nav-menu {
+    background: rgba(0, 0, 0, 0.96) !important;
+    border-bottom: 1px solid var(--gms-line-soft);
+  }
+  .home .mobile-menu-toggle { color: var(--gms-white); }
+}

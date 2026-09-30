@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import "../pages/admin/HomePageNot.css" // Ensure the path is correct
+import "./admin/gms-theme.css" // GMS-inspired cinematic restyle (overrides)
 import { Link } from "react-router-dom"
 import { MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube, Loader2, AlertTriangle, Music, Camera, Image as ImageIcon } from "lucide-react"
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
@@ -153,6 +154,13 @@ const HomePage = () => {
       <section className="hero-section">
         <div className="hero-overlay"></div>
 
+        {/* GMS-style cinematic welcome overlay */}
+        <div className="gms-welcome" aria-hidden="true">
+          <span className="gms-welcome-script">Welcome Home</span>
+          <span className="gms-welcome-sub">Making Life Better Church</span>
+          <span className="gms-scroll-cue">Scroll</span>
+        </div>
+
         {/* Loading State */}
         {eventsLoading && (
           <div className="hero-content">
@@ -270,6 +278,15 @@ const HomePage = () => {
           </div>
         )}
       </section>
+
+      {/* GMS-style scrolling marquee band */}
+      <div className="gms-marquee" aria-hidden="true">
+        <div className="gms-marquee-track">
+          <span>Making Life Better&nbsp;&nbsp;•&nbsp;&nbsp;MLB Church&nbsp;&nbsp;•&nbsp;&nbsp;Welcome Home&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+          <span>Making Life Better&nbsp;&nbsp;•&nbsp;&nbsp;MLB Church&nbsp;&nbsp;•&nbsp;&nbsp;Welcome Home&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+          <span>Making Life Better&nbsp;&nbsp;•&nbsp;&nbsp;MLB Church&nbsp;&nbsp;•&nbsp;&nbsp;Welcome Home&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+        </div>
+      </div>
 
       {/* Quote Section */}
       <section className="quote-section section-padding">
