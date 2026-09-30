@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import api from "./admin/api/API"
 import "./RegistrationForm.css"
+import "./admin/gms-auth.css"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 

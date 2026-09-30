@@ -1,0 +1,256 @@
+/* ============================================================= */
+/* GMS-INSPIRED CINEMATIC AUTH SCREENS                            */
+/* Applies the black monochrome look to Login + Registration.     */
+/* Scoped to auth wrappers so nothing else is affected.           */
+/* ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap');
+
+/* ---- Shared token overrides (monochrome) -------------------- */
+.page-login-page,
+.registration-container,
+.margin {
+  --background: #000000;
+  --surface: #0b0b0c;
+  --surface-2: #111113;
+  --surface-3: #17171a;
+  --primary: #0a0a0b;
+  --secondary: #111114;
+  --accent: #ffffff;
+  --accent-hover: #dcdcdc;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --text-main: #f5f5f5;
+  --text-muted: #8f8f95;
+  --text-on-primary: #000000;
+  --border: rgba(255, 255, 255, 0.1);
+  font-family: "Montserrat", system-ui, sans-serif;
+}
+
+.page-login-page *,
+.registration-container *,
+.margin * {
+  font-family: "Montserrat", system-ui, sans-serif;
+}
+
+/* ============================================================= */
+/* LOGIN — cinematic centered card over a grayscale backdrop      */
+/* ============================================================= */
+.page-login-page {
+  position: relative;
+  background: #000;
+  overflow: hidden;
+}
+.page-login-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url(../../IMG_8425.JPG);
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%) brightness(0.32) contrast(1.05);
+  z-index: 0;
+}
+.page-login-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90% 70% at 50% 40%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.8) 100%);
+  z-index: 0;
+}
+
+.container-login-page {
+  position: relative;
+  z-index: 1;
+  background: rgba(10, 10, 12, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+  padding: 56px 44px;
+}
+
+/* Turn the little gold bar into a refined white line */
+.container-login-page::before {
+  background: rgba(255, 255, 255, 0.85) !important;
+  width: 40px !important;
+  height: 1px !important;
+  margin-bottom: 28px !important;
+}
+
+.container-login-page h2 {
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  padding-left: 0.28em;
+  color: #fff;
+}
+
+/* Decorative script welcome above the form */
+.container-login-page h2::before {
+  content: "Welcome back";
+  display: block;
+  font-family: "Great Vibes", cursive;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 44px;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 14px;
+  padding-left: 0;
+}
+
+.form-login {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.form-login:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.button-login {
+  background: #fff;
+  color: #000;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 15px 20px;
+}
+.button-login:hover:not(:disabled) {
+  background: #dcdcdc;
+  box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================= */
+/* REGISTRATION — black editorial multi-step card                 */
+/* ============================================================= */
+.registration-container {
+  background: #000;
+}
+.registration-card {
+  background: #0b0b0c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.9);
+}
+
+/* Sidebar */
+.sidebar {
+  background: #060607;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+.sidebar-header h1 {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.9rem;
+  letter-spacing: 0.01em;
+}
+.sidebar-header p {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+}
+
+.step-item.active {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.step-item.active .step-icon {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+.step-item.completed {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.step-item.completed .step-icon {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.pprogress-fill { background: #fff; }
+
+/* Headings */
+.step-header h2 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.step-header h2::first-letter { text-transform: uppercase; }
+.mmember-title { color: #fff; }
+.review-card h3,
+.review-card h4 { color: #fff; }
+
+/* Inputs */
+.form-group-regis input,
+.form-group-regis select,
+.form-group-regis textarea,
+.input_1,
+.input_2 {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 4px;
+  color: #fff;
+}
+.form-group-regis input:focus,
+.form-group-regis select:focus,
+.form-group-regis textarea:focus,
+.input_1:focus,
+.input_2:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+.form-group-regis select option { background: #111; color: #fff; }
+
+/* Buttons: monochrome pills */
+.btn-primary-regis {
+  background: #fff;
+  color: #000;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 14px 30px;
+}
+.btn-primary-regis:hover:not(:disabled) {
+  background: #dcdcdc;
+  transform: translateY(-2px);
+}
+.btn-secondary-regis {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 14px 30px;
+}
+.btn-secondary-regis:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.btn-loader {
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: #000;
+}
+
+/* Success / confirmation icons -> monochrome */
+.confirmation-icon,
+.success-icon { color: #fff; }

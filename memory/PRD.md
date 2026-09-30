@@ -28,6 +28,8 @@ Run the existing church community web app (member registration, admin console, f
 ## GMS-style restyle (2026-06)
 - Restyled the public HomePage to mirror gms.church: pure-black cinematic theme, grayscale imagery, giant "Welcome Home" signature script (Great Vibes), minimalist wide-tracked uppercase nav (Montserrat) floating over hero, italic-serif logo, scrolling marquee band, monochrome editorial cards/sections with grayscale→color hover.
 - Files: new `src/pages/admin/gms-theme.css` (override, scoped to `.home`, imported after HomePageNot.css); JSX additions in `src/pages/HomePage.js` (`.gms-welcome` hero overlay + `.gms-marquee`).
+- Hero headline set to "Welcome to this community"; events section converted to a sliding Swiper carousel with arrows/dots (GMS "Acara Kita" style).
+- Auth screens restyled to match: new `src/pages/admin/gms-auth.css` imported in `AdminLogin.js` + `RegistrationForm.js` (grayscale backdrop, glass/black cards, script/serif accents, white pill buttons). Scoped to auth wrappers; admin/finance untouched.
 - Non-destructive: original HomePageNot.css untouched; admin/finance views unaffected (scoped to `.home`).
 
 ## Backlog / next phases

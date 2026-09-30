@@ -156,7 +156,7 @@ const HomePage = () => {
 
         {/* GMS-style cinematic welcome overlay */}
         <div className="gms-welcome" aria-hidden="true">
-          <span className="gms-welcome-script">Welcome Home</span>
+          <span className="gms-welcome-script">Welcome to this community</span>
           <span className="gms-welcome-sub">Making Life Better Church</span>
           <span className="gms-scroll-cue">Scroll</span>
         </div>
@@ -373,34 +373,50 @@ const HomePage = () => {
           <div className="container">
             <h2 className="confession-title">Upcoming Events</h2>
 
-            <div className="events-grid">
-              {events.map((event) => (
-                <div key={event._id} className="event-card">
-                  <img
-                    src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
-                    alt={event.title}
-                    onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
-                    }}
-                  />
-                  <div className="event-content">
-                    <h3>{event.title}</h3>
-                    <p className="event-meta">
-                      <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
-                      {event.location && (
-                        <>
-                          <br />
-                          <MapPin size={16} /> {event.location}
-                        </>
-                      )}
-                    </p>
-                    <p>{truncateText(event.description)}</p>
-                    <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
-                      {event.registrationUrl ? "Register Now" : "Learn More"}
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div className="events-carousel">
+              <Swiper
+                modules={[Navigation, Pagination]}
+                spaceBetween={24}
+                slidesPerView={1}
+                navigation
+                pagination={{ clickable: true }}
+                breakpoints={{
+                  640: { slidesPerView: 1.4, spaceBetween: 20 },
+                  768: { slidesPerView: 2, spaceBetween: 24 },
+                  1024: { slidesPerView: 3, spaceBetween: 28 },
+                }}
+                className="events-swiper"
+              >
+                {events.map((event) => (
+                  <SwiperSlide key={event._id}>
+                    <div className="event-card">
+                      <img
+                        src={event.imageUrl || "https://via.placeholder.com/400x180?text=Event+Image"}
+                        alt={event.title}
+                        onError={(e) => {
+                          e.target.src = "https://via.placeholder.com/400x180?text=Event+Image"
+                        }}
+                      />
+                      <div className="event-content">
+                        <h3>{event.title}</h3>
+                        <p className="event-meta">
+                          <Calendar size={16} /> {formatEventDateTime(event.date, event.time)}
+                          {event.location && (
+                            <>
+                              <br />
+                              <MapPin size={16} /> {event.location}
+                            </>
+                          )}
+                        </p>
+                        <p>{truncateText(event.description)}</p>
+                        <button className="btn btn-primary" onClick={() => handleEventAction(event)}>
+                          {event.registrationUrl ? "Register Now" : "Learn More"}
+                        </button>
+                      </div>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
 
             <div className="events-view-all">

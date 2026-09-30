@@ -167,9 +167,10 @@
 .home .gms-welcome-script {
   font-family: var(--gms-script);
   color: var(--gms-white);
-  font-size: clamp(4.5rem, 15vw, 14rem);
-  line-height: 0.9;
+  font-size: clamp(3rem, 9vw, 8.5rem);
+  line-height: 0.92;
   font-weight: 400;
+  max-width: 16ch;
   text-shadow: 0 8px 60px rgba(0, 0, 0, 0.6);
   animation: gmsFade 1.4s ease-out both;
 }
@@ -349,6 +350,37 @@
 /* ---- Gallery ---- */
 .home .gallery-item img { filter: grayscale(100%); transition: filter .5s ease, transform .6s ease; }
 .home .gallery-item:hover img { filter: grayscale(0%); }
+
+/* ---- Events carousel (GMS "Acara Kita" style) ---- */
+.home .events-carousel { position: relative; padding: 8px 0 56px; }
+.home .events-swiper { overflow: visible; }
+.home .events-swiper .event-card { height: 100%; }
+.home .events-swiper .swiper-button-next,
+.home .events-swiper .swiper-button-prev {
+  color: #000;
+  background: rgba(255, 255, 255, 0.92);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  top: auto;
+  bottom: -4px;
+  transition: transform .25s ease, background .25s ease;
+}
+.home .events-swiper .swiper-button-next { right: 0; }
+.home .events-swiper .swiper-button-prev { left: auto; right: 60px; }
+.home .events-swiper .swiper-button-next:hover,
+.home .events-swiper .swiper-button-prev:hover { transform: scale(1.08); background: #fff; }
+.home .events-swiper .swiper-button-next:after,
+.home .events-swiper .swiper-button-prev:after { font-size: 1rem; font-weight: 700; }
+.home .events-swiper .swiper-pagination {
+  text-align: left;
+  bottom: 6px;
+}
+.home .events-swiper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 1;
+}
+.home .events-swiper .swiper-pagination-bullet-active { background: var(--gms-white); }
 
 /* ---- Section titles left-aligned like GMS "Acara Kita" ---- */
 .home .events-section .container > .confession-title,
