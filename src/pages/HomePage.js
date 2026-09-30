@@ -4,7 +4,7 @@ import { useState } from "react"
 import "../pages/admin/HomePageNot.css" // Ensure the path is correct
 import "./admin/gms-theme.css" // GMS-inspired cinematic restyle (overrides)
 import { Link } from "react-router-dom"
-import { MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube, Loader2, AlertTriangle, Music, Camera, Image as ImageIcon } from "lucide-react"
+import { MapPin, Star, Menu, Quote, Play, X, Calendar, Youtube, Loader2, AlertTriangle, Music, Camera, Image as ImageIcon, Instagram } from "lucide-react"
 import { useSermons } from "./hooks/useSermons" // Import our custom hook
 import { useEvents } from "./hooks/useEvents"
 import { useGalleryPhotos } from "./hooks/useGallery"
@@ -452,6 +452,61 @@ const HomePage = () => {
               src="https://firebasestorage.googleapis.com/v0/b/church-app-f10af.firebasestorage.app/o/gallery%2F1751468507671_WhatsApp%20Image%202025-06-28%20at%2014.47.04%20(1).jpeg?alt=media&token=simple-effects-ui"
               alt="MLB HALL"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Pastor Spotlight Section */}
+      <section className="pastor-section section-padding" id="pastor">
+        <div className="container pastor-grid">
+          <div className="pastor-photo">
+            <img src="/pastor-ronny.jpg" alt="Pdt. Ronny Runtukahu, S.E., M.Th." />
+          </div>
+          <div className="pastor-info">
+            <span className="pastor-role">Gembala Making Life Better Church</span>
+            <h2 className="pastor-name">Pdt. Ronny Runtukahu, S.E., M.Th.</h2>
+            <p className="pastor-tagline">Pendeta &bull; Pengajar &bull; Pembicara</p>
+            <div className="pastor-bio">
+              <p>
+                Pdt. Ronny Runtukahu, S.E., M.Th. merupakan seorang pendeta, pengajar, dan pembicara
+                Kristen yang aktif melayani dalam lingkungan <strong>Making Life Better Church</strong>. Dalam
+                pelayanannya, beliau memiliki perhatian terhadap pertumbuhan iman, pembentukan karakter,
+                pengenalan akan Tuhan, serta penerapan kebenaran Firman Tuhan dalam kehidupan sehari-hari.
+              </p>
+              <p>
+                Beliau melayani sebagai <strong>Gembala Making Life Better Church</strong>, dalam pelayanan yang
+                menekankan pengajaran Alkitab, kedewasaan rohani, pembentukan karakter, dan kehidupan Kristen
+                yang berorientasi pada kehendak Tuhan.
+              </p>
+              <p>
+                Selain pelayanan gerejawi, Pdt. Ronny Runtukahu juga memiliki perhatian yang kuat terhadap dunia
+                pendidikan dan pembentukan generasi. Beliau tercatat sebagai salah satu <strong>pendiri Sekolah
+                Kristen Harapan Bangsa (Harapan Bangsa Integrated Christian School/HBICS) di Balikpapan</strong>,
+                yang berdiri pada tahun 2008. Keterlibatan tersebut mencerminkan kepeduliannya terhadap
+                pendidikan Kristen dan proses membangun generasi yang memiliki iman, karakter, dan integritas.
+              </p>
+              <p>
+                Sebagai pengajar dan pembicara, beliau membawakan berbagai tema yang berhubungan dengan
+                kehidupan rohani dan hubungan pribadi dengan Tuhan. Pengajarannya banyak mengajak jemaat untuk
+                tidak berhenti pada pengetahuan tentang iman, tetapi mengalami pertumbuhan dalam pengenalan akan
+                Tuhan dan mewujudkan iman tersebut melalui kehidupan yang nyata.
+              </p>
+              <p>
+                Melalui pelayanan pastoral, pengajaran, dan keterlibatannya dalam dunia pendidikan, Pdt. Ronny
+                Runtukahu terus mengambil bagian dalam membangun kehidupan orang percaya dan mempersiapkan
+                generasi untuk hidup sesuai dengan panggilan Tuhan.
+              </p>
+            </div>
+            <a
+              className="pastor-social"
+              href="https://www.instagram.com/ronny_runtukahu"
+              target="_blank"
+              rel="noreferrer"
+              data-testid="pastor-instagram-link"
+            >
+              <Instagram size={18} />
+              <span>@ronny_runtukahu</span>
+            </a>
           </div>
         </div>
       </section>
