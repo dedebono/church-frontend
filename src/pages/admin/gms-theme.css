@@ -19,6 +19,9 @@
   --gms-sans: "Montserrat", system-ui, sans-serif;
   --gms-serif: "Cormorant Garamond", Georgia, serif;
   --gms-script: "Great Vibes", cursive;
+  --gms-navy: #000080;
+  --gms-gold: #d6aa30;
+  --gms-gold-soft: rgba(214, 170, 48, 0.16);
 
   background: var(--gms-black) !important;
   font-family: var(--gms-sans);
@@ -55,14 +58,14 @@
   transition: background-color .3s ease, color .3s ease, border-color .3s ease, transform .3s ease;
 }
 .home .btn-primary {
-  background: var(--gms-white);
-  color: #000;
+  background: var(--gms-gold);
+  color: #1a1400;
 }
 .home .btn-primary:hover {
-  background: #dcdcdc;
-  color: #000;
+  background: #e4bd47;
+  color: #1a1400;
   transform: translateY(-2px);
-  box-shadow: none;
+  box-shadow: 0 10px 30px -10px rgba(214, 170, 48, 0.5);
 }
 .home .btn-secondary {
   background: transparent;
@@ -100,13 +103,16 @@
   padding: 0 48px;
 }
 .home .logo .logo-link {
-  font-family: var(--gms-serif);
-  font-style: italic;
-  font-weight: 600;
-  font-size: 1.9rem;
-  letter-spacing: 0.02em;
-  color: var(--gms-white);
+  display: inline-flex;
+  align-items: center;
 }
+.home .brand-logo-img {
+  height: 58px;
+  width: auto;
+  display: block;
+  transition: transform .3s ease, filter .3s ease;
+}
+.home .brand-logo-img:hover { transform: scale(1.04); }
 .home .nav-menu { gap: 38px; }
 .home .nav-menu a {
   color: rgba(255, 255, 255, 0.85);
@@ -115,8 +121,8 @@
   font-weight: 500;
   letter-spacing: 0.16em;
 }
-.home .nav-menu a:hover { color: var(--gms-white); }
-.home .nav-menu a::after { background: var(--gms-white); height: 1px; }
+.home .nav-menu a:hover { color: var(--gms-gold); }
+.home .nav-menu a::after { background: var(--gms-gold); height: 2px; }
 
 /* ============================================================= */
 /* HERO — fullscreen, grayscale imagery, giant script welcome     */
@@ -180,8 +186,8 @@
   text-transform: uppercase;
   letter-spacing: 0.5em;
   font-size: clamp(10px, 1vw, 13px);
-  color: rgba(255, 255, 255, 0.82);
-  font-weight: 500;
+  color: var(--gms-gold);
+  font-weight: 600;
   padding-left: 0.5em;
   animation: gmsFade 1.6s ease-out 0.3s both;
 }
@@ -202,7 +208,7 @@
   width: 1px;
   height: 46px;
   margin: 14px auto 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0));
+  background: linear-gradient(180deg, var(--gms-gold), rgba(214,170,48,0));
   animation: gmsCue 2.2s ease-in-out infinite;
 }
 @keyframes gmsCue {
@@ -221,7 +227,7 @@
   background: rgba(255, 255, 255, 0.9);
   z-index: 6;
 }
-.home .hero-swiper .swiper-pagination-bullet-active { background: var(--gms-white); }
+.home .hero-swiper .swiper-pagination-bullet-active { background: var(--gms-gold); }
 
 /* ============================================================= */
 /* MARQUEE BAND                                                   */
@@ -277,8 +283,8 @@
 }
 .home .confession-title::after {
   width: 46px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.5);
+  height: 2px;
+  background: var(--gms-gold);
 }
 
 /* ---- Quote ---- */
@@ -380,7 +386,7 @@
   background: rgba(255, 255, 255, 0.35);
   opacity: 1;
 }
-.home .events-swiper .swiper-pagination-bullet-active { background: var(--gms-white); }
+.home .events-swiper .swiper-pagination-bullet-active { background: var(--gms-gold); }
 
 /* ============================================================= */
 /* PASTOR SPOTLIGHT — monochrome leadership feature (GMS style)   */
@@ -426,7 +432,7 @@
   letter-spacing: 0.28em;
   font-size: 11px;
   font-weight: 600;
-  color: var(--gms-grey-dim);
+  color: var(--gms-gold);
   margin-bottom: 18px;
 }
 .home .pastor-name {
@@ -526,8 +532,9 @@
   transition: background-color .3s ease, color .3s ease, transform .3s ease;
 }
 .home .pastor-social:hover {
-  background: var(--gms-white);
-  color: #000;
+  background: var(--gms-gold);
+  color: #1a1400;
+  border-color: var(--gms-gold);
   transform: translateY(-2px);
 }
 @media (max-width: 900px) {

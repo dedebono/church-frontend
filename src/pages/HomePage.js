@@ -112,8 +112,8 @@ const HomePage = () => {
         <nav className="main-nav">
           <div className="container nav-content">
             <div className="logo">
-              <a href="/" className="logo-link">
-                MLB Church
+              <a href="/" className="logo-link" data-testid="brand-logo">
+                <img src="/mlb-logo-ondark.png" alt="Making Life Better Church" className="brand-logo-img" />
               </a>
             </div>
             <ul className={`nav-menu ${isMobileMenuOpen ? "active" : ""}`}>

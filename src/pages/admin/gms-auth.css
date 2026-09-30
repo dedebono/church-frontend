@@ -71,11 +71,11 @@
   padding: 56px 44px;
 }
 
-/* Turn the little gold bar into a refined white line */
+/* Turn the little gold bar into a refined brand-gold line */
 .container-login-page::before {
-  background: rgba(255, 255, 255, 0.85) !important;
-  width: 40px !important;
-  height: 1px !important;
+  background: #d6aa30 !important;
+  width: 46px !important;
+  height: 2px !important;
   margin-bottom: 28px !important;
 }
 
@@ -115,9 +115,9 @@
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
-.button-login {
-  background: #fff;
-  color: #000;
+.page-login-page .button-login {
+  background: #d6aa30;
+  color: #1a1400;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -125,9 +125,17 @@
   font-weight: 600;
   padding: 15px 20px;
 }
-.button-login:hover:not(:disabled) {
-  background: #dcdcdc;
-  box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.4);
+.page-login-page .button-login:hover:not(:disabled) {
+  background: #e4bd47;
+  box-shadow: 0 10px 30px -10px rgba(214, 170, 48, 0.5);
+}
+
+/* Brand logo inside the login card */
+.login-brand {
+  width: 72px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
 }
 
 /* ============================================================= */
@@ -155,6 +163,12 @@
   font-size: 1.9rem;
   letter-spacing: 0.01em;
 }
+.sidebar-brand {
+  width: 66px;
+  height: auto;
+  display: block;
+  margin-bottom: 18px;
+}
 .sidebar-header p {
   text-transform: uppercase;
   letter-spacing: 0.22em;
@@ -165,11 +179,12 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
-.step-item.active .step-icon {
-  background: #fff;
-  color: #000;
-  border-color: #fff;
+.registration-container .step-item.active .step-icon {
+  background: #d6aa30;
+  color: #1a1400;
+  border-color: #d6aa30;
 }
+.registration-container .pprogress-fill { background: #d6aa30; }
 .step-item.completed {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -180,7 +195,7 @@
   border-color: rgba(255, 255, 255, 0.85);
 }
 
-.pprogress-fill { background: #fff; }
+.pprogress-fill { background: #d6aa30; }
 
 /* Headings */
 .step-header h2 {
@@ -215,9 +230,9 @@
 .form-group-regis select option { background: #111; color: #fff; }
 
 /* Buttons: monochrome pills */
-.btn-primary-regis {
-  background: #fff;
-  color: #000;
+.registration-container .btn-primary-regis {
+  background: #d6aa30;
+  color: #1a1400;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -225,8 +240,8 @@
   font-weight: 600;
   padding: 14px 30px;
 }
-.btn-primary-regis:hover:not(:disabled) {
-  background: #dcdcdc;
+.registration-container .btn-primary-regis:hover:not(:disabled) {
+  background: #e4bd47;
   transform: translateY(-2px);
 }
 .btn-secondary-regis {

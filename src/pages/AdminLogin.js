@@ -91,6 +91,7 @@ const AdminLogin = () => {
   return (
     <div className="page-login-page">
       <div className="container-login-page">
+        <img className="login-brand" src="/mlb-logo-ondark.png" alt="Making Life Better Church" />
         <h2>Admin Login</h2>
 
         {step === 'email' ? (

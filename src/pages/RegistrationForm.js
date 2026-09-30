@@ -305,6 +305,7 @@ function RegistrationForm() {
         {/* Sidebar with Steps */}
         <div className="sidebar">
           <div className="sidebar-header">
+            <img src="/mlb-logo-ondark.png" alt="Making Life Better Church" className="sidebar-brand" />
             <h1>Pendaftaran Keluarga</h1>
             <p>Sistem Informasi Jemaat</p>
           </div>
