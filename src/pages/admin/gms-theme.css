@@ -393,17 +393,17 @@
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 72px;
-  align-items: center;
+  align-items: stretch;
 }
 .home .pastor-photo {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
+  height: 640px;
 }
 .home .pastor-photo img {
   width: 100%;
   height: 100%;
-  max-height: 680px;
   object-fit: cover;
   object-position: top center;
   display: block;
@@ -413,6 +413,12 @@
 .home .pastor-photo:hover img {
   filter: grayscale(0%);
   transform: scale(1.03);
+}
+.home .pastor-info {
+  height: 640px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 .home .pastor-role {
   display: block;
@@ -439,6 +445,34 @@
   color: var(--gms-grey);
   margin: 0 0 30px;
 }
+.home .pastor-bio {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-right: 8px;
+}
+.home .pastor-bio.collapsed { overflow: hidden; }
+.home .pastor-bio.expanded {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+.home .pastor-bio.expanded::-webkit-scrollbar { width: 6px; }
+.home .pastor-bio.expanded::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.22);
+  border-radius: 999px;
+}
+/* Fade hint at the bottom while collapsed */
+.home .pastor-bio.collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, #000 92%);
+}
 .home .pastor-bio p {
   font-size: 0.98rem;
   line-height: 1.85;
@@ -446,6 +480,36 @@
   margin-bottom: 18px;
 }
 .home .pastor-bio strong { color: var(--gms-white); font-weight: 600; }
+
+.home .pastor-bio-toggle {
+  align-self: flex-start;
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: var(--gms-white);
+  font-family: var(--gms-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 0;
+  position: relative;
+  transition: opacity .25s ease;
+}
+.home .pastor-bio-toggle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.6);
+  transform: scaleX(0.5);
+  transform-origin: left;
+  transition: transform .3s ease;
+}
+.home .pastor-bio-toggle:hover::after { transform: scaleX(1); }
 .home .pastor-social {
   display: inline-flex;
   align-items: center;
@@ -468,7 +532,9 @@
 }
 @media (max-width: 900px) {
   .home .pastor-grid { grid-template-columns: 1fr; gap: 36px; }
-  .home .pastor-photo img { max-height: 520px; }
+  .home .pastor-photo { height: 460px; }
+  .home .pastor-info { height: auto; }
+  .home .pastor-bio.collapsed { max-height: 260px; }
 }
 
 /* ---- Section titles left-aligned like GMS "Acara Kita" ---- */

@@ -21,6 +21,7 @@ const HomePage = () => {
   // Use a single state for the YouTube modal
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [bioExpanded, setBioExpanded] = useState(false)
 
   // Fetch latest 3 sermons for homepage display
   const { sermons, loading, error } = useSermons(3)
@@ -466,7 +467,7 @@ const HomePage = () => {
             <span className="pastor-role">Gembala Making Life Better Church</span>
             <h2 className="pastor-name">Pdt. Ronny Runtukahu, S.E., M.Th.</h2>
             <p className="pastor-tagline">Pendeta &bull; Pengajar &bull; Pembicara</p>
-            <div className="pastor-bio">
+            <div className={`pastor-bio ${bioExpanded ? "expanded" : "collapsed"}`}>
               <p>
                 Pdt. Ronny Runtukahu, S.E., M.Th. merupakan seorang pendeta, pengajar, dan pembicara
                 Kristen yang aktif melayani dalam lingkungan <strong>Making Life Better Church</strong>. Dalam
@@ -497,6 +498,14 @@ const HomePage = () => {
                 generasi untuk hidup sesuai dengan panggilan Tuhan.
               </p>
             </div>
+            <button
+              type="button"
+              className="pastor-bio-toggle"
+              onClick={() => setBioExpanded((v) => !v)}
+              data-testid="pastor-bio-toggle"
+            >
+              {bioExpanded ? "Tutup" : "Baca Selengkapnya"}
+            </button>
             <a
               className="pastor-social"
               href="https://www.instagram.com/ronny_runtukahu"
