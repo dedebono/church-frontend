@@ -9,12 +9,14 @@ import ResetPasswordPage from './pages/Reset-password';
 import FinanceAdmin from './pages/FinanceDashboard';
 import ProtectedRoute from './pages/ProtectedRoute';
 import BirthdayReminderTest from './components/BirthdayReminderTest';
+import SplashScreen from './components/SplashScreen';
 import { SocketProvider } from './socket/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
     <ThemeProvider>
+      <SplashScreen />
       <SocketProvider>
         <Router>
           <Routes> {/* Use Routes instead of Switch */}
