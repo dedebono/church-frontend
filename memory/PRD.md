@@ -1,37 +1,31 @@
-# PRD — MLB Church Frontend (church-frontend)
+# MLB Church Frontend — PRD
 
-## Problem Statement (original)
-"Perbaiki tampilannya supaya lebih modern dan seragam, gunakan efek yang sederhana tanpa perlu merubah backend."
-User choices: Dark mode, minimalis & clean, no brand color constraints.
+## Problem statement
+Run the existing church community web app (member registration, admin console, finance dashboard, events, sermons, birthday reminders) in this environment. No new features — just get the existing project running.
 
 ## Architecture
-- Single CRA React app at /app (package.json at root; symlink /app/frontend -> /app for supervisor `yarn start`, port 3000)
-- External backend: https://church-backend-no8q.onrender.com (DO NOT MODIFY). Env: REACT_APP_DEV_BACKENDS / REACT_APP_PROD_BACKENDS / REACT_APP_API_URL in /app/.env
-- Firebase storage via REACT_APP_FIREBASE_* env vars (currently placeholders — uploads may not work without real keys)
-- Socket.io client connects to API origin
-- Routes: / (HomePage), /register, /login (OTP), /admin (protected), /finance (protected), /form, /reset-password/:type/:token, /test-birthday
+- Pure React frontend (Create React App, react-scripts) served on port 3000 via supervisor (`yarn start` at /app/frontend → `yarn --cwd /app start`).
+- Talks to an EXTERNAL hosted backend: `https://church-backend-no8q.onrender.com` (free tier, may sleep). Not part of this project, not modified.
+- API calls route through `src/setupProxy.js` (dev proxy) to bypass CORS. `src/pages/admin/api/API.js` resolves backends; preview host now treated as dev-preview so requests use relative `/api` → proxy.
+- Firebase (uploads) runs with placeholder/mock config — upload features present but non-functional until real keys added.
 
-## Design System (implemented 2026-09-15)
-- Dark minimal theme: bg #0a0a0d, surfaces #131318/#1a1a21, border rgba(255,255,255,.08), text #f4f4f6/#9b9ba4, gold accent #d4a24e
-- Fonts: Manrope (body) + Fraunces (display headings)
-- Tokens in /app/src/index.css `:root` (names preserved so AdminPage.css/Dashboard.css adapt automatically)
-- Global normalization layer in index.css scoped to `.admin-layout` and `.finance-dashboard` (cards, tables, inputs, buttons, modals, badges, SweetAlert2, Toastify, react-calendar)
-- Homepage CSS fully rewritten, all selectors scoped under `.home` to avoid collisions with unscoped admin CSS (EventsAdmin/SermonCMS etc. define global .btn-primary/.btn-secondary)
-- formpage.js root div given className="home" to inherit scoped nav/footer styles
-- Effects: simple fadeUp entrances, hover lift, gold focus rings, blur navbar/glass hero card
+## User personas
+- Church members (register, view info)
+- Church admins (manage members, events, sermons, groups, devotions)
+- Finance staff (finance dashboard)
 
-## Files rewritten
-- src/index.css, src/App.css
-- src/pages/admin/HomePageNot.css, src/pages/footerPage.css, src/pages/ChurchInfoCard.css
-- src/pages/AdminLogin.css, src/pages/AdminPage.css, src/pages/RegistrationForm.css, src/pages/formpage.css, src/pages/FinanceDashboard.css
-- src/pages/RegistrationForm.js (Batal button -> btn-secondary-regis), src/pages/formpage.js (root class)
+## Core requirements
+- Public home, registration form, OTP login load and are usable.
+- Admin console and finance dashboard are protected routes, depend on live backend.
 
-## Testing
-- iteration_1.json: dark theme verified on /, /login, /register, /form desktop+mobile; 3 bugs found & fixed (invisible Lanjutkan text, Batal button style, /form horizontal overflow)
-- Backend 503 (Render down) during testing — error states verified as graceful; protected pages (/admin, /finance) untested (OTP login needs live backend)
+## What's been implemented (2026-06 / this run)
+- Installed frontend deps with `yarn install --ignore-engines` (engine mismatch for @testing-library/jest-dom).
+- Created `/app/.env` pointing REACT_APP_*_BACKENDS / API / SOCKET to onrender backend.
+- Updated `setupProxy.js` default target → onrender backend.
+- Updated `API.js` isDevPreview to include emergentagent.com/emergent.host → requests route through proxy.
+- Verified: home page and `/login` (OTP "Kirim Kode") render correctly; app serves HTTP 200.
 
-## Backlog
-- P1: Verify /admin & /finance visually once backend is up (OTP login)
-- P2: Deep-polish admin sub-pages (SermonCMS, EventsAdmin, GalleryAdmin, ManageGroups, DevotionCalendar still have own legacy CSS under the normalization layer)
-- P2: Restyle Reset-password page (currently inline styles)
-- P2: Replace placeholder Firebase keys with real ones for admin uploads
+## Backlog / next phases
+- Phase 2: Wake hosted backend and verify OTP login, admin console, finance dashboard end-to-end.
+- Phase 3: Add real Firebase keys to enable photo/document uploads.
+- README merge-conflict markers left untouched (intentional).

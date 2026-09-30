@@ -5,11 +5,11 @@ module.exports = function (app) {
   const rawTarget =
     process.env.REACT_APP_DEV_BACKENDS ||
     process.env.REACT_APP_PROD_BACKENDS ||
-    'https://server2.dedebono.uk';
+    'https://church-backend-no8q.onrender.com';
 
   let target = rawTarget.split(',')[0].trim().replace(/\/+$/, '');
   if (!target || target.includes('localhost:5000') || target.includes('127.0.0.1:5000')) {
-    target = 'https://server2.dedebono.uk';
+    target = 'https://church-backend-no8q.onrender.com';
   }
 
   console.log(`[setupProxy] Proxying /api and /socket.io to: ${target}`);

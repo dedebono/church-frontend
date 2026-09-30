@@ -21,7 +21,7 @@ const rawBackends =
 const resolveBackends = () => {
   const isBrowser = typeof window !== 'undefined';
   const hostname = isBrowser ? window.location.hostname : '';
-  const isDevPreview = hostname.includes('run.app') || hostname === 'localhost' || hostname === '127.0.0.1';
+  const isDevPreview = hostname.includes('run.app') || hostname.includes('emergentagent.com') || hostname.includes('emergent.host') || hostname === 'localhost' || hostname === '127.0.0.1';
 
   // Remote production backend
   const defaultRemote = 'https://server2.dedebono.uk';
