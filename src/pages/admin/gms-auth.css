@@ -44,7 +44,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url(../../IMG_8425.JPG);
+  background-image: url(../../IMG_8425.webp);
   background-size: cover;
   background-position: center;
   filter: grayscale(100%) brightness(0.32) contrast(1.05);

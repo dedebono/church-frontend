@@ -475,7 +475,7 @@ const HomePage = () => {
                 pengenalan akan Tuhan, serta penerapan kebenaran Firman Tuhan dalam kehidupan sehari-hari.
               </p>
               <p>
-                Beliau melayani sebagai <strong>Gembala Making Life Better Church</strong>, dalam pelayanan yang
+                Beliau melayani sebagai <strong>Gembala Senior Making Life Better Church</strong>, dalam pelayanan yang
                 menekankan pengajaran Alkitab, kedewasaan rohani, pembentukan karakter, dan kehidupan Kristen
                 yang berorientasi pada kehendak Tuhan.
               </p>
