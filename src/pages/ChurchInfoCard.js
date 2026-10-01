@@ -64,7 +64,7 @@ const ChurchInfoCard = () => {
               <p className="account-number">BCA 781.588.8057</p>
               <button className="blue-button">Salin</button>
               <img
-                src="https://via.placeholder.com/120x120.png?text=QR"
+                src={process.env.PUBLIC_URL + '/qris.png'}
                 alt="QR Code"
                 className="qr-code"
               />
