@@ -6,6 +6,7 @@ import "react-calendar/dist/Calendar.css"
 import "./DevotionCalendar.css"
 import api from "../admin/api/API"
 import Swal from "sweetalert2"
+import { RefreshCw, ClipboardList, ChevronDown, Calendar as CalendarIcon, Mail, Link2, Image as ImageIcon, FileText, AlignLeft, AlignCenter, List, ListOrdered, X } from "lucide-react"
 
 function DevotionCalendar() {
   const [selectedDate, setSelectedDate] = useState(null)
@@ -225,14 +226,14 @@ function DevotionCalendar() {
               disabled={loading}
               title="Refresh"
             >
-              {loading ? "Refreshing…" : "↻ Refresh"}
+              {loading ? "Refreshing…" : <><RefreshCw size={14} /> Refresh</>}
             </button>
           </div>
         </div>
 
         {!loading && filtered.length === 0 ? (
           <div className="border rounded-2xl p-8 text-center text-gray-500">
-            <div className="text-4xl mb-2">📝</div>
+            <ClipboardList size={32} className="mx-auto mb-2 text-gray-400" />
             <div className="font-medium">No devotions found</div>
             <div className="text-sm">Try refreshing or clearing your search.</div>
           </div>
@@ -335,7 +336,7 @@ function DevotionCalendar() {
           <div className="modal-content">
             <div className="modal-header">
               <h3>Create Devotion</h3>
-              <button className="modal-close" onClick={() => setShowModal(false)} aria-label="Close modal">×</button>
+              <button className="modal-close" onClick={() => setShowModal(false)} aria-label="Close modal"><X size={20} /></button>
             </div>
 
             <div className="modal-body">
@@ -343,13 +344,13 @@ function DevotionCalendar() {
               <div className="form-section">
                 <label className="section-label">Devotion template</label>
                 <div className="template-selector">
-                  <div className="template-icon">📋</div>
+                  <div className="template-icon"><ClipboardList size={18} /></div>
                   <select value={selectedTemplate} onChange={handleTemplateChange} className="template-dropdown">
                     {devotionTemplates.map((t) => (
                       <option key={t.value} value={t.value}>{t.label}</option>
                     ))}
                   </select>
-                  <div className="dropdown-arrow">▼</div>
+                  <div className="dropdown-arrow"><ChevronDown size={12} /></div>
                 </div>
               </div>
 
@@ -392,9 +393,9 @@ function DevotionCalendar() {
                 </div>
 
                 <div className="tags-container">
-                  <span className="tag">📅 {selectedDate?.toDateString() || "Pick a date"}</span>
-                  <span className="tag">✉️ {formData.sendMode === "now" ? "Immediate" : "Scheduled"}</span>
-                  {selectedTemplate && <span className="tag">📋 Template</span>}
+                  <span className="tag"><CalendarIcon size={12} /> {selectedDate?.toDateString() || "Pick a date"}</span>
+                  <span className="tag"><Mail size={12} /> {formData.sendMode === "now" ? "Immediate" : "Scheduled"}</span>
+                  {selectedTemplate && <span className="tag"><ClipboardList size={12} /> Template</span>}
                 </div>
               </div>
 
@@ -410,15 +411,15 @@ function DevotionCalendar() {
                   </div>
                   <div className="toolbar-separator"></div>
                   <div className="toolbar-group">
-                    <button type="button" className="toolbar-btn" title="Align Left">≡</button>
-                    <button type="button" className="toolbar-btn" title="Align Center">≣</button>
-                    <button type="button" className="toolbar-btn" title="Bullet List">•</button>
-                    <button type="button" className="toolbar-btn" title="Numbered List">1.</button>
+                    <button type="button" className="toolbar-btn" title="Align Left"><AlignLeft size={14} /></button>
+                    <button type="button" className="toolbar-btn" title="Align Center"><AlignCenter size={14} /></button>
+                    <button type="button" className="toolbar-btn" title="Bullet List"><List size={14} /></button>
+                    <button type="button" className="toolbar-btn" title="Numbered List"><ListOrdered size={14} /></button>
                   </div>
                   <div className="toolbar-separator"></div>
                   <div className="toolbar-group">
-                    <button type="button" className="toolbar-btn" title="Link">🔗</button>
-                    <button type="button" className="toolbar-btn" title="Image">🖼️</button>
+                    <button type="button" className="toolbar-btn" title="Link"><Link2 size={14} /></button>
+                    <button type="button" className="toolbar-btn" title="Image"><ImageIcon size={14} /></button>
                   </div>
                 </div>
 
@@ -435,7 +436,7 @@ function DevotionCalendar() {
               {/* Export (display-only) */}
               <div className="form-section">
                 <div className="export-options">
-                  <div className="export-icon">📄</div>
+                  <div className="export-icon"><FileText size={16} /></div>
                   <span className="export-text">Save devotion for delivery as</span>
                   <select className="export-format">
                     <option value="email">Email</option>

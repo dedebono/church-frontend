@@ -281,7 +281,7 @@ const ServiceRequestDashboard = () => {
     Swal.fire({
       title: `
         <div style="display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 700; color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; text-align: left; margin: 0;">
-          <span>📋 Detail Permintaan Pelayanan</span>
+          <span>Detail Permintaan Pelayanan</span>
         </div>
       `,
       width: '640px',
@@ -335,9 +335,9 @@ const ServiceRequestDashboard = () => {
               Perbarui Status Layanan:
             </label>
             <select id="swal-update-status" style="display: block; width: 100%; padding: 10px 14px; font-size: 0.92rem; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; background: #1c1c24; color: #f8fafc; outline: none; box-sizing: border-box;">
-              <option value="Pending" ${request.status === 'Pending' ? 'selected' : ''}>⏳ Pending (Menunggu Konfirmasi)</option>
-              <option value="In Progress" ${request.status === 'In Progress' ? 'selected' : ''}>⚙️ In Progress (Sedang Diproses)</option>
-              <option value="Completed" ${request.status === 'Completed' ? 'selected' : ''}>✅ Completed (Pelayanan Selesai)</option>
+              <option value="Pending" ${request.status === 'Pending' ? 'selected' : ''}>Pending (Menunggu Konfirmasi)</option>
+              <option value="In Progress" ${request.status === 'In Progress' ? 'selected' : ''}>In Progress (Sedang Diproses)</option>
+              <option value="Completed" ${request.status === 'Completed' ? 'selected' : ''}>Completed (Pelayanan Selesai)</option>
             </select>
           </div>
         </div>

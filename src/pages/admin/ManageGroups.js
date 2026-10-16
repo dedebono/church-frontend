@@ -331,7 +331,7 @@ const ManageGroups = () => {
           .map(
             (log) =>
               `<div style="text-align: left; padding: 10px; background: #1c1c24; border-radius: 8px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                <div style="font-size: 0.78rem; color: #d4a24e; margin-bottom: 4px;">📅 ${new Date(log.createdAt).toLocaleString('id-ID')}</div>
+                <div style="font-size: 0.78rem; color: #d4a24e; margin-bottom: 4px;">${new Date(log.createdAt).toLocaleString('id-ID')}</div>
                 <div style="font-size: 0.9rem; color: #f8fafc;">${log.message}</div>
               </div>`
           )

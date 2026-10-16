@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { AdminAttendance as fetchAdminAttendance } from './api/API.js';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import './AdminAttendance.css';
 
 const AdminAttendance = () => {
@@ -89,9 +90,9 @@ const AdminAttendance = () => {
   
     const getSortIndicator = (key) => {
     if (sortConfig.key === key) {
-      return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+      return sortConfig.direction === 'ascending' ? <ChevronUp size={12} /> : <ChevronDown size={12} />;
     }
-    return '';
+    return null;
   };
 
 

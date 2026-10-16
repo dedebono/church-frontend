@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
-import { Menu } from "lucide-react"
+import { Menu, MapPin, Calendar, User, Phone } from "lucide-react"
 import { Link } from "react-router-dom"
 import api from "./admin/api/API" // ✅ Import your shared Axios instance
 import "./formpage.css"
@@ -43,7 +43,7 @@ const ServiceRequestForm = () => {
     e.preventDefault()
     try {
       const response = await api.post("/api/service-requests", form) // ✅ Real backend call
-      setMessage("✅ Permintaan sudah terkirim")
+      setMessage("Permintaan sudah terkirim")
       setForm({
         serviceType: "",
         fullName: "",
@@ -53,7 +53,7 @@ const ServiceRequestForm = () => {
       })
     } catch (err) {
       console.error(err)
-      setMessage("❌ Gagal mengirimkan")
+      setMessage("Gagal mengirimkan")
       Swal.fire("Gagal", "Tidak dapat mengirim permintaan pelayanan.", "error")
     }
   }
@@ -93,42 +93,42 @@ const ServiceRequestForm = () => {
                 <label htmlFor="placeOfBirth">Tempat Lahir</label>
                 <div className="input-with-icon">
                   <input id="placeOfBirth" name="placeOfBirth" type="text" placeholder="Kota kelahiran" onChange={handleDetailsChange} required />
-                  <span className="input-icon">📍</span>
+                  <span className="input-icon"><MapPin size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="dateOfBirth">Tanggal Lahir</label>
                 <div className="input-with-icon">
                   <input id="dateOfBirth" name="dateOfBirth" type="date" onChange={handleDetailsChange} required />
-                  <span className="input-icon">📅</span>
+                  <span className="input-icon"><Calendar size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="fatherName">Nama Ayah</label>
                 <div className="input-with-icon">
                   <input id="fatherName" name="fatherName" type="text" placeholder="Nama lengkap ayah" onChange={handleDetailsChange} required />
-                  <span className="input-icon">👤</span>
+                  <span className="input-icon"><User size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="motherName">Nama Ibu</label>
                 <div className="input-with-icon">
                   <input id="motherName" name="motherName" type="text" placeholder="Nama lengkap ibu" onChange={handleDetailsChange} required />
-                  <span className="input-icon">👤</span>
+                  <span className="input-icon"><User size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="baptismDate">Tanggal Baptisan</label>
                 <div className="input-with-icon">
                   <input id="baptismDate" name="baptismDate" type="date" onChange={handleDetailsChange} />
-                  <span className="input-icon">📅</span>
+                  <span className="input-icon"><Calendar size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="place">Tempat</label>
                 <div className="input-with-icon">
                   <input id="place" name="place" type="text" placeholder="Gereja" onChange={handleDetailsChange} />
-                  <span className="input-icon">📍</span>
+                  <span className="input-icon"><MapPin size={16} /></span>
                 </div>
               </div>
             </div>
@@ -162,14 +162,14 @@ const ServiceRequestForm = () => {
                 <label htmlFor="plannedDate">Rencana Tanggal Pernikahan</label>
                 <div className="input-with-icon">
                   <input id="plannedDate" name="plannedDate" type="date" onChange={handleDetailsChange} />
-                  <span className="input-icon">📅</span>
+                  <span className="input-icon"><Calendar size={16} /></span>
                 </div>
               </div>
               <div className="field-group full-width">
                 <label htmlFor="marriagePlace">Rencana Tempat Pernikahan</label>
                 <div className="input-with-icon">
                   <input id="marriagePlace" name="place" type="text" onChange={handleDetailsChange} />
-                  <span className="input-icon">📍</span>
+                  <span className="input-icon"><MapPin size={16} /></span>
                 </div>
               </div>
             </div>
@@ -191,14 +191,14 @@ const ServiceRequestForm = () => {
                 <label htmlFor="DateofBirth">Tanggal Lahir</label>
                 <div className="input-with-icon">
                   <input id="DateofBirth" name="DateofBirth" type="date" onChange={handleDetailsChange} />
-                  <span className="input-icon">📅</span>
+                  <span className="input-icon"><Calendar size={16} /></span>
                 </div>
               </div>
               <div className="field-group">
                 <label htmlFor="childPlace">Tempat</label>
                 <div className="input-with-icon">
                   <input id="childPlace" name="place" type="text" onChange={handleDetailsChange} />
-                  <span className="input-icon">📍</span>
+                  <span className="input-icon"><MapPin size={16} /></span>
                 </div>
               </div>
             </div>
@@ -272,9 +272,9 @@ const ServiceRequestForm = () => {
                 <label htmlFor="serviceType">Apa pelayanan yang bisa kami lakukan?</label>
                 <select id="serviceType" name="serviceType" value={form.serviceType} onChange={handleChange} required>
                   <option value="">-- Silakan pilih --</option>
-                  <option value="Baptism">🕊️ Baptisan</option>
-                  <option value="Marriage">👰🤵 Pemberkatan Nikah</option>
-                  <option value="Child">👶 Penyerahan Anak</option>
+                  <option value="Baptism">Baptisan</option>
+                  <option value="Marriage">Pemberkatan Nikah</option>
+                  <option value="Child">Penyerahan Anak</option>
                 </select>
               </div>
 
@@ -291,7 +291,7 @@ const ServiceRequestForm = () => {
                       placeholder="Nama Lengkap"
                       required
                     />
-                    <span className="input-icon">👤</span>
+                    <span className="input-icon"><User size={16} /></span>
                   </div>
                 </div>
 
@@ -307,7 +307,7 @@ const ServiceRequestForm = () => {
                       placeholder="08xxxx"
                       required
                     />
-                    <span className="input-icon">📞</span>
+                    <span className="input-icon"><Phone size={16} /></span>
                   </div>
                 </div>
               </div>
@@ -324,7 +324,7 @@ const ServiceRequestForm = () => {
                     rows="3"
                     required
                   />
-                  <span className="input-icon textarea-icon">📍</span>
+                  <span className="input-icon textarea-icon"><MapPin size={16} /></span>
                 </div>
               </div>
 
@@ -347,7 +347,7 @@ const ServiceRequestForm = () => {
               </div>
             </form>
 
-            {message && <div className={`message ${message.includes("✅") ? "success" : "error"}`}>{message}</div>}
+            {message && <div className={`message ${message === "Permintaan sudah terkirim" ? "success" : "error"}`}>{message}</div>}
           </div>
         </div>
       </div>

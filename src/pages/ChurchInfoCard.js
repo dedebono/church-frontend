@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Phone, Mail } from "lucide-react";
 import "./ChurchInfoCard.css"; // Import the CSS
 
 const ChurchInfoCard = () => {
@@ -45,8 +46,8 @@ const ChurchInfoCard = () => {
             <div>
               <p> Sekolah Harapan Bangsa 99G</p>
               <p>Balikpapan</p>
-              <p>📞 62-812-5494-8220</p>
-              <p>📧 wartanewsgo2@gmail.com</p>
+              <p><Phone size={14} /> 62-812-5494-8220</p>
+              <p><Mail size={14} /> wartanewsgo2@gmail.com</p>
             </div>
           )}
           {tab === "Ibadah" && (

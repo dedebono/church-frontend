@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import api from "./api/API"
 import Swal from "sweetalert2"
+import { Baby, CheckCircle, FileText, Printer, Trash2 } from "lucide-react"
 import "./ChildForm.css"
 import CertificatePrintModal from "./CertificatePrintModal"
 
@@ -179,7 +180,7 @@ function ChildForm() {
   return (
     <div className="event-cms-container">
       <div className="cms-header">
-        <h2>👶 Formulir Penyerahan Anak</h2>
+        <h2><Baby size={20} /> Formulir Penyerahan Anak</h2>
       </div>
       <div className="form-card">
         <form onSubmit={handleSubmit} className="event-form">
@@ -205,7 +206,7 @@ function ChildForm() {
               {/* Optional: Show selected child's ID for confirmation/debugging */}
               {formData.member && (
                 <p style={{ fontSize: "0.9rem", color: "#4b5563", marginTop: "-10px" }}>
-                  ✅ ID Anak: <code>{formData.member}</code>
+                  <CheckCircle size={14} /> ID Anak: <code>{formData.member}</code>
                 </p>
               )}
             </div>
@@ -294,7 +295,7 @@ function ChildForm() {
       </div>
 
       <hr />
-      <h2>📄 Daftar Sertifikat Penyerahan Anak</h2>
+      <h2><FileText size={20} /> Daftar Sertifikat Penyerahan Anak</h2>
       <div className="events-grid">
         {records.map((svc) => (
           <div key={svc._id} className="event-card">
@@ -302,10 +303,10 @@ function ChildForm() {
             <p><strong>Tanggal:</strong> {new Date(svc.date).toLocaleDateString("id-ID")}</p>
             <p><strong>No. Sertifikat:</strong> {svc.certificateNumber}</p>
             <p><strong>Tempat:</strong> {svc.place}</p>
-            <button className="btn-view" onClick={() => handlePrint(svc)}>🖨️ Cetak</button>
-            <button className="btn-delete" 
-            onClick={() => 
-            handleDelete(svc._id)}>🗑️ Hapus</button>
+            <button className="btn-view" onClick={() => handlePrint(svc)}><Printer size={16} /> Cetak</button>
+            <button className="btn-delete"
+            onClick={() =>
+            handleDelete(svc._id)}><Trash2 size={16} /> Hapus</button>
           </div>
         ))}
       </div>

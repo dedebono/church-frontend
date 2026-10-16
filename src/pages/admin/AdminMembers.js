@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import api from "./api/API"
 import "./AdminMembers.css"
 import Swal from "sweetalert2"
+import { ChevronUp, ChevronDown, Pencil, Trash2 } from "lucide-react"
 
 function AdminMembers() {
   const [members, setMembers] = useState([])
@@ -456,14 +457,14 @@ function AdminMembers() {
           <thead>
             <tr>
               <th onClick={() => !isLoading && handleSort("fullName")}>
-                Nama • {sortField === "fullName" && (sortOrder === "asc" ? "↑" : "↓")}
+                Nama {sortField === "fullName" && (sortOrder === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
               </th>
               <th onClick={() => !isLoading && handleSort("gender")}>
-                L/P • {sortField === "gender" && (sortOrder === "asc" ? "↑" : "↓")}
+                L/P {sortField === "gender" && (sortOrder === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
               </th>
               <th>Tempat.Lahir</th>
               <th onClick={() => !isLoading && handleSort("dateOfBirth")}>
-                Tgl Lahir • {sortField === "dateOfBirth" && (sortOrder === "asc" ? "↑" : "↓")}
+                Tgl Lahir {sortField === "dateOfBirth" && (sortOrder === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
               </th>
               <th>Komunitas</th>
               <th>Keluarga</th>
@@ -516,14 +517,14 @@ function AdminMembers() {
                           onClick={() => handleOpenEditModal(member)}
                           disabled={isDeleting === member._id}
                         >
-                          ✍️
+                          <Pencil size={14} />
                         </button>
                         <button
                           className="button-export"
                           onClick={() => handleDelete(member._id)}
                           disabled={isDeleting === member._id}
                         >
-                          {isDeleting === member._id ? <LoadingSpinner /> : "🗑️"}
+                          {isDeleting === member._id ? <LoadingSpinner /> : <Trash2 size={14} />}
                         </button>
                       </td>
                     </tr>

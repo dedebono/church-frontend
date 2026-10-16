@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AdminBirthdayReminder from './AdminBirthdayReminder';
+import { Cake, PartyPopper, CheckCircle, Phone } from 'lucide-react';
 import './BirthdayReminderTest.css';
 
 const BirthdayReminderTest = () => {
@@ -48,7 +49,7 @@ const BirthdayReminderTest = () => {
   return (
     <div className="birthday-test-container">
       <div className="test-header">
-        <h1>🎂 Birthday Reminder Popup Test</h1>
+        <h1><Cake size={24} /> Birthday Reminder Popup Test</h1>
         <p>Test the birthday reminder popup functionality</p>
       </div>
 
@@ -62,20 +63,20 @@ const BirthdayReminderTest = () => {
               className="test-btn primary"
               onClick={handleShowReminder}
             >
-              🎉 Show Birthday Reminder
+              <PartyPopper size={16} /> Show Birthday Reminder
             </button>
           </div>
 
           <div className="test-info">
             <h3>Features Tested:</h3>
             <ul>
-              <li>✅ Popup modal display</li>
-              <li>✅ Loading state animation</li>
-              <li>✅ Birthday member list</li>
-              <li>✅ Age calculation</li>
-              <li>✅ Contact information</li>
-              <li>✅ Responsive design</li>
-              <li>✅ Close functionality</li>
+              <li><CheckCircle size={14} /> Popup modal display</li>
+              <li><CheckCircle size={14} /> Loading state animation</li>
+              <li><CheckCircle size={14} /> Birthday member list</li>
+              <li><CheckCircle size={14} /> Age calculation</li>
+              <li><CheckCircle size={14} /> Contact information</li>
+              <li><CheckCircle size={14} /> Responsive design</li>
+              <li><CheckCircle size={14} /> Close functionality</li>
             </ul>
           </div>
         </div>
@@ -86,15 +87,15 @@ const BirthdayReminderTest = () => {
           <div className="sample-data">
             <div className="sample-member">
               <strong>John Doe</strong> - Keluarga Doe (34 tahun)
-              <br />📞 081234567890
+              <br /><Phone size={14} /> 081234567890
             </div>
             <div className="sample-member">
               <strong>Jane Smith</strong> - Keluarga Smith (39 tahun)
-              <br />📞 081987654321
+              <br /><Phone size={14} /> 081987654321
             </div>
             <div className="sample-member">
               <strong>Michael Johnson</strong> - Keluarga Johnson (32 tahun)
-              <br />📞 081122334455
+              <br /><Phone size={14} /> 081122334455
             </div>
           </div>
         </div>
