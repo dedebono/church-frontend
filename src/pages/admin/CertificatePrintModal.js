@@ -386,8 +386,8 @@ export default function CertificatePrintModal({
       record?.certificateNumber ||
       (type === "marriage" ? "MLBC / PN / 01 / 06 / 2026" : "MLBC / BP / 01 / 06 / 2026"),
     serviceDate: record?.date || "2026-06-20",
-    place: record?.placeOfMarriage || record?.place || "Making Life Better Church Balikpapan",
-    pastorName: record?.pastorName || "Pdt. Jimmy Utomo S.M.",
+    place: record?.placeOfMarriage || record?.placeofbaptism || record?.place || "Making Life Better Church Balikpapan",
+    pastorName: record?.pastorName || record?.pastorname || "Pdt. Jimmy Utomo S.M.",
     leadPastor: "Pdt. Ronny Runtukahu S.E., M.Th.",
     city: "Balikpapan",
 
@@ -411,11 +411,13 @@ export default function CertificatePrintModal({
     memberName: record?.member?.fullName || record?.fullName || "Jason Setiawan",
     gender: record?.gender || record?.member?.gender || "Laki-laki",
     memberBirth:
-      record?.member?.placeOfBirth && record?.member?.dateOfBirth
+      record?.placeofbirth && record?.dateofbirth
+        ? `${record.placeofbirth}, ${formatIndonesianDate(record.dateofbirth, false)}`
+        : record?.member?.placeOfBirth && record?.member?.dateOfBirth
         ? `${record.member.placeOfBirth}, ${formatIndonesianDate(record.member.dateOfBirth, false)}`
         : "Balikpapan, 6 Mei 2016",
-    fatherName: record?.fatherName || record?.father || "Bpk. Hendra",
-    motherName: record?.motherName || record?.mother || "Ibu Maria",
+    fatherName: record?.dadName || record?.fatherName || record?.father || "Bpk. Hendra",
+    motherName: record?.momName || record?.motherName || record?.mother || "Ibu Maria",
 
     // Child specific
     childName: record?.childName || record?.member?.fullName || "Gavin Octavianus",
