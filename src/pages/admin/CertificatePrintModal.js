@@ -378,7 +378,7 @@ export default function CertificatePrintModal({
 }) {
   const logoInputRef = useRef(null);
   const [showEditDrawer, setShowEditDrawer] = useState(false);
-  const [customLogoUrl, setCustomLogoUrl] = useState("/mlbc-logo.svg");
+  const [customLogoUrl, setCustomLogoUrl] = useState("/mark_512.png");
 
   // Editable fields with smart defaults matching the physical certificate
   const [editedData, setEditedData] = useState({
@@ -443,7 +443,7 @@ export default function CertificatePrintModal({
   };
 
   const handleResetLogo = () => {
-    setCustomLogoUrl("/mlbc-logo.svg");
+    setCustomLogoUrl("/mark_512.png");
   };
 
   // Direct Browser Print
@@ -567,7 +567,7 @@ export default function CertificatePrintModal({
               <span>Ganti Logo</span>
             </button>
 
-            {customLogoUrl !== "/mlbc-logo.svg" && (
+            {customLogoUrl !== "/mark_512.png" && (
               <button
                 type="button"
                 className="btn-cert-action btn-cert-secondary"
@@ -831,7 +831,7 @@ export default function CertificatePrintModal({
                     }}
                   />
                   <div id="mlbc-fallback-logo-svg" style={{ display: "none" }}>
-                    <MLBCLogo size={68} />
+                    <MLBCLogo size={90} />
                   </div>
                 </div>
                 <h1 className="mlbc-cert-church-name">MAKING LIFE BETTER CHURCH</h1>

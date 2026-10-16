@@ -82,6 +82,42 @@ const ServiceRequestForm = () => {
           <div className="service-fields">
             <div className="field-grid">
               <div className="field-group">
+                <label htmlFor="baptismGender">Jenis Kelamin</label>
+                <select id="baptismGender" name="gender" onChange={handleDetailsChange} required>
+                  <option value="">Pilih jenis kelamin</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div className="field-group">
+                <label htmlFor="placeOfBirth">Tempat Lahir</label>
+                <div className="input-with-icon">
+                  <input id="placeOfBirth" name="placeOfBirth" type="text" placeholder="Kota kelahiran" onChange={handleDetailsChange} required />
+                  <span className="input-icon">📍</span>
+                </div>
+              </div>
+              <div className="field-group">
+                <label htmlFor="dateOfBirth">Tanggal Lahir</label>
+                <div className="input-with-icon">
+                  <input id="dateOfBirth" name="dateOfBirth" type="date" onChange={handleDetailsChange} required />
+                  <span className="input-icon">📅</span>
+                </div>
+              </div>
+              <div className="field-group">
+                <label htmlFor="fatherName">Nama Ayah</label>
+                <div className="input-with-icon">
+                  <input id="fatherName" name="fatherName" type="text" placeholder="Nama lengkap ayah" onChange={handleDetailsChange} required />
+                  <span className="input-icon">👤</span>
+                </div>
+              </div>
+              <div className="field-group">
+                <label htmlFor="motherName">Nama Ibu</label>
+                <div className="input-with-icon">
+                  <input id="motherName" name="motherName" type="text" placeholder="Nama lengkap ibu" onChange={handleDetailsChange} required />
+                  <span className="input-icon">👤</span>
+                </div>
+              </div>
+              <div className="field-group">
                 <label htmlFor="baptismDate">Tanggal Baptisan</label>
                 <div className="input-with-icon">
                   <input id="baptismDate" name="baptismDate" type="date" onChange={handleDetailsChange} />
